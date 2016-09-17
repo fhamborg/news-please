@@ -1,9 +1,6 @@
-# CColon-Newscrawler
+# getthenews
 
-CColon Newscrawler is a software developed by the CColon-team in the context of the lecture "Softwareprojekt" by the University of Konstanz in the summer term 2016.
-
-Its goal is to download news-article (and only news-article) multiple sites given by multiple URLs.
-
+getthenews is a news crawler developed by the Information Science group at the University of Konstanz. It crawls for a given root URL all subpages that are news articles. This way you can easily download articles from any news website such as zeit.de.
 
 ## [Further information](https://bitbucket.org/sciplore/ccolon_newscrawler/wiki/Home)
 
