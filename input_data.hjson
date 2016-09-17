@@ -1,0 +1,51 @@
+# This is a HJSON-File, so comments and so on can be used!
+# Furthermore this is first of all the actual config file, but as default just filled with examples.
+{
+  # Every URL has to be in an array-object in "base_urls".
+  # The same URL in combination with the same crawler may only appear once in this array.
+  "base_urls" : [
+    {
+      # Start crawling from faz.net
+      "url": "http://www.faz.net/",
+
+      # Overwrite the default crawler and use th RecursiveCrawler instead
+      "crawler": "RecursiveCrawler",
+
+      # Because this site is weirt, use the
+      # meta_contains_article_keyword-heuristic and disable all others because
+      # overwrite will merge the defaults from "newscrawler.cfg" with
+      # this
+      "overwrite_heuristics": {
+        "meta_contains_article_keyword": true,
+        "og_type": false,
+        "linked_headlines": false,
+        "self_linked_headlines": false
+      },
+      # Also state that in the condition, all heuristics used in the condition
+      # have to be activated in "overwrite_heuristics" (or default) as well.
+      "pass_heuristics_condition": "meta_contains_article_keyword"
+    },
+    {
+      # zeit.de has a blog which we do not want to crawl
+      "url": "http://www.zeit.de",
+
+      "overwrite_heuristics": {
+        # because we do not want to crawl that blog, disable all downloads from
+        # subdomains
+        "is_not_from_subdomain": true
+      },
+      # Update the condition as well, all the other heuristics are enabled in
+      # newscrawler.cfg
+      "pass_heuristics_condition": "is_not_from_subdomain and og_type and self_linked_headlines and linked_headlines"
+    },
+    {
+      # nytimes.com should run pretty well with default config:
+      "url": "http://www.nytimes.com/"
+
+      # to create an additional RssCrawler daemon for this site that runs every hour, we could either use
+      # "additional_rss_daemon": 3600
+      # or create an additional array-object with "crawler": "RssCrawler" and "daemonize": 3600
+      # it is not possible to create an additional_rss_daemon for a daemonized array-object
+    }
+  ]
+}

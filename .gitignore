@@ -1,0 +1,6 @@
+*.pyc
+
+# the download folder for any saved, crawled data (testing)
+data/
+.resume_jobdir/
+__pycache__/
