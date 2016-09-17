@@ -73,6 +73,13 @@ class ParseCrawler(object):
         article['descendant'] = 'NULL'
         article['version'] = '1'
         article['spider_response'] = response
+        article['article_title'] = 'NULL'
+        article['article_description'] = 'NULL'
+        article['article_text'] = 'NULL'
+        article['article_image'] = 'NULL'
+        article['article_author'] = 'NULL'
+        article['article_publish_date'] = 'NULL'
+        article['article_language'] = 'NULL'
         return article
 
     @staticmethod
