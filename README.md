@@ -21,7 +21,7 @@ getthenews is a news crawler developed by the Information Science group at the U
 
 ## Wiki and Documentation
 
-You can find more information on usage and development in our [wiki](TODO)!
+You can find more information on usage and development in our [wiki TODO SÖREN](TODO)!
 
 ## License and Contribution
 
