@@ -10,6 +10,15 @@ getthenews is a news crawler developed by the Information Science group at the U
 * author's name
 * publication date
 
+## Features
+* **works out of the box** (clone, add your pages, run!)
+* stores extracted information in an **ElasticSearch** index
+* **easy configuration** in case you want to fine tune the extraction
+
+## Requirements
+* Python 2 or 3
+* ElasticSearch (needs to run)
+
 ## Wiki and Documentation
 
 You can find more information on usage and development in our [wiki](https://bitbucket.org/sciplore/ccolon_newscrawler/wiki/Home)!
