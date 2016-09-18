@@ -21,7 +21,7 @@ getthenews is a news crawler developed by the Information Science group at the U
 
 ## Wiki and Documentation
 
-You can find more information on usage and development in our [wiki](https://bitbucket.org/sciplore/ccolon_newscrawler/wiki/Home)!
+You can find more information on usage and development in our [wiki](Home)!
 
 ## License and Contribution
 
