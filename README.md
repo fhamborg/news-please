@@ -10,9 +10,9 @@ getthenews is a news crawler developed by the Information Science group at the U
 * author's name
 * publication date
 
-## [Further information](https://bitbucket.org/sciplore/ccolon_newscrawler/wiki/Home)
+## Wiki and Documentation
 
-[For further information check out the wiki!](https://bitbucket.org/sciplore/ccolon_newscrawler/wiki/Home)
+You can find more information on usage and development in our [wiki](https://bitbucket.org/sciplore/ccolon_newscrawler/wiki/Home)!
 
 ## License and Contribution
 
