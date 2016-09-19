@@ -28,6 +28,19 @@ getthenews is a news crawler developed by the Information Science group at the U
 
 You can find more information on usage and development in our [wiki TODO SÖREN](TODO)!
 
+## Acknoledgements
+This project would not have been possible without the help of many students who spent time working on the extraction. 
+* Moritz Bock
+* Michael Fried
+* Jonathan Hassler
+* Markus Klatt
+* Kevin Kress
+* Marvin Pafla
+* Franziska Schlor
+* Matt Sharinghousen
+* Claudio Spener
+* Moritz Steinmaier
+
 ## License and Contribution
 
 Please send a mail to [felix.hamborg@uni-konstanz.de](mailto:felix.hamborg@uni-konstanz.de)
