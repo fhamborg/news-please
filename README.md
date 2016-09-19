@@ -11,7 +11,7 @@ getthenews is a news crawler developed by the Information Science group at the U
 * publication date
 
 ## Features
-* **works out of the box** (clone, add your pages, run!)
+* **works out of the box**: clone the repository, add your page URLs, run :-)
 * stores extracted information in an **ElasticSearch** index
 * **easy configuration** in case you want to fine tune the extraction
 
