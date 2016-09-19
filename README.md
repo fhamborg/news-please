@@ -25,4 +25,4 @@ You can find more information on usage and development in our [wiki TODO SÖREN]
 
 ## License and Contribution
 
-Please send a mail to [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de)
+Please send a mail to [felix.hamborg@uni-konstanz.de](mailto:felix.hamborg@uni-konstanz.de)
