@@ -25,11 +25,11 @@ getthenews is a news crawler developed by the Information Science group at the U
 * TODO SÖREN
 
 ## Wiki and Documentation
-
 You can find more information on usage and development in our [wiki TODO SÖREN](TODO)!
 
 ## Acknoledgements
 This project would not have been possible without the help of many students who spent time working on the extraction. 
+
 * Moritz Bock
 * Michael Fried
 * Jonathan Hassler
