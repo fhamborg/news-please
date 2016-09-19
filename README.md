@@ -22,6 +22,7 @@ getthenews is a news crawler developed by the Information Science group at the U
 ## Future Improvements
 * Better error handling incl. more descriptive messages
 * Improvement of detection whether a page is a news article or not
+* TODO SÖREN
 
 ## Wiki and Documentation
 
