@@ -1,13 +1,14 @@
-from src.comparer.ComparerTitle import *
-from src.comparer.ComparerDescription import *
-from src.comparer.ComparerText import *
-from src.comparer.ComparerTopimage import *
-from src.comparer.ComparerAuthor import *
-from src.comparer.ComparerDate import *
-from src.comparer.ComparerLanguage import *
+from newscrawler.pipeline.km4_extractor.article_candidate import ArticleCandidate
+from newscrawler.pipeline.km4_extractor.comparer.comparer_title import *
+from newscrawler.pipeline.km4_extractor.comparer.comparer_description import *
+from newscrawler.pipeline.km4_extractor.comparer.comparer_text import *
+from newscrawler.pipeline.km4_extractor.comparer.comparer_topimage import *
+from newscrawler.pipeline.km4_extractor.comparer.comparer_author import *
+from newscrawler.pipeline.km4_extractor.comparer.comparer_date import *
+from newscrawler.pipeline.km4_extractor.comparer.comparer_Language import *
 
 
-class Comparer():
+class Comparer:
     """This class sends the list of ArticleCandidates to the subcomparer and saves the result in Article."""
 
     # Create subcomparer
@@ -20,18 +21,21 @@ class Comparer():
         self.comparer_date = ComparerDate()
         self.comparer_language = ComparerLanguage()
 
-    def compare(self, list_article_candidate, article):
-        """Give list_article_candidate to different subcomparer.
+    def compare(self, article_candidates):
+        """Compares the article candidates using the different submodules and saves the best results in
+        new ArticleCandidate object
 
-        :param list_article_candidate: A list, the list of ArticleCandidate-Objects which have been extracted
-        :param article: An Article-Object, the empty article
-        :return: An Article-Object, the finally extracted article
+        :param article_candidates: The list of ArticleCandidate-Objects which have been extracted
+        :return: An ArticleCandidate-object containing the best results
         """
-        article.title = self.comparer_title.extract(list_article_candidate)
-        article.description = self.comparer_desciption.extract(list_article_candidate)
-        article.text = self.comparer_text.extract(list_article_candidate)
-        article.topimage = self.comparer_topimage.extract(list_article_candidate)
-        article.author = self.comparer_author.extract(list_article_candidate)
-        article.publish_date = self.comparer_date.extract(list_article_candidate)
-        article.language = self.comparer_language.extract(list_article_candidate)
-        return article
+
+        result = ArticleCandidate()
+
+        result.title = self.comparer_title.extract(article_candidates)
+        result.description = self.comparer_desciption.extract(article_candidates)
+        result.text = self.comparer_text.extract(article_candidates)
+        result.topimage = self.comparer_topimage.extract(article_candidates)
+        result.author = self.comparer_author.extract(article_candidates)
+        result.publish_date = self.comparer_date.extract(article_candidates)
+        result.language = self.comparer_language.extract(article_candidates)
+        return result

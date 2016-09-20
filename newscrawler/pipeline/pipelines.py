@@ -11,6 +11,7 @@ import mysql.connector
 
 from scrapy.exceptions import DropItem
 from newscrawler.config import CrawlerConfig
+from newscrawler.pipeline.km4_extractor import article_extractor
 
 
 class HTMLCodeHandling(object):
@@ -27,6 +28,24 @@ class HTMLCodeHandling(object):
             raise DropItem("%s: Non-200 response" % item['url'])
         else:
             return item
+
+
+class KM4ArticleExtractor(object):
+    """
+    Parses the HTML response and extracts title, description,
+    text, image and meta data of an article.
+    """
+
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+        self.cfg = CrawlerConfig.get_instance()
+        self.extractor_list = self.cfg.section("KM4ArticleExtractor")[
+            "extractors"]
+
+        self.extractor = article_extractor.Extractor(self.extractor_list)
+
+    def process_item(self, item, spider):
+        return self.extractor.extract(item)
 
 
 class RSSCrawlCompare(object):
@@ -265,4 +284,15 @@ class LocalStorage(object):
         with open(item['abs_local_path'], 'wb') as file_:
             file_.write(item['spider_response'].body)
 
+        return item
+
+
+class ElasticSearchStorage(object):
+    """
+    Handles remote storage of the meta data in the DB
+    """
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+
+    def process_item(self, item, spider):
         return item
