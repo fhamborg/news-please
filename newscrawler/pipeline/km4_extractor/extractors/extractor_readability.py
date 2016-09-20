@@ -1,7 +1,7 @@
 from copy import deepcopy
 import bleach
 from readability import Document
-from newscrawler.pipeline.km4_extractor.extractors.ExtractorInterface import *
+from newscrawler.pipeline.km4_extractor.extractors.extractor_interface import *
 
 
 class Readability(ExtractorInterface):

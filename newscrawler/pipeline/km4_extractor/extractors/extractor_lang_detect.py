@@ -1,4 +1,4 @@
-from newscrawler.pipeline.km4_extractor.extractors.ExtractorInterface import *
+from newscrawler.pipeline.km4_extractor.extractors.extractor_interface import *
 from langdetect import detect
 
 

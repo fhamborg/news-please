@@ -1,5 +1,5 @@
 from copy import deepcopy
-from newscrawler.pipeline.km4_extractor.extractors.ExtractorInterface import *
+from newscrawler.pipeline.km4_extractor.extractors.extractor_interface import *
 # Import Newspaper Article Extractor Library.
 from newspaper import Article
 
