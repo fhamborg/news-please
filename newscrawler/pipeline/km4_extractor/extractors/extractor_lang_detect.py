@@ -8,9 +8,8 @@ class LangDetect(ExtractorInterface):
 
     """
 
-    def _name(self):
-        """Returns the name of the article extractor."""
-        return "langdetect"
+    def __init__(self):
+        self.name = "langdetect"
 
     def _language(self, item):
         """Returns the language of the extracted article using the pageTitle or RSS title"""

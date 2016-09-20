@@ -7,9 +7,12 @@ class ExtractorInterface(metaclass=ABCMeta):
     """
 
     @abstractmethod
+    def __init__(self):
+        self.name = None
+
     def _name(self):
         """Returns the name of the article extractor."""
-        return
+        return self.name
 
     def _language(self, item):
         """Returns the language of the extracted article."""
@@ -48,7 +51,7 @@ class ExtractorInterface(metaclass=ABCMeta):
         """
 
         article_candidate = ArticleCandidate()
-        article_candidate.extractor = self._name()
+        article_candidate.extractor = self._name
         article_candidate.title = self._title(item)
         article_candidate.description = self._description(item)
         article_candidate.text = self._text(item)

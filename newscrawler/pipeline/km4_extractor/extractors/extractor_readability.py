@@ -9,9 +9,8 @@ class Readability(ExtractorInterface):
     a subclass of Extractors and newspaper.Article.
 
     """
-
-    def _name(self):
-        return "readability"
+    def __init__(self):
+        self.name = "readability"
 
     def extract(self, item):
         """Creates an readability document and returns an ArticleCandidate containing article title and text.
@@ -24,7 +23,7 @@ class Readability(ExtractorInterface):
         description = bleach.clean(doc.summary(), strip=True)
 
         article_candidate = ArticleCandidate()
-        article_candidate.extractor = self._name()
+        article_candidate.extractor = self._name
         article_candidate.title = doc.short_title()
         article_candidate.description = description
         article_candidate.text = self._text(item)

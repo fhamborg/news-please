@@ -3,7 +3,7 @@ import json
 from copy import deepcopy
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
-from newscrawler.pipeline.km4_extractor.extractors.ExtractorInterface import *
+from newscrawler.pipeline.km4_extractor.extractors.extractor_interface import *
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -15,9 +15,8 @@ class DateExtractor(ExtractorInterface):
     a subclass of ExtractorInterface.
     """
 
-    def _name(self):
-        """Returns the name of the article extractor."""
-        return "date_extractor"
+    def __init__(self):
+        self.name = "date_extractor"
 
     def _publish_date(self, item):
         """Returns the publish_date of the extracted article."""

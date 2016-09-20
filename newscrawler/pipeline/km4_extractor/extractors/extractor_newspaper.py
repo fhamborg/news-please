@@ -9,9 +9,8 @@ class Newspaper(ExtractorInterface):
     a subclass of ExtractorsInterface
     """
 
-    def _name(self):
-        """Returns the name of the article extractor."""
-        return "newspaper"
+    def __init__(self):
+        self.name = "newspaper"
 
     def extract(self, item):
         """Creates an instance of Article without a Download and returns an ArticleCandidate with the results of
