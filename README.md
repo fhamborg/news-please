@@ -16,7 +16,7 @@ getthenews is a news crawler developed by the Information Science group at the U
 * **easy configuration** in case you want to fine tune the extraction
 
 ## Requirements
-* Python 2 or 3
+* [Python](https://www.python.org/downloads/) 2.7+ or 3.x
 * [ElasticSearch](https://www.elastic.co/downloads/elasticsearch) (needs to run)
 
 ## Future Improvements
