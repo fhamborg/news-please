@@ -1,6 +1,6 @@
-# **getthenews**
+# **news-please**
 
-getthenews is a news crawler developed by the Information Science group at the University of Konstanz. It crawls for a given root URL all subpages that are news articles. From these it automatically extracts information such headline, content, and main image. This way it enables effective download and extraction of articles from news websites.
+news-please is a news crawler developed by the Information Science group at the University of Konstanz. It crawls for a given root URL all subpages that are news articles. From these it automatically extracts information such headline, content, and main image. This way it enables effective download and extraction of articles from news websites.
 
 ## Extracted Information
 * headline
@@ -35,6 +35,7 @@ This project would not have been possible without the help of many students who 
 * Jonathan Hassler
 * Markus Klatt
 * Kevin Kress
+* Sören Lachnit
 * Marvin Pafla
 * Franziska Schlor
 * Matt Sharinghousen
