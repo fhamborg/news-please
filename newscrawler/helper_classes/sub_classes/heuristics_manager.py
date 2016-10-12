@@ -1,4 +1,5 @@
 import logging
+import re
 
 try:
     basestring = basestring
@@ -23,7 +24,7 @@ class HeuristicsManager(object):
     __sites_object = {}
     __sites_heuristics = {}
     __heuristics_condition = None
-    __condition_allowed = ["(", ")", " and ", " or " , " not "]
+    __condition_allowed = ["(", ")", " and ", " or ", " not "]
 
     def __init__(self, cfg_heuristics, sites_object, crawler_class):
         self.cfg_heuristics = cfg_heuristics
@@ -92,7 +93,7 @@ class HeuristicsManager(object):
             disalloweds = disalloweds.replace(allowed, " ")
 
         for heuristic, _ in heuristics.items():
-            disalloweds = disalloweds.replace(heuristic, "")
+            disalloweds = re.sub(r"\b%s\b" % heuristic, " ", disalloweds)
 
         disalloweds = disalloweds.split(" ")
         for disallowed in disalloweds:
@@ -100,7 +101,7 @@ class HeuristicsManager(object):
                 self.log.error("Misconfiguration: In the condition,"
                                " an unknown heuristic was found and"
                                " will be ignored: %s", disallowed)
-                condition = condition.replace(disallowed, "True")
+                condition = re.sub(r"\b%s\b" % disallowed, "True", condition)
 
         self.__heuristics_condition = condition
         # Now condition should just consits of not, and, or, (, ), and all
