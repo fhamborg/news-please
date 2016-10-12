@@ -1,3 +1,6 @@
+import logging
+import importlib
+import newscrawler.pipeline.km4_extractor.extractors
 from newscrawler.pipeline.km4_extractor.cleaner import Cleaner
 from newscrawler.pipeline.km4_extractor.comparer.comparer import Comparer
 
@@ -12,10 +15,17 @@ class Extractor:
 
         :param extractor_list: List of strings containing all extractors to be initialized.
         """
-
+        self.log = logging.getLogger(__name__)
         self.extractor_list = []
         for extractor in extractor_list:
-            self.extractor_list.append(getattr(extractor, None))
+            module = importlib.import_module('newscrawler.pipeline.km4_extractor.extractors.'+extractor)
+            instance = getattr(module, 'Extractor', None)()
+            if instance is not None:
+                self.log.info('Extractor initialized: %s', extractor)
+                self.extractor_list.append(instance)
+            else:
+                self.log.error("Misconfiguration: An unknown Extractor was found and"
+                               " will be ignored: %s", extractor)
 
         self.cleaner = Cleaner()
         self.comparer = Comparer()
@@ -33,7 +43,7 @@ class Extractor:
             article_candidates.append(extractor.extract(item))
 
         article_candidates = self.cleaner.clean(article_candidates)
-        article = self.comparer.compare(article_candidates)
+        article = self.comparer.compare(item, article_candidates)
 
         item['article_title'] = article.title
         item['article_description'] = article.description

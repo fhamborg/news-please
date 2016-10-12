@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from newscrawler.pipeline.km4_extractor.article_candidate import ArticleCandidate
 
 
-class ExtractorInterface(metaclass=ABCMeta):
+class AbstractExtractor(metaclass=ABCMeta):
     """Abstract class for article extractors.
     """
 
@@ -51,7 +51,7 @@ class ExtractorInterface(metaclass=ABCMeta):
         """
 
         article_candidate = ArticleCandidate()
-        article_candidate.extractor = self._name
+        article_candidate.extractor = self._name()
         article_candidate.title = self._title(item)
         article_candidate.description = self._description(item)
         article_candidate.text = self._text(item)

@@ -3,14 +3,14 @@ import json
 from copy import deepcopy
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
-from newscrawler.pipeline.km4_extractor.extractors.extractor_interface import *
+from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
 try:
     import urllib.request as urllib2
 except ImportError:
     import urllib2
 
 
-class DateExtractor(ExtractorInterface):
+class Extractor(AbstractExtractor):
     """This class implements ArticleDateExtractor as an article extractor. ArticleDateExtractor is
     a subclass of ExtractorInterface.
     """
@@ -22,7 +22,7 @@ class DateExtractor(ExtractorInterface):
         """Returns the publish_date of the extracted article."""
 
         url = item['url']
-        html = deepcopy(item['spider_response'])
+        html = deepcopy(item['spider_response'].body)
         publish_date = None
 
         try:
@@ -49,7 +49,8 @@ class DateExtractor(ExtractorInterface):
     def parse_date_str(self, date_string):
         try:
             date = parse(date_string)
-            return date
+
+            return date.strftime('%Y-%m-%d %H:%M:%S')
         except:
             return None
 
@@ -77,7 +78,7 @@ class DateExtractor(ExtractorInterface):
                 pass
 
             try:
-                json_date = self.parse_date_str(data['dateCreated'])
+                date = self.parse_date_str(data['dateCreated'])
             except (Exception, TypeError):
                 pass
         except (Exception, TypeError):
@@ -177,7 +178,7 @@ class DateExtractor(ExtractorInterface):
                 url = meta['content'].strip()
                 possible_date = self._extract_from_url(url)
                 if possible_date is not None:
-                    return possible_date
+                    return self.parse_date_str(possible_date)
 
             # <meta http-equiv="data" content="10:27:15 AM Thursday, November 26, 2015">
             if 'date' == http_equiv:

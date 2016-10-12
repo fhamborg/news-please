@@ -1,10 +1,10 @@
 from copy import deepcopy
 import bleach
 from readability import Document
-from newscrawler.pipeline.km4_extractor.extractors.extractor_interface import *
+from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
 
 
-class Readability(ExtractorInterface):
+class Extractor(AbstractExtractor):
     """This class implements Readability as an article extractor. Readability is
     a subclass of Extractors and newspaper.Article.
 
@@ -19,8 +19,8 @@ class Readability(ExtractorInterface):
         :return: ArticleCandidate containing the recovered article data.
         """
 
-        doc = Document(deepcopy(item['spider_response']))
-        description = bleach.clean(doc.summary(), strip=True)
+        doc = Document(deepcopy(item['spider_response'].body))
+        description = bleach.clean(doc.summary())
 
         article_candidate = ArticleCandidate()
         article_candidate.extractor = self._name
