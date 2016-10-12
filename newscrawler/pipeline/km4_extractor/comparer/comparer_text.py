@@ -4,9 +4,10 @@ import itertools
 class ComparerText():
     """This class compares the text of the list of ArticleCandidates and sends the result back to the Comparer."""
 
-    def extract(self, article_candidate_list):
+    def extract(self, item, article_candidate_list):
         """Compares the extracted texts.
 
+        :param item: The corresponding NewscrawlerItem
         :param article_candidate_list: A list, the list of ArticleCandidate-Objects which have been extracted
         :return: A string, the most likely text
         """
@@ -18,16 +19,17 @@ class ComparerText():
         # The texts of the article candidates and the respective extractors are saved in a tuple in list_text.
         for article_candidate in article_candidate_list:
             if article_candidate.text != None:
-                list_text.append((article_candidate.text,article_candidate.extractor))
+                list_text.append((article_candidate.text, article_candidate.extractor))
 
-        # If there is no value in the list, return None.
-        if len(list_text) == 0:
-            return None
 
         # Remove texts that are shorter than min_number_words.
         for text_tuple in list_text:
             if len(text_tuple[0].split()) < min_number_words:
                 list_text.remove(text_tuple)
+
+        # If there is no value in the list, return None.
+            if len(list_text) == 0:
+                return None
 
         # If there is only one solution, return it.
         if len(list_text) < 2:

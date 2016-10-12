@@ -2,9 +2,10 @@
 class ComparerLanguage:
     """Implements a compare method for detected languages"""
 
-    def extract(self, list_article_candidate):
+    def extract(self, item, list_article_candidate):
         """Compares how often any language was detected.
 
+        :param item: The corresponding NewscrawlerItem
         :param list_article_candidate: A list, the list of ArticleCandidate-Objects which have been extracted
         :return: A string, the language which was most frequently detected
         """

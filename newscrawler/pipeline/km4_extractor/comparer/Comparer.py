@@ -21,7 +21,7 @@ class Comparer:
         self.comparer_date = ComparerDate()
         self.comparer_language = ComparerLanguage()
 
-    def compare(self, article_candidates):
+    def compare(self, item, article_candidates):
         """Compares the article candidates using the different submodules and saves the best results in
         new ArticleCandidate object
 
@@ -31,11 +31,11 @@ class Comparer:
 
         result = ArticleCandidate()
 
-        result.title = self.comparer_title.extract(article_candidates)
-        result.description = self.comparer_desciption.extract(article_candidates)
-        result.text = self.comparer_text.extract(article_candidates)
-        result.topimage = self.comparer_topimage.extract(article_candidates)
-        result.author = self.comparer_author.extract(article_candidates)
-        result.publish_date = self.comparer_date.extract(article_candidates)
-        result.language = self.comparer_language.extract(article_candidates)
+        result.title = self.comparer_title.extract(item, article_candidates)
+        result.description = self.comparer_desciption.extract(item, article_candidates)
+        result.text = self.comparer_text.extract(item, article_candidates)
+        result.topimage = self.comparer_topimage.extract(item, article_candidates)
+        result.author = self.comparer_author.extract(item, article_candidates)
+        result.publish_date = self.comparer_date.extract(item, article_candidates)
+        result.language = self.comparer_language.extract(item, article_candidates)
         return result

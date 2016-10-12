@@ -4,9 +4,10 @@ class ComparerDescription():
     back to the Comparer.
     """
 
-    def extract(self, list_article_candidate):
+    def extract(self, item, list_article_candidate):
         """Compares the extracted descriptions.
 
+        :param item: The corresponding NewscrawlerItem
         :param list_article_candidate: A list, the list of ArticleCandidate-Objects which have been extracted
         :return: A string, the most likely description
         """
