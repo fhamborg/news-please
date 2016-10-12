@@ -3,9 +3,7 @@ This is a helper class for the crawler's parse methods
 """
 import time
 import re
-
 import logging
-
 import scrapy
 from newscrawler.crawler.items import NewscrawlerItem
 
@@ -48,7 +46,7 @@ class ParseCrawler(object):
             source_domain,
             rss_title=None
     ):
-        timestamp = time.strftime('%y-%m-%d %H:%M:%S',
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S',
                                   time.gmtime(time.time()))
 
         relative_local_path = self.helper.savepath_parser \

@@ -9,7 +9,6 @@ All object-getters create deepcopies.
 """
 
 from copy import deepcopy
-
 import logging
 import hjson
 

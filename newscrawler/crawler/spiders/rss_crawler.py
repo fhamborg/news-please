@@ -6,7 +6,6 @@ except ImportError:
 
 import re
 import logging
-
 import scrapy
 
 

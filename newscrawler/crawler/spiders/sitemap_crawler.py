@@ -1,7 +1,5 @@
 import logging
-
 import scrapy
-
 from newscrawler.helper_classes.url_extractor import UrlExtractor
 
 
