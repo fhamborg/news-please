@@ -4,11 +4,9 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import datetime
 import os.path
-
 import logging
-
 import mysql.connector
-
+from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
 from newscrawler.config import CrawlerConfig
 from newscrawler.pipeline.km4_extractor import article_extractor
@@ -69,7 +67,7 @@ class RSSCrawlCompare(object):
         self.cfg = CrawlerConfig.get_instance()
         self.delta_time = self.cfg.section("Crawler")[
             "hours_to_pass_for_redownload_by_rss_crawler"]
-        self.database = self.cfg.section("Database")
+        self.database = self.cfg.section("MySQL")
 
         # Establish DB connection
         # Closing of the connection is handled once the spider closes
@@ -146,7 +144,7 @@ class DatabaseStorage(object):
         self.log = logging.getLogger(__name__)
 
         self.cfg = CrawlerConfig.get_instance()
-        self.database = self.cfg.section("Database")
+        self.database = self.cfg.section("MySQL")
         # Establish DB connection
         # Closing of the connection is handled once the spider closes
         self.conn = mysql.connector.connect(host=self.database["host"],
@@ -289,10 +287,83 @@ class LocalStorage(object):
 
 class ElasticSearchStorage(object):
     """
-    Handles remote storage of the meta data in the DB
+    Handles remote storage of the meta data in Elasticsearch
     """
     def __init__(self):
         self.log = logging.getLogger(__name__)
+        self.cfg = CrawlerConfig.get_instance()
+        self.database = self.cfg.section("Elasticsearch")
+
+        self.es = Elasticsearch([self.database["host"]],
+                                http_auth=(self.database["username"], self.database["secret"]),
+                                port=self.database["port"],
+                                use_ssl=self.database["use_ca_certificates"],
+                                verify_certs=self.database["use_ca_certificates"],
+                                ca_certs=self.database["ca_cert_path"],
+                                client_cert=self.database["client_cert_path"],
+                                client_key=self.database["client_key_path"])
+        self.index_current = self.database["index_current"]
+        self.index_archive = self.database["index_archive"]
+        self.mapping = {'properties': self.database["mapping"]}
+
+        # check connection to Database and set the configuration
+        try:
+            # automatic reset for easy debugging
+            #self.es.indices.delete(index=self.database["index_current"], ignore=[400, 404])
+            #self.es.indices.delete(index=self.database["index_archive"] + 'archive', ignore=[400, 404])
+            if not self.es.indices.exists(self.index_current):
+                self.es.indices.create(index=self.index_current)
+                self.es.indices.put_mapping(index=self.index_current, doc_type='article', body=self.mapping)
+            if not self.es.indices.exists(self.index_archive):
+                self.es.indices.create(index=self.index_archive)
+                self.es.indices.put_mapping(index=self.index_archive, doc_type='article', body=self.mapping)
+            self.running = True
+        except ConnectionError as error:
+            self.running = False
+            self.log.error("Failed to connect to Elasticsearch, this module will be deactivated. "
+                           "Please check if the database is running and the config is correct: %s" % error)
 
     def process_item(self, item, spider):
+
+        if self.running:
+            try:
+                version = 1
+                ancestor = None
+
+                # search for previous version
+                request = self.es.search(index=self.index_current, body={'query': {'match': {'url': item['url']}}})
+                if request['hits']['total'] > 0:
+                    # save old version into index_archive
+                    old_version = request['hits']['hits'][0]
+                    old_version['_source']['descendent'] = True
+                    self.es.index(index=self.index_archive, doc_type='article', body=old_version['_source'])
+                    version += 1
+                    ancestor = old_version['_id']
+
+                # save new version into old id of index_current
+                self.log.info("Saving to Elasticsearch: %s" % item['url'])
+                self.es.index(index=self.index_current, doc_type='article', id=ancestor,
+                              body={
+                                'url': item['url'],
+                                'sourceDomain': item['source_domain'].decode("utf-8"),
+                                'pageTitle': item['html_title'].decode("utf-8"),
+                                'rss_title': item['rss_title'],
+                                'localpath': item['local_path'],
+                                'ancestor': ancestor,
+                                'descendant': False,
+                                'version': version,
+                                'downloadDate': item['download_date'],
+                                'modifiedDate': item['modified_date'],
+                                'publish_date': item['article_publish_date'],
+                                'title': item['article_title'],
+                                'description': item['article_description'],
+                                'text': item['article_text'],
+                                'author': item['article_author'],
+                                'image': item['article_image'],
+                                'language': item['article_language'],
+                              })
+            except ConnectionError as error:
+                self.status = False
+                self.log.error("Lost connection to Elasticsearch, this module will be deactivated: %s" % error)
         return item
+

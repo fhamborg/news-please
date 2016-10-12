@@ -12,6 +12,7 @@ import signal
 import logging
 
 import mysql.connector
+from elasticsearch import Elasticsearch
 
 from scrapy.utils.log import configure_logging
 
@@ -38,7 +39,8 @@ class StartProcesses(object):
     daemon_list = None
     shutdown = False
     thread_event = None
-    database = None
+    mysql = None
+    elasticsearch = None
 
     __single_crawler = False
 
@@ -68,17 +70,22 @@ class StartProcesses(object):
         self.cfg = CrawlerConfig.get_instance()
         self.cfg_file_path = self.get_config_file_path()
         self.cfg.setup(self.cfg_file_path)
-        self.database = self.cfg.section("Database")
+        self.mysql = self.cfg.section("MySQL")
+        self.elasticsearch = self.cfg.section("Elasticsearch")
 
-        if self.has_arg('--reset-db'):
-            self.reset_db()
+        if self.has_arg('--reset-mysql'):
+            self.reset_mysql()
             sys.exit(0)
         elif self.has_arg('--reset-files'):
             self.reset_files()
             sys.exit(0)
+        elif self.has_arg('--reset-elasticsearch'):
+            self.reset_elasticsearch()
+            sys.exit(0)
         elif self.has_arg('--reset'):
             self.reset_db()
             self.reset_files()
+            self.reset_elasticsearch()
             sys.exit(0)
 
         urlinput_file_path = self.cfg.section('Files')['url_input']
@@ -311,12 +318,13 @@ Arguments:
 
     arg ...       : arguments passed to this script
 
-                --resume        Resume crawling from last crawl
+                --resume                    Resume crawling from last crawl
 
-                --reset-db      Reset the database
-                --reset-files   Reset the local savepath
-                --reset         Reset the databse and the local savepath
-                --noconfirm     Skip confirm dialogs
+                --reset-mysql               Reset the MySQL database
+                --reset-elasticsearch       Reset the Elasticsearch database
+                --reset-files               Reset the local savepath
+                --reset                     Reset the MySQL database, the Elasticsearch database and the local savepath
+                --noconfirm                 Skip confirm dialogs
             """
         print(_help.format(os.path.basename(__file__)))
 
@@ -355,14 +363,14 @@ Arguments:
 
     def reset_db(self):
         """
-        Resets the Database.
+        Resets the MySQL database.
         """
         # initialize DB connection
-        self.conn = mysql.connector.connect(host=self.database["host"],
-                                            port=self.database["port"],
-                                            db=self.database["db"],
-                                            user=self.database["username"],
-                                            passwd=self.database["password"])
+        self.conn = mysql.connector.connect(host=self.mysql["host"],
+                                            port=self.mysql["port"],
+                                            db=self.mysql["db"],
+                                            user=self.mysql["username"],
+                                            passwd=self.mysql["password"])
         self.cursor = self.conn.cursor()
 
         confirm = self.has_arg("--noconfirm")
@@ -389,6 +397,45 @@ Cleanup db:
             self.cursor.execute("TRUNCATE TABLE ArchiveVersions")
         except mysql.connector.Error as error:
             self.log.error("Database reset error: %s", error)
+
+    def reset_elasticsearch(self):
+        """
+        Resets the Elasticsearch Database.
+        """
+        # initialize DB connection
+        es = Elasticsearch([self.elasticsearch["host"]],
+                            http_auth=(self.elasticsearch["username"], self.elasticsearch["secret"]),
+                            port=self.elasticsearch["port"],
+                            use_ssl=self.elasticsearch["use_ca_certificates"],
+                            verify_certs=self.elasticsearch["use_ca_certificates"],
+                            ca_certs=self.elasticsearch["ca_cert_path"],
+                            client_cert=self.elasticsearch["client_cert_path"],
+                            client_key=self.elasticsearch["client_key_path"])
+
+        confirm = self.has_arg("--noconfirm")
+
+        print("""
+              Cleanup db:
+              This will truncate all tables and reset the whole Elasticsearch database.
+              """)
+
+        if not confirm:
+            confirm = 'yes' in builtins.input(
+                        """
+                        Do you really want to do this? Write 'yes' to confirm: {yes}"""
+                        .format(yes='yes' if confirm else ''))
+
+        if not confirm:
+            print("Did not type yes. Thus aborting.")
+            return
+
+        try:
+            print("Resetting Elasticsearch database...")
+            es.indices.delete(index=self.elasticsearch["index_current"], ignore=[400, 404])
+            es.indices.delete(index=self.elasticsearch["index_archive"] + 'archive', ignore=[400, 404])
+        except ConnectionError as error:
+            self.log.error("Failed to connect to Elasticsearch. "
+                           "Please check if the database is running and the config is correct: %s" % error)
 
     def reset_files(self):
         """
