@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 import re
+import sys
+from lxml import html
 
 
 class Cleaner:
@@ -11,10 +14,16 @@ class Cleaner:
     def delete_tags(self, arg):
         """Removes html-tags from extracted data.
 
-        :param arg: A string, the string which shell be cleaned
+        :param arg: A string, the string which shall be cleaned
         :return: A string, the cleaned string
         """
-        return re.sub(r'<([\w\s\d:="/\\!?äüö.-]*)>', '', str(arg))
+        #return re.sub(r'<([\w\s\d:="/\\!?.-äüö]*)>', '', arg)
+
+        if len(arg) > 0:
+            raw = html.fromstring(arg)
+            return raw.text_content().strip()
+
+        return arg
 
     def delete_whitespaces(self, arg):
         """Removes newlines, tabs and whitespaces at the beginning, the end and if there is more than one.
@@ -23,7 +32,7 @@ class Cleaner:
         :return: A string, the cleaned string
         """
         # Deletes whitespaces after a newline
-        arg = re.sub(r'(?<=\n)( )+', '', str(arg))
+        arg = re.sub(r'(?<=\n)( )+', '', arg)
         # Deletes every whitespace, tabulator, newline at the beginning of the string
         arg = re.sub(r'^[ \t\n\r\f]*', '', arg)
         # Deletes whitespace or tabulator if followed by whitespace or tabulator
@@ -41,6 +50,10 @@ class Cleaner:
         :return: A string, the cleaned string
         """
         if arg is not None:
+            if sys.version_info[0] < 3:
+                arg = unicode(arg)
+            else:
+                arg = str(arg)
             arg = self.delete_tags(arg)
             arg = self.delete_whitespaces(arg)
             return arg
