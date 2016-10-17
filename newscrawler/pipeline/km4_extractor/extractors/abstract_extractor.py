@@ -2,9 +2,11 @@ from abc import ABCMeta, abstractmethod
 from newscrawler.pipeline.km4_extractor.article_candidate import ArticleCandidate
 
 
-class AbstractExtractor(metaclass=ABCMeta):
+class AbstractExtractor:
     """Abstract class for article extractors.
     """
+
+    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self):

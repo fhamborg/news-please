@@ -28,8 +28,8 @@ class ComparerText():
                 list_text.remove(text_tuple)
 
         # If there is no value in the list, return None.
-            if len(list_text) == 0:
-                return None
+        if len(list_text) == 0:
+            return None
 
         # If there is only one solution, return it.
         if len(list_text) < 2:

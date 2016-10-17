@@ -2,24 +2,23 @@ import os
 import sys
 import time
 import shutil
-import builtins
-
 import subprocess
 from subprocess import Popen
 import threading
 import signal
-
 import logging
-
 import mysql.connector
 from elasticsearch import Elasticsearch
-
 from scrapy.utils.log import configure_logging
-
 from newscrawler.helper_classes.savepath_parser import SavepathParser
 from newscrawler.config import JsonConfig
 from newscrawler.config import CrawlerConfig
-
+try:
+    import builtins
+except ImportError:
+    from future import builtins
+if sys.version_info[0] < 3:
+    ConnectionError = OSError
 
 class StartProcesses(object):
     """

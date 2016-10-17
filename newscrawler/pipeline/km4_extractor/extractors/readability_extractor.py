@@ -1,5 +1,4 @@
 from copy import deepcopy
-import bleach
 from readability import Document
 from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
 
@@ -20,7 +19,7 @@ class Extractor(AbstractExtractor):
         """
 
         doc = Document(deepcopy(item['spider_response'].body))
-        description = bleach.clean(doc.summary())
+        description = doc.summary()
 
         article_candidate = ArticleCandidate()
         article_candidate.extractor = self._name
