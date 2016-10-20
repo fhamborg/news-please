@@ -44,4 +44,7 @@ This project would not have been possible without the help of many students who 
 
 ## License and Contribution
 
+Copyright 2016 Felix Hamborg
+
+Licensed under the [Apache License 2.0](LICENSE.txt)
 Please send a mail to [felix.hamborg@uni-konstanz.de](mailto:felix.hamborg@uni-konstanz.de)
