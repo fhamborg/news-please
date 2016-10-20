@@ -124,5 +124,6 @@ class Heuristics(HeuristicsManager):
 
         :return bool: Determines if the response's url is from a subdomain
         """
-        return UrlExtractor.get_allowed_domain(response.url) \
-            == site_dict["url"]
+
+        root_url = re.sub(r'https?://[a-z]+.', '', site_dict["url"])
+        return UrlExtractor.get_allowed_domain(response.url) == root_url
