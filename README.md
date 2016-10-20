@@ -15,15 +15,31 @@ Base requirements:
 
 ### Installation
 
+```
+#!bash
+
+$ sudo pip install TODO
+```
+
+### Minimal configuration
+
+TODO (what to change minimally in the config? i suppose elastic search account infos)
+
 ### Run the crawler
 
 ```
 #!bash
 
-python TODO
+$ python TODO
 ```
 
+If everything goes well (make sure elasticsearch is running and you have added credentials in the config file of news-please) you will see the console showing the progress of crawling pages (TODO which pages). 
 
+### What's next?
+
+Want to crawl other websites? We've got your back! Simply go into the TODO file and add the root URLs. You also might want to check out our guide for the config file. 
+
+We have also collected a bunch of useful information for both users (TODO link) and developers (TODO link).
 
 ## Extracted information
 * headline
