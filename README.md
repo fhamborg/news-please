@@ -62,7 +62,8 @@ We have also collected a bunch of useful information for both users (TODO link) 
 ## Wiki and Documentation
 You can find more information on usage and development in our [wiki TODO SÖREN](TODO)!
 
-## Acknoledgements
+## Credits
+
 This project would not have been possible without the help of many students who spent time working on the extraction (ordered alphabetically):
 
 * Moritz Bock
