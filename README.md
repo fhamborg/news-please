@@ -13,7 +13,17 @@ Base requirements:
 * [Python](https://www.python.org/downloads/) 2.7+ or 3.x
 * [ElasticSearch](https://www.elastic.co/downloads/elasticsearch) 2.x
 
-## Installation ##
+### Installation
+
+### Run the crawler
+
+```
+#!bash
+
+python TODO
+```
+
+
 
 ## Extracted information
 * headline
