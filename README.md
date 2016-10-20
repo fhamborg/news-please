@@ -1,6 +1,6 @@
 # **news-please**
 
-news-please is a news crawler developed by the Information Science group at the University of Konstanz. It crawls for a given root URL all subpages that are news articles. From these it automatically extracts information such headline, content, and main image. This way it enables effective download and extraction of articles from news websites.
+news-please is an easy-to-use news crawler that can download and extract structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website.
 
 ## Extracted Information
 * headline
