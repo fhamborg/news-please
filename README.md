@@ -4,7 +4,18 @@
 
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website.
 
-## Extracted Information
+## Getting started
+
+In this section you can find the steps to get started as quick as possible. 
+
+Base requirements:
+
+* [Python](https://www.python.org/downloads/) 2.7+ or 3.x
+* [ElasticSearch](https://www.elastic.co/downloads/elasticsearch) 2.x
+
+## Installation ##
+
+## Extracted information
 * headline
 * lead paragraph
 * main content (textual)
@@ -16,10 +27,6 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * **works out of the box**: clone the repository, add your page URLs, run :-)
 * stores extracted information in an **ElasticSearch** index
 * **easy configuration** in case you want to fine tune the extraction
-
-## Requirements
-* [Python](https://www.python.org/downloads/) 2.7+ or 3.x
-* [ElasticSearch](https://www.elastic.co/downloads/elasticsearch) (needs to run)
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
