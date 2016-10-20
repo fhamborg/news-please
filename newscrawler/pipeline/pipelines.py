@@ -2,6 +2,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+import sys
 import datetime
 import os.path
 import logging
@@ -10,7 +11,8 @@ from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
 from newscrawler.config import CrawlerConfig
 from newscrawler.pipeline.km4_extractor import article_extractor
-
+if sys.version_info[0] < 3:
+    ConnectionError = OSError
 
 class HTMLCodeHandling(object):
     """
@@ -290,12 +292,13 @@ class ElasticSearchStorage(object):
     Handles remote storage of the meta data in Elasticsearch
     """
     def __init__(self):
-        self.log = logging.getLogger(__name__)
+        self.log = logging.getLogger('elasticsearch.trace')
+        self.log.addHandler(logging.FileHandler('/es_trace.log'))
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("Elasticsearch")
 
         self.es = Elasticsearch([self.database["host"]],
-                                http_auth=(self.database["username"], self.database["secret"]),
+                                http_auth=(str(self.database["username"]), str(self.database["secret"])),
                                 port=self.database["port"],
                                 use_ssl=self.database["use_ca_certificates"],
                                 verify_certs=self.database["use_ca_certificates"],
@@ -307,17 +310,28 @@ class ElasticSearchStorage(object):
         self.mapping = {'properties': self.database["mapping"]}
 
         # check connection to Database and set the configuration
+
         try:
-            # automatic reset for easy debugging
-            #self.es.indices.delete(index=self.database["index_current"], ignore=[400, 404])
-            #self.es.indices.delete(index=self.database["index_archive"] + 'archive', ignore=[400, 404])
+            # check if server is available
+            self.es.ping()
+
+            # raise logging level due to indices.exists() habit of logging a warning if an index doesn't exist.
+            es_log = logging.getLogger('elasticsearch')
+            es_level = es_log.getEffectiveLevel()
+            es_log.setLevel('ERROR')
+
+            # check if the necessary indices exist and create them if needed
             if not self.es.indices.exists(self.index_current):
-                self.es.indices.create(index=self.index_current)
+                self.es.indices.create(index=self.index_current, ignore=[400, 404])
                 self.es.indices.put_mapping(index=self.index_current, doc_type='article', body=self.mapping)
             if not self.es.indices.exists(self.index_archive):
-                self.es.indices.create(index=self.index_archive)
+                self.es.indices.create(index=self.index_archive, ignore=[400, 404])
                 self.es.indices.put_mapping(index=self.index_archive, doc_type='article', body=self.mapping)
             self.running = True
+
+            # restore previous logging level
+            es_log.setLevel(es_level)
+
         except ConnectionError as error:
             self.running = False
             self.log.error("Failed to connect to Elasticsearch, this module will be deactivated. "
@@ -366,4 +380,53 @@ class ElasticSearchStorage(object):
                 self.status = False
                 self.log.error("Lost connection to Elasticsearch, this module will be deactivated: %s" % error)
         return item
+
+
+class DateFilter(object):
+    """
+    Filters articles based on their publishing date, articles with a date outside of a specified interval are dropped.
+    This module should be placed after the KM4 article extractor.
+    """
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+        self.cfg = CrawlerConfig.get_instance()
+        self.config = self.cfg.section("DateFilter")
+        self.strict_mode = self.config['strict_mode']
+        self.start_date = self.config['start_date']
+        self.end_date = self.config['end_date']
+
+        if self.start_date is None and self.end_date is None:
+            self.log.error("DateFilter: No dates are defined, please check the configuration of this module.")
+        else:
+            # create datetime objects from given dates
+            try:
+                if self.start_date is not None:
+                    self.start_date = datetime.datetime.strptime(str(self.start_date), '%Y-%m-%d %H:%M:%S')
+                if self.end_date is not None:
+                    self.end_date = datetime.datetime.strptime(str(self.end_date), '%Y-%m-%d %H:%M:%S')
+            except ValueError as error:
+                self.start_date = None
+                self.end_date = None
+                self.log.error("DateFilter: Couldn't read start or end date of the specified interval. "
+                               "The Filter is now deactivated."
+                               "Please check the configuration of this module and be sure follow the format "
+                               "'yyyy-mm-dd hh:mm:ss' for dates or set the variables to None.")
+
+    def process_item(self, item, spider):
+
+        # Check if date could be extracted
+        if item['article_publish_date'] is None and self.strict_mode:
+            raise DropItem('DateFilter: %s: Publishing date is missing and strict mode is enabled.' % item['url'])
+        elif item['article_publish_date'] is None:
+            return item
+        else:
+            # Check interval boundaries
+            publish_date = datetime.datetime.strptime(item['article_publish_date'], '%Y-%m-%d %H:%M:%S')
+            if self.start_date is not None and self.start_date > publish_date:
+                raise DropItem('DateFilter: %s: Article is to old: %s' % (item['url'], publish_date))
+            elif self.end_date is not None and self.end_date < publish_date:
+                raise DropItem('DateFilter: %s: Article is to young: %s ' % (item['url'], publish_date))
+            else:
+                return item
+
 
