@@ -7,7 +7,7 @@ from subprocess import Popen
 import threading
 import signal
 import logging
-import mysql.connector
+import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
 from newscrawler.helper_classes.savepath_parser import SavepathParser
@@ -365,11 +365,11 @@ Arguments:
         Resets the MySQL database.
         """
         # initialize DB connection
-        self.conn = mysql.connector.connect(host=self.mysql["host"],
-                                            port=self.mysql["port"],
-                                            db=self.mysql["db"],
-                                            user=self.mysql["username"],
-                                            passwd=self.mysql["password"])
+        self.conn = pymysql.connect(host=self.mysql["host"],
+                                    port=self.mysql["port"],
+                                    db=self.mysql["db"],
+                                    user=self.mysql["username"],
+                                    passwd=self.mysql["password"])
         self.cursor = self.conn.cursor()
 
         confirm = self.has_arg("--noconfirm")
@@ -394,7 +394,8 @@ Cleanup db:
         try:
             self.cursor.execute("TRUNCATE TABLE CurrentVersions")
             self.cursor.execute("TRUNCATE TABLE ArchiveVersions")
-        except mysql.connector.Error as error:
+            self.conn.close()
+        except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
             self.log.error("Database reset error: %s", error)
 
     def reset_elasticsearch(self):

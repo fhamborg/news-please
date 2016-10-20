@@ -7,6 +7,7 @@ import datetime
 import os.path
 import logging
 import mysql.connector
+import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
 from newscrawler.config import CrawlerConfig
@@ -73,12 +74,11 @@ class RSSCrawlCompare(object):
 
         # Establish DB connection
         # Closing of the connection is handled once the spider closes
-        self.conn = mysql.connector.connect(host=self.database["host"],
-                                            port=self.database["port"],
-                                            db=self.database["db"],
-                                            user=self.database["username"],
-                                            passwd=self.database["password"],
-                                            buffered=True)
+        self.conn = pymysql.connect(host=self.database["host"],
+                                    port=self.database["port"],
+                                    db=self.database["db"],
+                                    user=self.database["username"],
+                                    passwd=self.database["password"])
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
@@ -86,7 +86,7 @@ class RSSCrawlCompare(object):
             # Search the CurrentVersion table for a version of the article
             try:
                 self.cursor.execute(self.compare_versions, (item['url'],))
-            except mysql.connector.Error as error:
+            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
                 self.log.error("Something went wrong in rss query: %s", error)
 
             # Save the result of the query. Must be done before the add,
@@ -139,7 +139,7 @@ class DatabaseStorage(object):
                           %(ancestor)s, %(descendant)s, %(version)s,\
                           %(rss_title)s)")
 
-    delete_from_current = ("DELETE FROM CurrentVersions WHERE url = %s")
+    delete_from_current = ("DELETE FROM CurrentVersions WHERE id = %s")
 
     # init database connection
     def __init__(self):
@@ -149,12 +149,11 @@ class DatabaseStorage(object):
         self.database = self.cfg.section("MySQL")
         # Establish DB connection
         # Closing of the connection is handled once the spider closes
-        self.conn = mysql.connector.connect(host=self.database["host"],
-                                            port=self.database["port"],
-                                            db=self.database["db"],
-                                            user=self.database["username"],
-                                            passwd=self.database["password"],
-                                            buffered=True)
+        self.conn = pymysql.connect(host=self.database["host"],
+                                    port=self.database["port"],
+                                    db=self.database["db"],
+                                    user=self.database["username"],
+                                    passwd=self.database["password"])
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
@@ -165,19 +164,20 @@ class DatabaseStorage(object):
         Second store the new article in the current version table
         """
 
-        # Search the CurrentVersion table for a version of the article
+        # Set defaults
+        version = 1
+        ancestor = 0
+
+        # Search the CurrentVersion table for an old version of the article
         try:
             self.cursor.execute(self.compare_versions, (item['url'],))
-        except mysql.connector.Error as error:
+        except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
             self.log.error("Something went wrong in query: %s", error)
 
         # Save the result of the query. Must be done before the add,
-        #   otherwise the result will be overwritten in the buffer
+        # otherwise the result will be overwritten in the buffer
         old_version = self.cursor.fetchone()
 
-        # If there is an existing article with the same URL, then move
-        #   it to the ArchiveVersion table, and delete it from the
-        #   CurrentVersion table
         if old_version is not None:
             old_version_list = {
                 'db_id': old_version[0],
@@ -192,29 +192,11 @@ class DatabaseStorage(object):
                 'version': old_version[9],
                 'rss_title': old_version[10], }
 
-            # Update the version number of the new article
-            item['version'] = (old_version[9] + 1)
+            # Update the version number and the ancestor variable for later references
+            version = (old_version[9] + 1)
+            ancestor = old_version[0]
 
-            # Update the ancestor attribute of the new article
-            item['ancestor'] = old_version[0]
-
-            # Delete the old version of the article from the
-            # CurrentVerion table
-            try:
-                self.cursor.execute(
-                    self.delete_from_current, (old_version[5], )
-                    )
-                self.conn.commit()
-            except mysql.connector.Error as error:
-                self.log.error("Something went wrong in delete: %s", error)
-
-            # Add the old version to the ArchiveVersion table
-            try:
-                self.cursor.execute(self.insert_archive, old_version_list)
-                self.conn.commit()
-            except mysql.connector.Error as error:
-                self.log.error("Something went wrong in archive: %s", error)
-
+        # Add the new version of the article to the CurrentVersion table
         current_version_list = {
             'local_path': item['local_path'],
             'modified_date': item['modified_date'],
@@ -222,38 +204,40 @@ class DatabaseStorage(object):
             'source_domain': item['source_domain'],
             'url': item['url'],
             'html_title': item['html_title'],
-            'ancestor': item['ancestor'],
-            'descendant': item['descendant'],
-            'version': item['version'],
+            'ancestor': ancestor,
+            'descendant': 0,
+            'version': version,
             'rss_title': item['rss_title'], }
 
-        # Add the new version of the article to
-        # the CurrentVersion table
         try:
             self.cursor.execute(self.insert_current, current_version_list)
             self.conn.commit()
-
-        except mysql.connector.Error as error:
+            self.log.info("Article inserted into the database.")
+        except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
             self.log.error("Something went wrong in commit: %s", error)
 
-        self.log.info("Article inserted into the database.")
-
-        # populate item field with db ID number
-        try:
-            item['db_id'] = self.cursor.lastrowid
-        except mysql.connector.Error as error:
-            self.log.error("Something went wrong in id query: %s", error)
-
+        # Move the old version from the CurrentVersion table to the ArchiveVersions table
         if old_version is not None:
-            # Update the old version's descendant attribute
+            # Set descendant attribute
             try:
-                self.cursor.execute(
-                    "UPDATE ArchiveVersions SET descendant=%s WHERE\
-                    id=%s", (item['db_id'], old_version[0],)
-                    )
-            except mysql.connector.Error as error:
-                self.log.error("Something went wrong in version update: %s",
-                               error)
+                old_version_list['descendant'] = self.cursor.lastrowid
+            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+                self.log.error("Something went wrong in id query: %s", error)
+
+            # Delete the old version of the article from the CurrentVersion table
+            try:
+                self.cursor.execute(self.delete_from_current, old_version_list['db_id'])
+                self.conn.commit()
+            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+                self.log.error("Something went wrong in delete: %s", error)
+
+            # Add the old version to the ArchiveVersion table
+            try:
+                self.cursor.execute(self.insert_archive, old_version_list)
+                self.conn.commit()
+                self.log.info("Moved old version of an article to the archive.")
+            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+                self.log.error("Something went wrong in archive: %s", error)
 
         return item
 
@@ -291,6 +275,15 @@ class ElasticSearchStorage(object):
     """
     Handles remote storage of the meta data in Elasticsearch
     """
+
+    log = None
+    cfg = None
+    es = None
+    index_current = None
+    index_archive = None
+    mapping = None
+    running = False
+
     def __init__(self):
         self.log = logging.getLogger('elasticsearch.trace')
         self.log.addHandler(logging.FileHandler('/es_trace.log'))
@@ -377,7 +370,7 @@ class ElasticSearchStorage(object):
                                 'language': item['article_language'],
                               })
             except ConnectionError as error:
-                self.status = False
+                self.running = False
                 self.log.error("Lost connection to Elasticsearch, this module will be deactivated: %s" % error)
         return item
 
@@ -387,8 +380,15 @@ class DateFilter(object):
     Filters articles based on their publishing date, articles with a date outside of a specified interval are dropped.
     This module should be placed after the KM4 article extractor.
     """
+
+    log = None
+    cfg = None
+    strict_mode = False
+    start_date = None
+    end_date = None
+
     def __init__(self):
-        self.log = logging.getLogger(__name__)
+        self.log = logging.getLogger(__name__ + '.DateFilter')
         self.cfg = CrawlerConfig.get_instance()
         self.config = self.cfg.section("DateFilter")
         self.strict_mode = self.config['strict_mode']
