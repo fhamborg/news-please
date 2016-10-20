@@ -44,6 +44,8 @@ This project would not have been possible without the help of many students who 
 
 ## License and Contribution
 
+You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: felix.hamborg (at) uni-konstanz.de
+
 Copyright 2016 Felix Hamborg
 
 Licensed under the [Apache License 2.0](LICENSE.txt)
