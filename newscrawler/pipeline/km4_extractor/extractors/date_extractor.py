@@ -33,7 +33,7 @@ class Extractor(AbstractExtractor):
                 # Chrome/41.0.2228.0 Safari/537.36')
                 html = urllib2.build_opener().open(request).read()
 
-            html = BeautifulSoup(html,"lxml")
+            html = BeautifulSoup(html, "lxml")
 
             publish_date = self._extract_from_json(html)
             if publish_date is None:
@@ -49,7 +49,6 @@ class Extractor(AbstractExtractor):
     def parse_date_str(self, date_string):
         try:
             date = parse(date_string)
-
             return date.strftime('%Y-%m-%d %H:%M:%S')
         except:
             return None

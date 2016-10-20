@@ -17,7 +17,6 @@ class Cleaner:
         :param arg: A string, the string which shall be cleaned
         :return: A string, the cleaned string
         """
-        #return re.sub(r'<([\w\s\d:="/\\!?.-äüö]*)>', '', arg)
 
         if len(arg) > 0:
             raw = html.fromstring(arg)
