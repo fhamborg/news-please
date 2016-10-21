@@ -55,7 +55,8 @@ class HeuristicsManager(object):
             heuristic_func = getattr(self, heuristic)
             result = heuristic_func(response, site)
             check = self.__evaluate_result(result, condition)
-            statement = statement.replace(heuristic, str(check))
+            statement = re.sub(r"\b%s\b" % heuristic, str(check), statement)
+
             self.log.info("Checking heuristic (%s)"
                           " result (%s) on condition (%s): %s",
                           heuristic, result, condition, check)
