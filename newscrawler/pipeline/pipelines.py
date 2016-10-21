@@ -6,7 +6,6 @@ import sys
 import datetime
 import os.path
 import logging
-import mysql.connector
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
@@ -286,7 +285,7 @@ class ElasticSearchStorage(object):
 
     def __init__(self):
         self.log = logging.getLogger('elasticsearch.trace')
-        self.log.addHandler(logging.FileHandler('/es_trace.log'))
+        self.log.addHandler(logging.NullHandler())
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("Elasticsearch")
 
@@ -420,8 +419,13 @@ class DateFilter(object):
         elif item['article_publish_date'] is None:
             return item
         else:
+            # Create datetime object
+            try:
+                publish_date = datetime.datetime.strptime(str(item['article_publish_date']), '%Y-%m-%d %H:%M:%S')
+            except ValueError as error:
+                self.log.error("DateFilter: Extracted date has the wrong format: %s - %s" %
+                               (item['article_publishing_date'], item['url']))
             # Check interval boundaries
-            publish_date = datetime.datetime.strptime(item['article_publish_date'], '%Y-%m-%d %H:%M:%S')
             if self.start_date is not None and self.start_date > publish_date:
                 raise DropItem('DateFilter: %s: Article is to old: %s' % (item['url'], publish_date))
             elif self.end_date is not None and self.end_date < publish_date:
