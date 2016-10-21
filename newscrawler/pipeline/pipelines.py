@@ -423,8 +423,13 @@ class DateFilter(object):
             try:
                 publish_date = datetime.datetime.strptime(str(item['article_publish_date']), '%Y-%m-%d %H:%M:%S')
             except ValueError as error:
-                self.log.error("DateFilter: Extracted date has the wrong format: %s - %s" %
-                               (item['article_publishing_date'], item['url']))
+                self.log.warning("DateFilter: Extracted date has the wrong format: %s - %s" %
+                                 (item['article_publishing_date'], item['url']))
+                if self.strict_mode:
+                    raise DropItem('DateFilter: %s: Dropped due to wrong date format: %s' %
+                                   (item['url'], item['publish_date']))
+                else:
+                    return item
             # Check interval boundaries
             if self.start_date is not None and self.start_date > publish_date:
                 raise DropItem('DateFilter: %s: Article is to old: %s' % (item['url'], publish_date))
