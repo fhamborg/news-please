@@ -1,4 +1,4 @@
--- Re-initalize DB-schema for the ccolon web-crawler
+-- Re-initalize DB-schema for the news-please web-crawler
 -- Updated: 03.07.2016 15:20
 
 --
