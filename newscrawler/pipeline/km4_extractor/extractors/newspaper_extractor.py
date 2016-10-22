@@ -1,5 +1,4 @@
 import logging
-from copy import deepcopy
 from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
 # Import Newspaper Article Extractor Library.
 from newspaper import Article
@@ -27,7 +26,7 @@ class Extractor(AbstractExtractor):
         article_candidate.extractor = self._name()
 
         article = Article('')
-        article.set_html(deepcopy(item['spider_response'].body))
+        article.set_html(item['spider_response'].body)
         article.parse()
         article_candidate.title = article.title
         article_candidate.description = article.meta_description

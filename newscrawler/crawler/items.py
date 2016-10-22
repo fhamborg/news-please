@@ -22,12 +22,6 @@ class NewscrawlerItem(scrapy.Item):
     url = scrapy.Field()
     # Title of the article
     html_title = scrapy.Field()
-    # Older version of the article in the DB, if exists
-    ancestor = scrapy.Field()
-    # Newer version of the article in the DB, if exists
-    descendant = scrapy.Field()
-    # Number of versions of the article in the DB
-    version = scrapy.Field()
     # Response object from crawler
     spider_response = scrapy.Field()
     # Title of the article as store in the RSS feed
