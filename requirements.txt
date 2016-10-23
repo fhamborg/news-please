@@ -6,7 +6,7 @@ hjson>=1.5.8
 elasticsearch>=2.4
 beautifulsoup4>=4.5.1
 readability-lxml>=0.6.2
-newspaper3k>=0.1.7 ; python_version > '2.7'
+newspaper3k>=0.1.7 ; python_version >= '3.0'
 newspaper>=0.0.9.8 ; python_version == '2.7'
 langdetect>=1.0.7
 python-dateutil>=2.5.3
