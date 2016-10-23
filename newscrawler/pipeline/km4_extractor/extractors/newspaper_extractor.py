@@ -34,7 +34,11 @@ class Extractor(AbstractExtractor):
         article_candidate.topimage = article.top_image
         article_candidate.author = article.authors
         if article.publish_date is not None:
-            article_candidate.publish_date = article.publish_date.strftime('%Y-%m-%d %H:%M:%S')
+            try:
+                article_candidate.publish_date = article.publish_date.strftime('%Y-%m-%d %H:%M:%S')
+            except ValueError as exception:
+                self.log.info('%s: Newspaper failed to extract the date in the supported format,'
+                              'Publishing date set to None' % item['url'])
         article_candidate.language = article.meta_lang
 
         return article_candidate
