@@ -25,6 +25,7 @@ class Comparer:
         """Compares the article candidates using the different submodules and saves the best results in
         new ArticleCandidate object
 
+        :param item: The NewscrawlerItem related to the ArticleCandidates
         :param article_candidates: The list of ArticleCandidate-Objects which have been extracted
         :return: An ArticleCandidate-object containing the best results
         """
