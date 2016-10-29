@@ -10,7 +10,7 @@ except ImportError:
     import urllib2
 
 
-class Extractor(AbstractExtractor):
+class DateExtractor(AbstractExtractor):
     """This class implements ArticleDateExtractor as an article extractor. ArticleDateExtractor is
     a subclass of ExtractorInterface.
     """

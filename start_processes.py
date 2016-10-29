@@ -82,7 +82,7 @@ class StartProcesses(object):
             self.reset_elasticsearch()
             sys.exit(0)
         elif self.has_arg('--reset'):
-            self.reset_db()
+            self.reset_mysql()
             self.reset_files()
             self.reset_elasticsearch()
             sys.exit(0)
@@ -360,7 +360,7 @@ Arguments:
 
         return abs_file_path
 
-    def reset_db(self):
+    def reset_mysql(self):
         """
         Resets the MySQL database.
         """

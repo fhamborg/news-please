@@ -108,7 +108,7 @@ class RSSCrawlCompare(object):
         self.conn.close()
 
 
-class DatabaseStorage(object):
+class MySQLStorage(object):
     """
     Handles remote storage of the meta data in the DB
     """
@@ -270,7 +270,7 @@ class LocalStorage(object):
         return item
 
 
-class ElasticSearchStorage(object):
+class ElasticsearchStorage(object):
     """
     Handles remote storage of the meta data in Elasticsearch
     """

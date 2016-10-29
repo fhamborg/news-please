@@ -4,7 +4,7 @@ from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
 from newspaper import Article
 
 
-class Extractor(AbstractExtractor):
+class NewspaperExtractor(AbstractExtractor):
     """This class implements Newspaper as an article extractor. Newspaper is
     a subclass of ExtractorsInterface
     """

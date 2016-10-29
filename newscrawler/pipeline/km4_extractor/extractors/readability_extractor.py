@@ -3,7 +3,7 @@ from readability import Document
 from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
 
 
-class Extractor(AbstractExtractor):
+class ReadabilityExtractor(AbstractExtractor):
     """This class implements Readability as an article extractor. Readability is
     a subclass of Extractors and newspaper.Article.
 

@@ -4,7 +4,8 @@ from lxml import html
 import locale
 import re
 
-class Extractor(AbstractExtractor):
+
+class LangExtractor(AbstractExtractor):
     """This class implements LangDetect as an article extractor but it can only
     detect the extracted language (en, de, ...).
 
