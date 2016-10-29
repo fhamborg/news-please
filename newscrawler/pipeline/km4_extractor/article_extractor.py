@@ -1,5 +1,7 @@
 import logging
 import importlib
+import inspect
+from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import AbstractExtractor
 import newscrawler.pipeline.km4_extractor.extractors
 from newscrawler.pipeline.km4_extractor.cleaner import Cleaner
 from newscrawler.pipeline.km4_extractor.comparer.comparer import Comparer
@@ -19,13 +21,19 @@ class Extractor:
         self.extractor_list = []
         for extractor in extractor_list:
             module = importlib.import_module('newscrawler.pipeline.km4_extractor.extractors.'+extractor)
-            instance = getattr(module, 'Extractor', None)()
-            if instance is not None:
-                self.log.info('Extractor initialized: %s', extractor)
-                self.extractor_list.append(instance)
-            else:
-                self.log.error("Misconfiguration: An unknown Extractor was found and"
-                               " will be ignored: %s", extractor)
+
+            # check module for subclasses of AbstractExtractor
+            for member in inspect.getmembers(module, inspect.isclass):
+                if issubclass(member[1], AbstractExtractor) and member[0] <> 'AbstractExtractor':
+
+                    # instantiate extractor
+                    instance = getattr(module, member[0], None)()
+                    if instance is not None:
+                        self.log.info('Extractor initialized: %s', extractor)
+                        self.extractor_list.append(instance)
+                    else:
+                        self.log.error("Misconfiguration: An unknown Extractor was found and"
+                                       " will be ignored: %s", extractor)
 
         self.cleaner = Cleaner()
         self.comparer = Comparer()
