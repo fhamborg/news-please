@@ -35,9 +35,9 @@ If your Elasticsearch database is not located at `http://localhost:9200` or uses
     index_current = 'news-please'
     index_archive = 'news-please-archive'
 
-    #Credentials used  for Authentication (supports CA-certificates):
+    #Credentials used  for authentication (supports CA-certificates):
 	
-    use_ca_certificates = False'           #If True Authentification is performed 
+    use_ca_certificates = False'           #If True authentification is performed 
     ca_cert_path = '/path/to/cacert.pem'  
     client_cert_path = '/path/to/client_cert.pem'  
     client_key_path = '/path/to/client_key.pem'  
