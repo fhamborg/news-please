@@ -24,7 +24,7 @@ class Extractor:
 
             # check module for subclasses of AbstractExtractor
             for member in inspect.getmembers(module, inspect.isclass):
-                if issubclass(member[1], AbstractExtractor) and member[0] <> 'AbstractExtractor':
+                if issubclass(member[1], AbstractExtractor) and member[0] != 'AbstractExtractor':
 
                     # instantiate extractor
                     instance = getattr(module, member[0], None)()
