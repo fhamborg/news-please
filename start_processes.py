@@ -339,13 +339,6 @@ Project path:
         """
         Resets the MySQL database.
         """
-        # initialize DB connection
-        self.conn = pymysql.connect(host=self.mysql["host"],
-                                    port=self.mysql["port"],
-                                    db=self.mysql["db"],
-                                    user=self.mysql["username"],
-                                    passwd=self.mysql["password"])
-        self.cursor = self.conn.cursor()
 
         confirm = self.has_arg("--noconfirm")
 
@@ -367,6 +360,14 @@ Cleanup db:
         print("Resetting database...")
 
         try:
+            # initialize DB connection
+            self.conn = pymysql.connect(host=self.mysql["host"],
+                                        port=self.mysql["port"],
+                                        db=self.mysql["db"],
+                                        user=self.mysql["username"],
+                                        passwd=self.mysql["password"])
+            self.cursor = self.conn.cursor()
+
             self.cursor.execute("TRUNCATE TABLE CurrentVersions")
             self.cursor.execute("TRUNCATE TABLE ArchiveVersions")
             self.conn.close()
@@ -377,22 +378,13 @@ Cleanup db:
         """
         Resets the Elasticsearch Database.
         """
-        # initialize DB connection
-        es = Elasticsearch([self.elasticsearch["host"]],
-                            http_auth=(self.elasticsearch["username"], self.elasticsearch["secret"]),
-                            port=self.elasticsearch["port"],
-                            use_ssl=self.elasticsearch["use_ca_certificates"],
-                            verify_certs=self.elasticsearch["use_ca_certificates"],
-                            ca_certs=self.elasticsearch["ca_cert_path"],
-                            client_cert=self.elasticsearch["client_cert_path"],
-                            client_key=self.elasticsearch["client_key_path"])
-
-        confirm = self.has_arg("--noconfirm")
 
         print("""
               Cleanup db:
               This will truncate all tables and reset the whole Elasticsearch database.
               """)
+
+        confirm = self.has_arg("--noconfirm")
 
         if not confirm:
             confirm = 'yes' in builtins.input(
@@ -405,6 +397,16 @@ Cleanup db:
             return
 
         try:
+            # initialize DB connection
+            es = Elasticsearch([self.elasticsearch["host"]],
+                               http_auth=(self.elasticsearch["username"], self.elasticsearch["secret"]),
+                               port=self.elasticsearch["port"],
+                               use_ssl=self.elasticsearch["use_ca_certificates"],
+                               verify_certs=self.elasticsearch["use_ca_certificates"],
+                               ca_certs=self.elasticsearch["ca_cert_path"],
+                               client_cert=self.elasticsearch["client_cert_path"],
+                               client_key=self.elasticsearch["client_key_path"])
+
             print("Resetting Elasticsearch database...")
             es.indices.delete(index=self.elasticsearch["index_current"], ignore=[400, 404])
             es.indices.delete(index=self.elasticsearch["index_archive"], ignore=[400, 404])
