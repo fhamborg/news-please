@@ -1,5 +1,6 @@
 import logging
-from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
+from .abstract_extractor import AbstractExtractor
+from ..article_candidate import ArticleCandidate
 # Import Newspaper Article Extractor Library.
 from newspaper import Article
 

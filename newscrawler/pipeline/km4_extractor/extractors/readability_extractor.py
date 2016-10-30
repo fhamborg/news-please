@@ -1,7 +1,7 @@
 from copy import deepcopy
 from readability import Document
-from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
-
+from .abstract_extractor import AbstractExtractor
+from ..article_candidate import ArticleCandidate
 
 class ReadabilityExtractor(AbstractExtractor):
     """This class implements Readability as an article extractor. Readability is

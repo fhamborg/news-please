@@ -1,10 +1,9 @@
 import logging
 import importlib
 import inspect
-from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import AbstractExtractor
-import newscrawler.pipeline.km4_extractor.extractors
-from newscrawler.pipeline.km4_extractor.cleaner import Cleaner
-from newscrawler.pipeline.km4_extractor.comparer.comparer import Comparer
+from .extractors.abstract_extractor import AbstractExtractor
+from .cleaner import Cleaner
+from .comparer.comparer import Comparer
 
 
 class Extractor:
@@ -20,7 +19,8 @@ class Extractor:
         self.log = logging.getLogger(__name__)
         self.extractor_list = []
         for extractor in extractor_list:
-            module = importlib.import_module('newscrawler.pipeline.km4_extractor.extractors.'+extractor)
+
+            module = importlib.import_module(__package__+'.extractors.'+extractor)
 
             # check module for subclasses of AbstractExtractor
             for member in inspect.getmembers(module, inspect.isclass):

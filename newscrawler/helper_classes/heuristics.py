@@ -2,8 +2,8 @@
 Helper class for testing heuristics
 """
 import re
-from newscrawler.helper_classes.sub_classes.heuristics_manager import HeuristicsManager
-from newscrawler.helper_classes.url_extractor import UrlExtractor
+from .sub_classes.heuristics_manager import HeuristicsManager
+from .url_extractor import UrlExtractor
 
 
 class Heuristics(HeuristicsManager):

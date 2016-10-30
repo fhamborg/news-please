@@ -3,10 +3,10 @@ This file's only purpose is to bundle all helper classes in ./helper_classes
 so they can be passed to other classes easily
 """
 
-from newscrawler.helper_classes.heuristics import Heuristics
-from newscrawler.helper_classes.url_extractor import UrlExtractor
-from newscrawler.helper_classes.savepath_parser import SavepathParser
-from newscrawler.helper_classes.parse_crawler import ParseCrawler
+from .helper_classes.heuristics import Heuristics
+from .helper_classes.url_extractor import UrlExtractor
+from .helper_classes.savepath_parser import SavepathParser
+from .helper_classes.parse_crawler import ParseCrawler
 
 
 class Helper(object):

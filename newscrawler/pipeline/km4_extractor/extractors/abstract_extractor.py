@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from newscrawler.pipeline.km4_extractor.article_candidate import ArticleCandidate
+from ..article_candidate import ArticleCandidate
 
 
 class AbstractExtractor:

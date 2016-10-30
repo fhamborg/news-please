@@ -1,6 +1,6 @@
 import logging
 import scrapy
-from newscrawler.helper_classes.url_extractor import UrlExtractor
+from ...helper_classes.url_extractor import UrlExtractor
 
 
 class SitemapCrawler(scrapy.spiders.SitemapSpider):

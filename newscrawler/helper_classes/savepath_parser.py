@@ -6,7 +6,7 @@ import time
 import re
 import hashlib
 
-from newscrawler.helper_classes.url_extractor import UrlExtractor
+from .url_extractor import UrlExtractor
 
 
 class SavepathParser(object):

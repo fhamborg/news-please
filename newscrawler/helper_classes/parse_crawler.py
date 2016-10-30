@@ -5,7 +5,7 @@ import time
 import re
 import logging
 import scrapy
-from newscrawler.crawler.items import NewscrawlerItem
+from ..crawler.items import NewscrawlerItem
 
 
 class ParseCrawler(object):

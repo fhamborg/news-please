@@ -3,7 +3,7 @@ import json
 from copy import deepcopy
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
-from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
+from .abstract_extractor import AbstractExtractor
 try:
     import urllib.request as urllib2
 except ImportError:

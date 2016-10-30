@@ -9,9 +9,9 @@ import logging
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
-from newscrawler.helper_classes.savepath_parser import SavepathParser
-from newscrawler.config import JsonConfig
-from newscrawler.config import CrawlerConfig
+from .newscrawler.helper_classes.savepath_parser import SavepathParser
+from .newscrawler.config import JsonConfig
+from .newscrawler.config import CrawlerConfig
 try:
     import builtins
 except ImportError:

@@ -1,4 +1,4 @@
-from newscrawler.pipeline.km4_extractor.extractors.abstract_extractor import *
+from .abstract_extractor import AbstractExtractor
 from langdetect import detect
 from lxml import html
 import locale

@@ -9,8 +9,8 @@ import logging
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
-from newscrawler.config import CrawlerConfig
-from newscrawler.pipeline.km4_extractor import article_extractor
+from ..config import CrawlerConfig
+from .km4_extractor import article_extractor
 if sys.version_info[0] < 3:
     ConnectionError = OSError
 

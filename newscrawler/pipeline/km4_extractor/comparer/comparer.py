@@ -1,11 +1,11 @@
-from newscrawler.pipeline.km4_extractor.article_candidate import ArticleCandidate
-from newscrawler.pipeline.km4_extractor.comparer.comparer_title import *
-from newscrawler.pipeline.km4_extractor.comparer.comparer_description import *
-from newscrawler.pipeline.km4_extractor.comparer.comparer_text import *
-from newscrawler.pipeline.km4_extractor.comparer.comparer_topimage import *
-from newscrawler.pipeline.km4_extractor.comparer.comparer_author import *
-from newscrawler.pipeline.km4_extractor.comparer.comparer_date import *
-from newscrawler.pipeline.km4_extractor.comparer.comparer_Language import *
+from ..article_candidate import ArticleCandidate
+from .comparer_title import ComparerTitle
+from .comparer_description import ComparerDescription
+from .comparer_text import ComparerText
+from .comparer_topimage import ComparerTopimage
+from .comparer_author import ComparerAuthor
+from .comparer_date import ComparerDate
+from .comparer_Language import ComparerLanguage
 
 
 class Comparer:
