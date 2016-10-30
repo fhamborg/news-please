@@ -61,7 +61,7 @@ You can stop news-please with `CTRL+C`, please refrain pressing `CTRL+C` twice a
 Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
 You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/newsplease/wiki/configuration). 
 
-We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/newsplease//wiki/developer-guide).
+We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/newsplease/wiki/developer-guide).
 
 ## Extracted information
 * headline
@@ -94,7 +94,7 @@ This project would not have been possible without the help of many students who 
 * Jonathan Hassler
 * Markus Klatt
 * Kevin Kress
-* Sören Lachnit
+* Sï¿½ren Lachnit
 * Marvin Pafla
 * Franziska Schlor
 * Matt Sharinghousen
