@@ -299,7 +299,7 @@ Arguments:
 Project path:
 
     %s
-            """ % os.path.dirname(os.path.realpath(__file__)))
+""" % os.path.dirname(os.path.realpath(__file__)))
         print(_help.format(os.path.basename(__file__)))
 
     def get_abs_file_path(self, rel_file_path,
@@ -331,7 +331,7 @@ Project path:
         if not os.path.exists(abs_file_path):
             self.log.error(abs_file_path + " does not exist.")
             if quit_on_error is True:
-                raise RuntimeError("Importet file not found. Quit.")
+                raise RuntimeError("Imported file not found. Quit.")
 
         return abs_file_path
 
@@ -343,7 +343,7 @@ Project path:
         confirm = self.has_arg("--noconfirm")
 
         print("""
-Cleanup db:
+Cleanup MySQL database:
     This will truncate all tables and reset the whole database.
 """)
 
@@ -371,7 +371,8 @@ Cleanup db:
             self.cursor.execute("TRUNCATE TABLE CurrentVersions")
             self.cursor.execute("TRUNCATE TABLE ArchiveVersions")
             self.conn.close()
-        except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+        except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                pymysql.IntegrityError, TypeError) as error:
             self.log.error("Database reset error: %s", error)
 
     def reset_elasticsearch(self):
@@ -380,8 +381,8 @@ Cleanup db:
         """
 
         print("""
-              Cleanup db:
-              This will truncate all tables and reset the whole Elasticsearch database.
+Cleanup Elasticsearch database:
+    This will truncate all tables and reset the whole Elasticsearch database.
               """)
 
         confirm = self.has_arg("--noconfirm")
@@ -389,8 +390,8 @@ Cleanup db:
         if not confirm:
             confirm = 'yes' in builtins.input(
                         """
-                        Do you really want to do this? Write 'yes' to confirm: {yes}"""
-                        .format(yes='yes' if confirm else ''))
+    Do you really want to do this? Write 'yes' to confirm: {yes}"""
+                .format(yes='yes' if confirm else ''))
 
         if not confirm:
             print("Did not type yes. Thus aborting.")

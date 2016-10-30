@@ -85,7 +85,8 @@ class RSSCrawlCompare(object):
             # Search the CurrentVersion table for a version of the article
             try:
                 self.cursor.execute(self.compare_versions, (item['url'],))
-            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+            except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                    pymysql.IntegrityError, TypeError) as error:
                 self.log.error("Something went wrong in rss query: %s", error)
 
             # Save the result of the query. Must be done before the add,
@@ -170,7 +171,8 @@ class MySQLStorage(object):
         # Search the CurrentVersion table for an old version of the article
         try:
             self.cursor.execute(self.compare_versions, (item['url'],))
-        except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+        except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                pymysql.IntegrityError, TypeError) as error:
             self.log.error("Something went wrong in query: %s", error)
 
         # Save the result of the query. Must be done before the add,
@@ -212,7 +214,8 @@ class MySQLStorage(object):
             self.cursor.execute(self.insert_current, current_version_list)
             self.conn.commit()
             self.log.info("Article inserted into the database.")
-        except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+        except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                pymysql.IntegrityError, TypeError) as error:
             self.log.error("Something went wrong in commit: %s", error)
 
         # Move the old version from the CurrentVersion table to the ArchiveVersions table
@@ -220,14 +223,16 @@ class MySQLStorage(object):
             # Set descendant attribute
             try:
                 old_version_list['descendant'] = self.cursor.lastrowid
-            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+            except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                    pymysql.IntegrityError, TypeError) as error:
                 self.log.error("Something went wrong in id query: %s", error)
 
             # Delete the old version of the article from the CurrentVersion table
             try:
                 self.cursor.execute(self.delete_from_current, old_version_list['db_id'])
                 self.conn.commit()
-            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+            except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                    pymysql.IntegrityError, TypeError) as error:
                 self.log.error("Something went wrong in delete: %s", error)
 
             # Add the old version to the ArchiveVersion table
@@ -235,7 +240,8 @@ class MySQLStorage(object):
                 self.cursor.execute(self.insert_archive, old_version_list)
                 self.conn.commit()
                 self.log.info("Moved old version of an article to the archive.")
-            except (pymysql.ProgrammingError, pymysql.InternalError, pymysql.IntegrityError, TypeError) as error:
+            except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+                    pymysql.IntegrityError, TypeError) as error:
                 self.log.error("Something went wrong in archive: %s", error)
 
         return item
