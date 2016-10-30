@@ -299,7 +299,7 @@ Arguments:
 Project path:
 
     %s
-            """ %os.path.realpath(__file__))
+            """ % os.path.dirname(os.path.realpath(__file__)))
         print(_help.format(os.path.basename(__file__)))
 
     def get_abs_file_path(self, rel_file_path,
