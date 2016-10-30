@@ -18,28 +18,49 @@ Base requirements:
 ```
 #!bash
 
-$ sudo pip install TODO
+$ sudo pip install news-please
 ```
 
 ### Minimal configuration
 
-TODO (what to change minimally in the config? i suppose elastic search account infos)
+If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `newscrawler.cfg` at `pythonx.x/dist-packages/newsplease`:  
+
+    [Elasticsearch]
+
+    host = localhost
+    port = 9200	
+
+    #The indices used to store the extracted meta-data:
+
+    index_current = 'news-please'
+    index_archive = 'news-please-archive'
+
+    #Credentials used  for Authentication (supports CA-certificates):
+	
+    use_ca_certificates = False'           #If True Authentification is performed 
+    ca_cert_path = '/path/to/cacert.pem'  
+    client_cert_path = '/path/to/client_cert.pem'  
+    client_key_path = '/path/to/client_key.pem'  
+    username = 'root'  
+    secret = 'password' 
+
 
 ### Run the crawler
 
 ```
 #!bash
 
-$ python TODO
+$ sudo newsplease
 ```
 
-If everything goes well (make sure elasticsearch is running and you have added credentials in the config file of news-please) you will see the console showing the progress of crawling pages (TODO which pages). 
+If everything goes well (make sure elasticsearch is running and you have added credentials in the config file of news-please) news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/.
+You can stop news-please with `CTRL+C`, please refrain pressing `CTRL+C` twice and wait for the crawler to terminate.
 
 ### What's next?
 
-Want to crawl other websites? We've got your back! Simply go into the TODO file and add the root URLs. You also might want to check out our guide for the config file. 
+Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. You also might want to check out our guide for the [config file](wiki/configuration). 
 
-We have also collected a bunch of useful information for both users (TODO link) and developers (TODO link).
+We have also collected a bunch of useful information for both [users](/wiki/user-guide)  and [developers](/wiki/developer-guid).
 
 ## Extracted information
 * headline
@@ -50,17 +71,17 @@ We have also collected a bunch of useful information for both users (TODO link) 
 * publication date
 
 ## Features
-* **works out of the box**: clone the repository, add your page URLs, run :-)
+* **works out of the box**: install with pip, add your page URLs, run :-)
 * stores extracted information in an **ElasticSearch** index
 * **easy configuration** in case you want to fine tune the extraction
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
 * Improvement of detection whether a page is a news article or not
-* TODO SÖREN
+* New extractors
 
 ## Wiki and Documentation
-You can find more information on usage and development in our [wiki TODO SÖREN](TODO)!
+You can find more information on usage and development in our [wiki](wiki)!
 
 ## Credits
 
@@ -71,7 +92,7 @@ This project would not have been possible without the help of many students who 
 * Jonathan Hassler
 * Markus Klatt
 * Kevin Kress
-* Sören Lachnit
+* S�ren Lachnit
 * Marvin Pafla
 * Franziska Schlor
 * Matt Sharinghousen
