@@ -268,16 +268,15 @@ class StartProcesses(object):
         """
         Prints this scripts help message.
         """
-        _help = \
+        _help = (\
             """
-        CColon Newscrawler
-        ------------------
+news-please
+-----------
 
 
 Usage:
 
-    python {} [help] [cfg_file_path] [arg] ...
-
+    newsplease [help] [cfg_file_path] [arg] ...
 
 
 Arguments:
@@ -295,7 +294,12 @@ Arguments:
                 --reset-files               Reset the local savepath
                 --reset                     Reset the MySQL database, the Elasticsearch database and the local savepath
                 --noconfirm                 Skip confirm dialogs
-            """
+
+
+Project path:
+
+    %s
+            """ %os.path.realpath(__file__))
         print(_help.format(os.path.basename(__file__)))
 
     def get_abs_file_path(self, rel_file_path,
@@ -403,7 +407,7 @@ Cleanup db:
         try:
             print("Resetting Elasticsearch database...")
             es.indices.delete(index=self.elasticsearch["index_current"], ignore=[400, 404])
-            es.indices.delete(index=self.elasticsearch["index_archive"] + 'archive', ignore=[400, 404])
+            es.indices.delete(index=self.elasticsearch["index_archive"], ignore=[400, 404])
         except ConnectionError as error:
             self.log.error("Failed to connect to Elasticsearch. "
                            "Please check if the database is running and the config is correct: %s" % error)
