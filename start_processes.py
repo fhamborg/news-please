@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import shutil
-import subprocess
 from subprocess import Popen
 import threading
 import signal
@@ -204,8 +203,7 @@ class StartProcesses(object):
         :param int daemonize: Bool if the crawler is supposed to be daemonized
                               (to delete the JOBDIR)
         """
-        python = self.get_python_command()
-        call_process = [python,
+        call_process = [sys.executable,
                         self.__single_crawler,
                         self.cfg_file_path,
                         self.json_file_path,
@@ -220,33 +218,6 @@ class StartProcesses(object):
                         stdout=None)
         crawler.communicate()
         self.crawlers.append(crawler)
-
-    def get_python_command(self):
-        """
-        Get the correct command for executing python 2.7.
-        Exits the program with error-code if no string is found.
-
-        :return str: 'python' or 'python2.7'
-        """
-        if self.python_command is not None:
-            return self.python_command
-
-        self.python_command = self.cfg.section('General')['python_command']
-
-        try:
-            self.__get_python(self.python_command)
-        except OSError:
-            print("ERROR: You need to have Python installed and in your "
-                  "PATH. It must be executable by invoking the command set "
-                  "in the config file's 'General' section 'python_command'.")
-            sys.exit(1)
-
-        return self.python_command
-
-    def __get_python(self, string):
-        return Popen([string, "--version"],
-                     stderr=subprocess.STDOUT,
-                     stdout=subprocess.PIPE).communicate()[0]
 
     def graceful_stop(self, signal_number=None, stack_frame=None):
         """
