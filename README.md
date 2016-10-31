@@ -82,9 +82,9 @@ We have also collected a bunch of useful information for both [users](https://bi
 ## Wiki and Documentation
 You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
 
-## Credits
+## Acknowledgements
 
-This project would not have been possible without the help of many students who spent time working on the extraction (ordered alphabetically):
+This project would not have been possible without the contributions of the following students (ordered alphabetically):
 
 * Moritz Bock
 * Michael Fried
