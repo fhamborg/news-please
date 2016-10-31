@@ -61,7 +61,7 @@ If your Elasticsearch database is not located at `http://localhost:9200` or uses
 $ sudo newsplease
 ```
 
-If everything goes well (make sure elasticsearch is running and you have added credentials in the config file of news-please) news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/.
+news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/.
 You can stop news-please with `CTRL+C`, please refrain pressing `CTRL+C` twice and wait for the crawler to terminate.
 
 ### What's next?
