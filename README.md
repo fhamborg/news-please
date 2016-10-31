@@ -68,10 +68,10 @@ news-please will start crawling pages http://www.faz.net/, http://www.zeit.de an
 
 ### What's next?
 
-Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
-You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/newsplease/wiki/configuration). 
+Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
+You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/news-please/wiki/configuration). 
 
-We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/newsplease/wiki/developer-guide).
+We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide).
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
@@ -80,7 +80,7 @@ We have also collected a bunch of useful information for both [users](https://bi
 * Improve file handling, e.g support paths relative to the user: `~/data/...`
 
 ## Wiki and Documentation
-You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/newsplease/wiki/Home)!
+You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
 
 ## Credits
 
