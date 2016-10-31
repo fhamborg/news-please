@@ -4,6 +4,14 @@
 
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website.
 
+## Extracted information
+* headline
+* lead paragraph
+* main content (textual)
+* main image
+* author's name
+* publication date
+
 ## Getting started
 
 In this section you can find the steps to get started as quick as possible. 
@@ -62,14 +70,6 @@ Want to crawl other websites? We've got your back! Simply go into the [`input_da
 You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/newsplease/wiki/configuration). 
 
 We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/newsplease/wiki/developer-guide).
-
-## Extracted information
-* headline
-* lead paragraph
-* main content (textual)
-* main image
-* author's name
-* publication date
 
 ## Features
 * **works out of the box**: install with pip, add your page URLs, run :-)
