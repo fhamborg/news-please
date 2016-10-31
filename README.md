@@ -94,7 +94,7 @@ This project would not have been possible without the help of many students who 
 * Jonathan Hassler
 * Markus Klatt
 * Kevin Kress
-* S�ren Lachnit
+* Sören Lachnit
 * Marvin Pafla
 * Franziska Schlor
 * Matt Sharinghousen
