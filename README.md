@@ -34,7 +34,7 @@ $ sudo pip install news-please
 
 ### Minimal configuration
 
-If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `newscrawler.cfg` at `pythonx.x/dist-packages/newsplease`:  
+If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `config.cfg` at `pythonx.x/dist-packages/newsplease`:  
 
     [Elasticsearch]
 
