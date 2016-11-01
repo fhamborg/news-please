@@ -4,8 +4,9 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
-* stores extracted information in an **ElasticSearch** index
+* stores extracted information in **JSON files** (out-of-the-box support for ElasticSearch as well!)
 * **easy configuration** in case you want to fine tune the extraction
+* runs on Python 2.7 (and later) and 3
 
 ## Extracted information
 * headline
@@ -18,11 +19,6 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 ## Getting started
 
 In this section you can find the steps to get started as quick as possible. 
-
-Base requirements:
-
-* [Python](https://www.python.org/downloads/) 2.7+ or 3.x
-* [ElasticSearch](https://www.elastic.co/downloads/elasticsearch) 2.x
 
 ### Installation
 
@@ -64,7 +60,7 @@ If your Elasticsearch database is not located at `http://localhost:9200` or uses
 $ sudo newsplease
 ```
 
-news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though.
+news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though (you don't wanna mess with the database, do you?)
 
 ### What's next?
 
