@@ -9,15 +9,12 @@ import logging
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
-# the following try except statement is necessary to be able to start the tool from within the IDE and also after installation
-try:
-    from .newscrawler.helper_classes.savepath_parser import SavepathParser
-    from .newscrawler.config import JsonConfig
-    from .newscrawler.config import CrawlerConfig
-except SystemError:
-    from newscrawler.helper_classes.savepath_parser import SavepathParser
-    from newscrawler.config import JsonConfig
-    from newscrawler.config import CrawlerConfig
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+from newscrawler.helper_classes.savepath_parser import SavepathParser
+from newscrawler.config import JsonConfig
+from newscrawler.config import CrawlerConfig
+
 try:
     import builtins
 except ImportError:
