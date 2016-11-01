@@ -1,6 +1,6 @@
 # **news-please**
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website.
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/) and [newspaper](https://github.com/codelucas/newspaper).
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
@@ -68,10 +68,10 @@ news-please will start crawling pages http://www.faz.net/, http://www.zeit.de an
 
 ### What's next?
 
-Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
-You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/newsplease/wiki/configuration). 
+Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
+You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/news-please/wiki/configuration). 
 
-We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/newsplease/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/newsplease/wiki/developer-guide).
+We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide).
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
@@ -80,11 +80,11 @@ We have also collected a bunch of useful information for both [users](https://bi
 * Improve file handling, e.g support paths relative to the user: `~/data/...`
 
 ## Wiki and Documentation
-You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/newsplease/wiki/Home)!
+You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
 
-## Credits
+## Acknowledgements
 
-This project would not have been possible without the help of many students who spent time working on the extraction (ordered alphabetically):
+This project would not have been possible without the contributions of the following students (ordered alphabetically):
 
 * Moritz Bock
 * Michael Fried
