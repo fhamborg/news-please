@@ -68,7 +68,7 @@ news-please will start crawling pages http://www.faz.net/, http://www.zeit.de an
 
 ### What's next?
 
-Want to crawl other websites? We've got your back! Simply go into the [`input_data.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
+Want to crawl other websites? We've got your back! Simply go into the [`sitelist.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
 You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/news-please/wiki/configuration). 
 
 We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide).

@@ -36,7 +36,7 @@ class HeuristicsManager(object):
     def is_article(self, response, url):
         """
         Tests if the given response is an article by calling and checking
-        the heuristics set in newscrawler.cfg and input_data.json
+        the heuristics set in config.cfg and sitelist.json
 
         :param obj response: The response of the site.
         :param str url: The base_url (needed to get the site-specific config

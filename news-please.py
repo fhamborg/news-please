@@ -9,6 +9,7 @@ import logging
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
+# the following try except statement is necessary to be able to start the tool from within the IDE and also after installation
 try:
     from .newscrawler.helper_classes.savepath_parser import SavepathParser
     from .newscrawler.config import JsonConfig
@@ -248,7 +249,7 @@ class StartProcesses(object):
         Returns the config file path
          - if passed to this script, ensures it's a valid file path
          - if not passed to this script or not valid, falls back to the
-           standard ./newscrawler.cfg
+           standard ./config.cfg
 
         :return str: config's absolute file path
         """
@@ -263,12 +264,12 @@ class StartProcesses(object):
                     input_config_file_path)[1] == ".cfg":
                 return input_config_file_path
             else:
-                self.log.error("First argument passed to start_processes.py "
+                self.log.error("First argument passed to " + os.path.basename(__file__) +
                                "is not the config file. Falling back to"
-                               " ./newscrawler.cfg.")
+                               " ./config.cfg.")
 
         # Default
-        return self.get_abs_file_path("./newscrawler.cfg", quit_on_error=True)
+        return self.get_abs_file_path("./config.cfg", quit_on_error=True)
 
     def print_help(self):
         """
