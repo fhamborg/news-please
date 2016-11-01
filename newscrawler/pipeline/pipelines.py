@@ -319,20 +319,28 @@ class JsonFileStorage(ExtractedInformationStorage):
     Handles remote storage of the data in Json files
     """
 
-    jsonFile = None
     log = None
     cfg = None
 
     def __init__(self):
-        self.log = logging.getLogger('elasticsearch.trace')
+        self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
         self.cfg = CrawlerConfig.get_instance()
-        self.jsonFile = open('test.json', 'w')
-        self.jsonFile.write('[')
 
     def process_item(self, item, spider):
-        json.dump(ExtractedInformationStorage.extract_relevant_info(item), self.jsonFile)
-        self.jsonFile.write(",")
+        # Add a log entry confirming the save
+        self.log.info("Saving JSON to %s", item['abs_local_path'])
+
+        # Ensure path exists
+        dir_ = os.path.dirname(item['abs_local_path'])
+        if not os.path.exists(dir_):
+            os.makedirs(dir_)
+
+        # Write JSON to local file system
+        with open(item['abs_local_path']+'.json', 'w') as file_:
+            json.dump(ExtractedInformationStorage.extract_relevant_info(item), file_)
+
+        return item
 
 class ElasticsearchStorage(ExtractedInformationStorage):
     """
