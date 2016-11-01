@@ -264,9 +264,9 @@ class StartProcesses(object):
                     input_config_file_path)[1] == ".cfg":
                 return input_config_file_path
             else:
-                self.log.error("First argument passed to " + os.path.basename(__file__) +
-                               "is not the config file. Falling back to"
-                               " ./config.cfg.")
+                self.log.error("First argument passed to news-please "
+                               "is not the config file. Falling back to "
+                               "./config.cfg.")
 
         # Default
         return self.get_abs_file_path("./config.cfg", quit_on_error=True)
