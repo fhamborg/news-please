@@ -12,8 +12,10 @@ import json
 from scrapy.exceptions import DropItem
 from ..config import CrawlerConfig
 from .km4_extractor import article_extractor
+
 if sys.version_info[0] < 3:
     ConnectionError = OSError
+
 
 class HTMLCodeHandling(object):
     """
@@ -276,7 +278,43 @@ class LocalStorage(object):
 
         return item
 
-class JsonFileStorage(object):
+
+class ExtractedInformationStorage(object):
+    """
+    Provides basic functionality for Storages
+    """
+
+    log = None
+
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+
+    def extract_relevant_info(item):
+        """
+        extracts from an item only fields that we want to output as extracted information
+        :param item:
+        :return:
+        """
+        return {
+            'url': item['url'],
+            'sourceDomain': item['source_domain'].decode("utf-8"),
+            'pageTitle': item['html_title'].decode("utf-8"),
+            'rss_title': item['rss_title'],
+            'localpath': item['local_path'],
+            'descendant': False,
+            'downloadDate': item['download_date'],
+            'modifiedDate': item['modified_date'],
+            'publish_date': item['article_publish_date'],
+            'title': item['article_title'],
+            'description': item['article_description'],
+            'text': item['article_text'],
+            'author': item['article_author'],
+            'image': item['article_image'],
+            'language': item['article_language'],
+        }
+
+
+class JsonFileStorage(ExtractedInformationStorage):
     """
     Handles remote storage of the data in Json files
     """
@@ -290,11 +328,13 @@ class JsonFileStorage(object):
         self.log.addHandler(logging.NullHandler())
         self.cfg = CrawlerConfig.get_instance()
         self.jsonFile = open('test.json', 'w')
+        self.jsonFile.write('[')
 
     def process_item(self, item, spider):
-        json.dump(item, self.jsonFile)
+        json.dump(ExtractedInformationStorage.extract_relevant_info(item), self.jsonFile)
+        self.jsonFile.write(",")
 
-class ElasticsearchStorage(object):
+class ElasticsearchStorage(ExtractedInformationStorage):
     """
     Handles remote storage of the meta data in Elasticsearch
     """
@@ -372,26 +412,13 @@ class ElasticsearchStorage(object):
 
                 # save new version into old id of index_current
                 self.log.info("Saving to Elasticsearch: %s" % item['url'])
+                extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
+                extracted_info['ancestor'] = ancestor
+                extracted_info['version'] = version
                 self.es.index(index=self.index_current, doc_type='article', id=ancestor,
-                              body={
-                                'url': item['url'],
-                                'sourceDomain': item['source_domain'].decode("utf-8"),
-                                'pageTitle': item['html_title'].decode("utf-8"),
-                                'rss_title': item['rss_title'],
-                                'localpath': item['local_path'],
-                                'ancestor': ancestor,
-                                'descendant': False,
-                                'version': version,
-                                'downloadDate': item['download_date'],
-                                'modifiedDate': item['modified_date'],
-                                'publish_date': item['article_publish_date'],
-                                'title': item['article_title'],
-                                'description': item['article_description'],
-                                'text': item['article_text'],
-                                'author': item['article_author'],
-                                'image': item['article_image'],
-                                'language': item['article_language'],
-                              })
+                              body=extracted_info)
+
+
             except ConnectionError as error:
                 self.running = False
                 self.log.error("Lost connection to Elasticsearch, this module will be deactivated: %s" % error)
@@ -461,5 +488,3 @@ class DateFilter(object):
                 raise DropItem('DateFilter: %s: Article is to young: %s ' % (item['url'], publish_date))
             else:
                 return item
-
-

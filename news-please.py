@@ -53,7 +53,7 @@ class NewsPlease(object):
         # Sets an environmental variable called 'CColon', so scripts can import
         # modules of this project in relation to this script's dir
         # example: sitemap_crawler can import UrlExtractor via
-        #   from newscrawler.helper_classes.url_extractor import UrlExtractor
+        #   from newscrawler.helper_classderes.url_extractor import UrlExtractor
         os.environ['CColon'] = os.path.dirname(__file__)
 
         if len(sys.argv) > 1 and (sys.argv[1] == 'help' or
