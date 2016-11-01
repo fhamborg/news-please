@@ -1,5 +1,5 @@
 """
-This script should only be executed by the newscrawler initial script iteself.
+This script should only be executed by the newscrawler initial script itself.
 
 This script starts a crawler.
 """

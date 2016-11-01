@@ -8,6 +8,7 @@ import os.path
 import logging
 import pymysql
 from elasticsearch import Elasticsearch
+import json
 from scrapy.exceptions import DropItem
 from ..config import CrawlerConfig
 from .km4_extractor import article_extractor
@@ -275,6 +276,23 @@ class LocalStorage(object):
 
         return item
 
+class JsonFileStorage(object):
+    """
+    Handles remote storage of the data in Json files
+    """
+
+    jsonFile = None
+    log = None
+    cfg = None
+
+    def __init__(self):
+        self.log = logging.getLogger('elasticsearch.trace')
+        self.log.addHandler(logging.NullHandler())
+        self.cfg = CrawlerConfig.get_instance()
+        self.jsonFile = open('test.json', 'w')
+
+    def process_item(self, item):
+        self.jsonFile.write(json.dump(item))
 
 class ElasticsearchStorage(object):
     """

@@ -9,9 +9,14 @@ import logging
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
-from .newscrawler.helper_classes.savepath_parser import SavepathParser
-from .newscrawler.config import JsonConfig
-from .newscrawler.config import CrawlerConfig
+try:
+    from .newscrawler.helper_classes.savepath_parser import SavepathParser
+    from .newscrawler.config import JsonConfig
+    from .newscrawler.config import CrawlerConfig
+except SystemError:
+    from newscrawler.helper_classes.savepath_parser import SavepathParser
+    from newscrawler.config import JsonConfig
+    from newscrawler.config import CrawlerConfig
 try:
     import builtins
 except ImportError:
@@ -43,6 +48,7 @@ class StartProcesses(object):
     __single_crawler = False
 
     def __init__(self):
+        print("news-please is starting on Python " + sys.version)
         configure_logging({"LOG_LEVEL": "ERROR"})
         self.log = logging.getLogger(__name__)
 
