@@ -25,7 +25,7 @@ except ImportError:
 if sys.version_info[0] < 3:
     ConnectionError = OSError
 
-class StartProcesses(object):
+class NewsPlease(object):
     """
     This class is supposed to be called initially to start all processes.  It
     sets up and manages all crawlers.
@@ -283,7 +283,7 @@ news-please
 
 Usage:
 
-    newsplease [help] [cfg_file_path] [arg] ...
+    news-please [help] [cfg_file_path] [arg] ...
 
 
 Arguments:
@@ -603,4 +603,4 @@ Cleanup files:
 
 
 if __name__ == "__main__":
-    StartProcesses()
+    NewsPlease()

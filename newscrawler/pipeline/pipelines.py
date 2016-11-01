@@ -291,8 +291,8 @@ class JsonFileStorage(object):
         self.cfg = CrawlerConfig.get_instance()
         self.jsonFile = open('test.json', 'w')
 
-    def process_item(self, item):
-        self.jsonFile.write(json.dump(item))
+    def process_item(self, item, spider):
+        json.dump(item, self.jsonFile)
 
 class ElasticsearchStorage(object):
     """
