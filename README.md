@@ -60,7 +60,7 @@ If your Elasticsearch database is not located at `http://localhost:9200` or uses
 $ sudo newsplease
 ```
 
-news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though.
+news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though (you dont' wanna mess with the database, do you?)
 
 ### What's next?
 
