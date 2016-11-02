@@ -78,7 +78,7 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 ### What's next?
 
-We have collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) and the [`sitelist.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls).
+We have collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) and the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls).
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
