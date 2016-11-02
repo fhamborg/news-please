@@ -28,7 +28,17 @@ In this section you can find the steps to get started as quick as possible.
 $ sudo pip install news-please
 ```
 
-### Minimal configuration
+### Run the crawler
+
+```
+#!bash
+
+$ sudo newsplease
+```
+
+news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though (you don't wanna mess with the database, do you?)
+
+### ElasticSearch
 
 If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `config.cfg` at `pythonx.x/dist-packages/newsplease`:  
 
@@ -50,17 +60,6 @@ If your Elasticsearch database is not located at `http://localhost:9200` or uses
     client_key_path = '/path/to/client_key.pem'  
     username = 'root'  
     secret = 'password' 
-
-
-### Run the crawler
-
-```
-#!bash
-
-$ sudo newsplease
-```
-
-news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though (you don't wanna mess with the database, do you?)
 
 ### What's next?
 
