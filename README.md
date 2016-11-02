@@ -18,6 +18,8 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 ## Getting started
 
+It's super easy, promise!
+
 ### Installation
 
 ```
