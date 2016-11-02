@@ -38,7 +38,18 @@ $ sudo newsplease
 
 news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
 
+The results are stored by default in JSON files in the `data` folder.
+
 ### ElasticSearch
+
+news-please also supports export to ElasticSearch. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease`:
+
+    [Scrapy]
+    
+    ITEM_PIPELINES = {'newscrawler.pipeline.pipelines.KM4ArticleExtractor':100,
+                  'newscrawler.pipeline.pipelines.LocalStorage':200,
+                  'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
+                  }
 
 If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `config.cfg` at `pythonx.x/dist-packages/newsplease`:  
 
