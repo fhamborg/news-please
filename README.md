@@ -42,7 +42,7 @@ The results are stored by default in JSON files in the `data` folder.
 
 ### Add your own pages
 
-Want to crawl other websites? We've got your back! Simply go into the [`sitelist.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
+Want to crawl other websites? We've got your back! Simply go into the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
 
 ### ElasticSearch
 
