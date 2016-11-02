@@ -51,7 +51,7 @@ news-please also supports export to ElasticSearch. First, enable it in the `conf
                   'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                   }
 
-If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `config.cfg` at `pythonx.x/dist-packages/newsplease`:  
+That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you will also need to change the following.
 
     [Elasticsearch]
 
