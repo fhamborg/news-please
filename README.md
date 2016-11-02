@@ -36,7 +36,7 @@ $ sudo pip install news-please
 $ sudo newsplease
 ```
 
-news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though (you don't wanna mess with the database, do you?)
+news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
 
 ### ElasticSearch
 
