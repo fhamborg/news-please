@@ -11,9 +11,9 @@ from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-from newscrawler.helper_classes.savepath_parser import SavepathParser
-from newscrawler.config import JsonConfig
-from newscrawler.config import CrawlerConfig
+from news_please.helper_classes.savepath_parser import SavepathParser
+from news_please.config import JsonConfig
+from news_please.config import CrawlerConfig
 
 try:
     import builtins
@@ -46,14 +46,14 @@ class NewsPlease(object):
     __single_crawler = False
 
     def __init__(self):
-        print("news-please is starting on Python " + sys.version)
+        print("news_please is starting on Python " + sys.version)
         configure_logging({"LOG_LEVEL": "ERROR"})
         self.log = logging.getLogger(__name__)
 
         # Sets an environmental variable called 'CColon', so scripts can import
         # modules of this project in relation to this script's dir
         # example: sitemap_crawler can import UrlExtractor via
-        #   from news-please.helper_classderes.url_extractor import UrlExtractor
+        #   from news_please.helper_classderes.url_extractor import UrlExtractor
         os.environ['CColon'] = os.path.dirname(__file__)
 
         if len(sys.argv) > 1 and (sys.argv[1] == 'help' or
@@ -261,12 +261,12 @@ class NewsPlease(object):
                     input_config_file_path)[1] == ".cfg":
                 return input_config_file_path
             else:
-                self.log.error("First argument passed to news-please "
+                self.log.error("First argument passed to news_please "
                                "is not the config file. Falling back to "
                                "./config.cfg.")
 
         # Default
-        return self.get_abs_file_path("./config.cfg", quit_on_error=True)
+        return self.get_abs_file_path("./config/config.cfg", quit_on_error=True)
 
     def print_help(self):
         """
@@ -274,13 +274,13 @@ class NewsPlease(object):
         """
         _help = (\
             """
-news-please
+news_please
 -----------
 
 
 Usage:
 
-    news-please [help] [cfg_file_path] [arg] ...
+    news_please [help] [cfg_file_path] [arg] ...
 
 
 Arguments:
