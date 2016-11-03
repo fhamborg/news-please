@@ -11,7 +11,7 @@ from elasticsearch import Elasticsearch
 import json
 from scrapy.exceptions import DropItem
 from ..config import CrawlerConfig
-from .km4_extractor import article_extractor
+from .extractor import article_extractor
 
 if sys.version_info[0] < 3:
     ConnectionError = OSError
@@ -33,7 +33,7 @@ class HTMLCodeHandling(object):
             return item
 
 
-class KM4ArticleExtractor(object):
+class ArticleMasterExtractor(object):
     """
     Parses the HTML response and extracts title, description,
     text, image and meta data of an article.
@@ -42,7 +42,7 @@ class KM4ArticleExtractor(object):
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self.cfg = CrawlerConfig.get_instance()
-        self.extractor_list = self.cfg.section("KM4ArticleExtractor")[
+        self.extractor_list = self.cfg.section("ArticleMasterExtractor")[
             "extractors"]
 
         self.extractor = article_extractor.Extractor(self.extractor_list)

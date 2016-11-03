@@ -50,7 +50,7 @@ news-please also supports export to ElasticSearch. First, enable it in the `conf
 
     [Scrapy]
     
-    ITEM_PIPELINES = {'newscrawler.pipeline.pipelines.KM4ArticleExtractor':100,
+    ITEM_PIPELINES = {'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
                   'newscrawler.pipeline.pipelines.LocalStorage':200,
                   'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                   }
