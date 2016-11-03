@@ -1,12 +1,6 @@
 # **news-please**
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/) and [newspaper](https://github.com/codelucas/newspaper).
-
-## Features
-* **works out of the box**: install with pip, add URLs of your pages, run :-)
-* stores extracted information in **JSON files** (out-of-the-box support for ElasticSearch as well!)
-* **easy configuration** in case you want to fine tune the extraction
-* runs on Python 2.7 (and later) and 3
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability).
 
 ## Extracted information
 * headline
@@ -16,9 +10,15 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * author's name
 * publication date
 
+## Features
+* works out of the box: install with pip, add URLs of your pages, run :-)
+* stores extracted results in JSON files or ElasticSearch (other storages can be added easily)
+* simple but extensive configuration (if you want to tweak the results)
+* runs on Python 2.7 (and later) and 3
+
 ## Getting started
 
-In this section you can find the steps to get started as quick as possible. 
+It's super easy, we promise!
 
 ### Installation
 
@@ -28,9 +28,34 @@ In this section you can find the steps to get started as quick as possible.
 $ sudo pip install news-please
 ```
 
-### Minimal configuration
+### Run the crawler
 
-If your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you need edit the configuration file `config.cfg` at `pythonx.x/dist-packages/newsplease`:  
+```
+#!bash
+
+$ sudo newsplease
+```
+
+news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
+
+The results are stored by default in JSON files in the `data` folder.
+
+### Add your own pages
+
+Want to crawl other websites? We've got your back! Simply go into the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
+
+### ElasticSearch
+
+news-please also supports export to ElasticSearch. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease`:
+
+    [Scrapy]
+    
+    ITEM_PIPELINES = {'newscrawler.pipeline.pipelines.KM4ArticleExtractor':100,
+                  'newscrawler.pipeline.pipelines.LocalStorage':200,
+                  'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
+                  }
+
+That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you will also need to change the following.
 
     [Elasticsearch]
 
@@ -51,23 +76,9 @@ If your Elasticsearch database is not located at `http://localhost:9200` or uses
     username = 'root'  
     secret = 'password' 
 
-
-### Run the crawler
-
-```
-#!bash
-
-$ sudo newsplease
-```
-
-news-please will start crawling pages http://www.faz.net/, http://www.zeit.de and http://www.nytimes.com/. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-20 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes. We strongly recommend to not pressing `CTRL+C` twice, though (you don't wanna mess with the database, do you?)
-
 ### What's next?
 
-Want to crawl other websites? We've got your back! Simply go into the [`sitelist.json`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
-You also might want to check out our guide for the [config file](https://bitbucket.org/fhamborg/news-please/wiki/configuration). 
-
-We have also collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide).
+We have collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) and the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls).
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
