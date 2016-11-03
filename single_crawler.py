@@ -42,7 +42,7 @@ class SingleCrawler(object):
     json_file_path = None
     cfg_crawler = None
     __scrapy_options = None
-    __crawer_module = "newscrawler.crawler.spiders"
+    __crawer_module = "news-please.crawler.spiders"
     site_number = None
     shall_resume = False
     daemonize = False
