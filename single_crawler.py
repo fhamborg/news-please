@@ -1,5 +1,5 @@
 """
-This script should only be executed by the newscrawler initial script itself.
+This script should only be executed by the news-please initial script itself.
 
 This script starts a crawler.
 """
@@ -98,7 +98,7 @@ class SingleCrawler(object):
             relative_to_path = os.path.dirname(__file__)
 
         self.helper = Helper(self.cfg.section('Heuristics'),
-                             self.cfg.section('Files')['local_data_directory'],
+                             self.cfg.get_data_path(),
                              relative_to_path,
                              self.cfg.section('Files')['format_relative_path'],
                              self.json.get_site_objects(),

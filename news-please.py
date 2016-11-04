@@ -427,7 +427,7 @@ Cleanup Elasticsearch database:
 
         path = SavepathParser.get_base_path(
             SavepathParser.get_abs_path_static(
-                self.cfg.section('Files')["local_data_directory"],
+                self.cfg.get_data_path(),
                 os.path.dirname(self.cfg_file_path)
                 )
             )
