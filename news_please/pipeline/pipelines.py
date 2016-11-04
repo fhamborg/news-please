@@ -344,6 +344,7 @@ class JsonFileStorage(ExtractedInformationStorage):
 
         return item
 
+
 class ElasticsearchStorage(ExtractedInformationStorage):
     """
     Handles remote storage of the meta data in Elasticsearch
