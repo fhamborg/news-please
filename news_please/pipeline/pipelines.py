@@ -328,8 +328,10 @@ class JsonFileStorage(ExtractedInformationStorage):
         self.cfg = CrawlerConfig.get_instance()
 
     def process_item(self, item, spider):
+        file_path = item['abs_local_path'] + '.json'
+
         # Add a log entry confirming the save
-        self.log.info("Saving JSON to %s", item['abs_local_path'])
+        self.log.info("Saving JSON to %s", file_path)
 
         # Ensure path exists
         dir_ = os.path.dirname(item['abs_local_path'])
@@ -337,7 +339,7 @@ class JsonFileStorage(ExtractedInformationStorage):
             os.makedirs(dir_)
 
         # Write JSON to local file system
-        with open(item['abs_local_path']+'.json', 'w') as file_:
+        with open(file_path, 'w') as file_:
             json.dump(ExtractedInformationStorage.extract_relevant_info(item), file_)
 
         return item

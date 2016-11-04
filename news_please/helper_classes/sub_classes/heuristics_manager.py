@@ -49,7 +49,7 @@ class HeuristicsManager(object):
         self.log.info("Checking site: %s", response.url)
 
         statement = self.__get_condition(url)
-        self.log.info("Condition (original): %s", statement)
+        self.log.debug("Condition (original): %s", statement)
 
         for heuristic, condition in heuristics.items():
             heuristic_func = getattr(self, heuristic)
@@ -57,13 +57,13 @@ class HeuristicsManager(object):
             check = self.__evaluate_result(result, condition)
             statement = re.sub(r"\b%s\b" % heuristic, str(check), statement)
 
-            self.log.info("Checking heuristic (%s)"
+            self.log.debug("Checking heuristic (%s)"
                           " result (%s) on condition (%s): %s",
                           heuristic, result, condition, check)
 
-        self.log.info("Condition (evaluated): %s", statement)
+        self.log.debug("Condition (evaluated): %s", statement)
         is_article = eval(statement)
-        self.log.info("Article accepted: %s", is_article)
+        self.log.debug("Article accepted: %s", is_article)
         return is_article
 
     def __get_condition(self, url):

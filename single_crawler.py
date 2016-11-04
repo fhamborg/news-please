@@ -65,7 +65,7 @@ class SingleCrawler(object):
         # set up the config file
         self.cfg = CrawlerConfig.get_instance()
         self.cfg.setup(self.cfg_file_path)
-        self.log.info("Config initalized - Further initialisation.")
+        self.log.debug("Config initialized - Further initialisation.")
 
         self.cfg_crawler = self.cfg.section("Crawler")
 
@@ -98,11 +98,12 @@ class SingleCrawler(object):
             relative_to_path = os.path.dirname(__file__)
 
         self.helper = Helper(self.cfg.section('Heuristics'),
-                             self.cfg.get_data_path(),
+                             self.cfg.section("Files")["local_data_directory"],
                              relative_to_path,
                              self.cfg.section('Files')['format_relative_path'],
                              self.json.get_site_objects(),
-                             crawler_class)
+                             crawler_class,
+                             self.cfg.get_working_path())
 
         self.__scrapy_options = self.cfg.get_scrapy_options()
 
@@ -125,13 +126,17 @@ class SingleCrawler(object):
 
         :param object site: a site dict extracted from the json file
         """
-        jobdir = self.__scrapy_options["JOBDIR"]
-        if not jobdir.endswith("/"):
-            jobdir = jobdir + "/"
+        working_path = self.cfg.get_working_path()
+        if not working_path.endswith("/"):
+            working_path += "/"
+        jobdirname = self.__scrapy_options["JOBDIRNAME"]
+        if not jobdirname.endswith("/"):
+            jobdirname += "/"
+
         site_string = site["url"] + self.crawler
         hashed = hashlib.md5(site_string.encode('utf-8'))
 
-        self.__scrapy_options["JOBDIR"] = jobdir + hashed.hexdigest()
+        self.__scrapy_options["JOBDIR"] = working_path + jobdirname + hashed.hexdigest()
 
     def get_crawler(self, crawler, url):
         """
@@ -207,13 +212,13 @@ class SingleCrawler(object):
         stated in the config file) any crawler would automatically resume
         crawling with if '--resume' isn't passed to this script.
         """
-        jobdir = os.path.abspath(self.__scrapy_options["JOBDIR"])
+        jobdir = self.__scrapy_options["JOBDIR"]
 
         if (not self.shall_resume or self.daemonize) \
                 and os.path.exists(jobdir):
             shutil.rmtree(jobdir)
 
-            self.log.info("Removed JOBDIR since '--resume' was not passed to"
+            self.log.info("Removed " + jobdir + " since '--resume' was not passed to"
                           " initial.py or this crawler was daemonized.")
 
 if __name__ == "__main__":

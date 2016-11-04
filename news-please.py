@@ -42,6 +42,7 @@ class NewsPlease(object):
     thread_event = None
     mysql = None
     elasticsearch = None
+    number_of_active_crawlers = 0
 
     __single_crawler = False
 
@@ -163,6 +164,11 @@ class NewsPlease(object):
         while not self.shutdown:
             try:
                 time.sleep(10)
+                # if no crawler is running any longer, all articles have been crawled and the tool can shut down
+                if self.number_of_active_crawlers == 0:
+                    self.graceful_stop()
+                    break
+
             except IOError:
                 # This exception will only occur on kill-process on windows.
                 # The process should be killed, thus this exception is
@@ -177,10 +183,13 @@ class NewsPlease(object):
         to crawl.
         """
         index = True
+        self.number_of_active_crawlers += 1
         while not self.shutdown and index is not None:
             index = self.crawler_list.get_next_item()
             if index is None:
+                self.number_of_active_crawlers -= 1
                 break
+
             self.start_crawler(index)
 
     def manage_daemon(self):
@@ -427,7 +436,7 @@ Cleanup Elasticsearch database:
 
         path = SavepathParser.get_base_path(
             SavepathParser.get_abs_path_static(
-                self.cfg.get_data_path(),
+                self.cfg.section("Files")["local_data_directory"],
                 os.path.dirname(self.cfg_file_path)
                 )
             )

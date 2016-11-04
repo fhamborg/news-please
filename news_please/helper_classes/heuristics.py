@@ -93,12 +93,12 @@ class Heuristics(HeuristicsManager):
                         is not None):
                     h_linked += 1
 
-        self.log.info("Linked headlines test: headlines = %s, linked = %s",
+        self.log.debug("Linked headlines test: headlines = %s, linked = %s",
                       h_all, h_linked)
 
         min_headlines = self.cfg_heuristics["min_headlines_for_linked_test"]
         if min_headlines > h_all:
-            self.log.info("Linked headlines test: Not enough headlines "
+            self.log.debug("Linked headlines test: Not enough headlines "
                           "(%s < %s): Passing!", h_all, min_headlines)
             return True
 

@@ -17,13 +17,15 @@ class SavepathParser(object):
     cfg_savepath = None
     relative_to_path = None
     format_relative_path = None
+    working_path = None
 
     def __init__(
             self,
             cfg_savepath,
             relative_to_path,
             format_relative_path,
-            helper
+            helper,
+            working_path
             ):
         self.helper = helper
 
@@ -42,6 +44,8 @@ class SavepathParser(object):
         self.relative_to_path = relative_to_path
 
         self.format_relative_path = format_relative_path
+
+        self.working_path = working_path
 
     @staticmethod
     def time_replacer(match, timestamp):
@@ -89,7 +93,10 @@ class SavepathParser(object):
 
         savepath = self.cfg_savepath
 
-        # lambda is used for lazy evalutation
+        # lambda is used for lazy evaluation
+        savepath = re.sub(r'%working_path',
+                          lambda match: self.working_path, savepath)
+
         savepath = re.sub(r'%time_download\(([^\)]+)\)',
                           lambda match: SavepathParser.time_replacer(
                               match, timestamp), savepath)
