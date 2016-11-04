@@ -82,9 +82,8 @@ We have collected a bunch of useful information for both [users](https://bitbuck
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
+* Better logging
 * Improvement of detection whether a page is a news article or not
-* New extractors
-* Improve file handling, e.g support paths relative to the user: `~/data/...`
 
 ## Wiki and Documentation
 You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
