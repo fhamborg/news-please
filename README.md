@@ -15,6 +15,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * stores extracted results in JSON files or ElasticSearch (other storages can be added easily)
 * simple but extensive configuration (if you want to tweak the results)
 * runs on Python 2.7 (and later) and 3
+* versioning: crawl articles multiple times and track changes
 
 ## Getting started
 
@@ -38,7 +39,7 @@ $ newsplease
 
 news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
 
-The results are stored by default in JSON files in the `data` folder.
+The results are stored by default in JSON files in the `data` folder. 
 
 ### Add your own pages
 
@@ -46,7 +47,7 @@ Want to crawl other websites? We've got your back! Simply go into the [`sitelist
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease`:
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease`:
 
     [Scrapy]
     
@@ -55,7 +56,7 @@ news-please also supports export to ElasticSearch. First, enable it in the `conf
                   'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                   }
 
-That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you will also need to change the following.
+That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication you will also need to change the following.
 
     [Elasticsearch]
 
