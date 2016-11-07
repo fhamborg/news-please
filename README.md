@@ -1,6 +1,6 @@
 # **news-please**
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability).
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). 
 
 ## Extracted information
 * headline
@@ -105,10 +105,12 @@ This project would not have been possible without the contributions of the follo
 * Claudio Spener
 * Moritz Steinmaier
 
-## License and Contribution
+## Usage, License and Contribution
+
+Make sure that you use news-please in compliance with applicable law. 
 
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
-Copyright 2016 Felix Hamborg
+The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know - we're always interested in where the tool is used to determine goals of further development.
 
-Licensed under the [Apache License 2.0](LICENSE.txt)
+Copyright 2016 Felix Hamborg
