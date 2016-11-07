@@ -15,6 +15,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * stores extracted results in JSON files or ElasticSearch (other storages can be added easily)
 * simple but extensive configuration (if you want to tweak the results)
 * runs on Python 2.7 (and later) and 3
+* versioning: crawl articles multiple times and track changes
 
 ## Getting started
 
@@ -38,7 +39,7 @@ $ newsplease
 
 news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
 
-The results are stored by default in JSON files in the `data` folder.
+The results are stored by default in JSON files in the `data` folder. 
 
 ### Add your own pages
 
@@ -46,7 +47,7 @@ Want to crawl other websites? We've got your back! Simply go into the [`sitelist
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease`:
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease`:
 
     [Scrapy]
     
@@ -55,7 +56,7 @@ news-please also supports export to ElasticSearch. First, enable it in the `conf
                   'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                   }
 
-That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200` or uses CA-certificate authentification you will also need to change the following.
+That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication you will also need to change the following.
 
     [Elasticsearch]
 
@@ -82,9 +83,8 @@ We have collected a bunch of useful information for both [users](https://bitbuck
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
+* Better logging
 * Improvement of detection whether a page is a news article or not
-* New extractors
-* Improve file handling, e.g support paths relative to the user: `~/data/...`
 
 ## Wiki and Documentation
 You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
@@ -107,7 +107,7 @@ This project would not have been possible without the contributions of the follo
 
 ## License and Contribution
 
-You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de) By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
+You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
 Copyright 2016 Felix Hamborg
 
