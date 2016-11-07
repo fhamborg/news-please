@@ -11,11 +11,11 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * publication date
 
 ## Features
-* works out of the box: install with pip, add URLs of your pages, run :-)
-* stores extracted results in JSON files or ElasticSearch (other storages can be added easily)
-* simple but extensive configuration (if you want to tweak the results)
-* runs on Python 2.7 (and later) and 3
-* versioning: crawl articles multiple times and track changes
+* **works out of the box**: install with pip, add URLs of your pages, run :-)
+* stores extracted results in **JSON files or ElasticSearch** (other storages can be added easily)
+* **simple but extensive configuration** (if you want to tweak the results)
+* runs on Python 2.7+ and 3+
+* revisions: crawl articles multiple times and track changes
 
 ## Getting started
 
