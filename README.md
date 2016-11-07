@@ -63,10 +63,7 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
     host = localhost
     port = 9200	
 
-    #The indices used to store the extracted meta-data:
-
-    index_current = 'news-please'
-    index_archive = 'news-please-archive'
+    ...
 
     #Credentials used  for authentication (supports CA-certificates):
 	
