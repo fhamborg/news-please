@@ -14,7 +14,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
 * stores extracted results in **JSON files or ElasticSearch** (other storages can be added easily)
 * **simple but extensive configuration** (if you want to tweak the results)
-* runs on your favorite Python version (i.e. 2.7+ and 3+)
+* runs on your favorite Python version (2.7+ and 3+)
 * revisions: crawl articles multiple times and track changes
 
 ## Getting started
