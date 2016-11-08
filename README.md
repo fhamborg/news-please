@@ -110,4 +110,4 @@ You want to contribute? Great, we are always happy for any support on this proje
 
 The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know - we're always interested in where the tool is used to determine goals of further development. The news-please logo is courtesy of [Mario Hamborg](http://mario.hamborg.eu/).
 
-Copyright 2016 [Felix Hamborg](felix.hamborg.eu)
+Copyright 2016 [Felix Hamborg](http://mario.hamborg.eu/)
