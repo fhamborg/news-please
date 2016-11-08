@@ -22,6 +22,7 @@ except ImportError:
 if sys.version_info[0] < 3:
     ConnectionError = OSError
 
+
 class NewsPlease(object):
     """
     This class is supposed to be called initially to start all processes.  It
@@ -608,5 +609,8 @@ Cleanup files:
             self.graceful_stop = True
 
 
-if __name__ == "__main__":
+def main():
     NewsPlease()
+
+if __name__ == "__main__":
+    main()
