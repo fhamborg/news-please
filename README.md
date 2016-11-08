@@ -34,7 +34,7 @@ $ sudo pip install news-please
 ```
 #!bash
 
-$ newsplease
+$ news-please
 ```
 
 news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
