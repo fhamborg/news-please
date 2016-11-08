@@ -1,0 +1,8 @@
+include newsplease/config/config.cfg
+include newsplease/config/sitelist.hjson
+include newsplease/misc/logo/logo-128.png
+include newsplease/misc/logo/logo-256.png
+include newsplease/misc/logo/logo.svg
+include newsplease/LICENSE.txt
+include newsplease/README.md
+include newsplease/requirements.txt
