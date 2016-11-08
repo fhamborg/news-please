@@ -41,7 +41,7 @@ news-please will then start crawling a few examples pages. To terminate the proc
 
 The results are stored by default in JSON files in the `data` folder. 
 
-### Add your own pages
+### Crawl other pages
 
 Want to crawl other websites? We've got your back! Simply go into the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
 
