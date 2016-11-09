@@ -59,7 +59,8 @@ class NewsPlease(object):
         #   from newsplease.helper_classderes.url_extractor import UrlExtractor
         os.environ['CColon'] = os.path.dirname(__file__)
 
-        if len(sys.argv) > 1 and (sys.argv[1] == 'help' or
+        if len(sys.argv) > 1 and (sys.argv[1] == '-h' or
+                                  sys.argv[1] == 'help' or
                                   sys.argv[1] == '--help' or
                                   sys.argv[1] == '?'):
             self.print_help()
