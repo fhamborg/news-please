@@ -47,7 +47,7 @@ Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the `config.cfg` at `pythonx.x/dist-packages/newsplease` (this path is also displayed if you type in `newsplease -h`):
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) at `pythonx.x/dist-packages/newsplease` (this path is also displayed if you type in `newsplease -h`):
 
     [Scrapy]
     
