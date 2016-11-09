@@ -44,6 +44,7 @@ class NewsPlease(object):
     mysql = None
     elasticsearch = None
     number_of_active_crawlers = 0
+    config_default_path = "./config/config.cfg"
 
     __single_crawler = False
 
@@ -273,10 +274,10 @@ class NewsPlease(object):
             else:
                 self.log.error("First argument passed to newsplease "
                                "is not the config file. Falling back to "
-                               "./config.cfg.")
+                               + self.config_default_path)
 
         # Default
-        return self.get_abs_file_path("../config/config.cfg", quit_on_error=True)
+        return self.get_abs_file_path(self.config_default_path, quit_on_error=True)
 
     def print_help(self):
         """
