@@ -297,7 +297,7 @@ Usage:
 
 Arguments:
 
-    help          : '--help' | 'help' | '?' prints this help message and exits
+    help          : '-h' | '--help' | 'help' | '?' prints this help message and exits
 
     cfg_file_path : absolute or relative file path to the config file
 
