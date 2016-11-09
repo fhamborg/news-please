@@ -20,9 +20,9 @@ from scrapy.spiderloader import SpiderLoader
 
 from scrapy.utils.log import configure_logging
 
-from news_please.config import CrawlerConfig
-from news_please.config import JsonConfig
-from news_please.helper import Helper
+from newsplease.config import CrawlerConfig
+from newsplease.config import JsonConfig
+from newsplease.helper import Helper
 
 
 class SingleCrawler(object):
@@ -41,7 +41,7 @@ class SingleCrawler(object):
     json_file_path = None
     cfg_crawler = None
     __scrapy_options = None
-    __crawer_module = "news_please.crawler.spiders"
+    __crawer_module = "newsplease.crawler.spiders"
     site_number = None
     shall_resume = False
     daemonize = False
