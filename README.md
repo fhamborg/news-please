@@ -108,6 +108,6 @@ Make sure that you use news-please in compliance with applicable law.
 
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
-The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know - we're always interested in where the tool is used to determine goals of further development. The news-please logo is courtesy of [Mario Hamborg](http://mario.hamborg.eu/).
+The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know. The news-please logo is courtesy of [Mario Hamborg](http://mario.hamborg.eu/).
 
 Copyright 2016 [Felix Hamborg](http://felix.hamborg.eu/)
