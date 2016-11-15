@@ -37,7 +37,7 @@ $ sudo pip install news-please
 $ news-please
 ```
 
-news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kills process (not recommended, though).
+news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kills the process (not recommended, though).
 
 The results are stored by default in JSON files in the `data` folder. 
 
