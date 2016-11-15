@@ -79,8 +79,9 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 We have collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) and the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls).
 
 ## Future Improvements
+* Better CLI
 * Better error handling incl. more descriptive messages
-* Better logging
+* Better logging (currently, we think that the logging is either too detailed or too silent)
 * Improvement of detection whether a page is a news article or not
 
 ## Wiki and Documentation
