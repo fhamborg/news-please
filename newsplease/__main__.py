@@ -9,6 +9,7 @@ import logging
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
+import plac
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from newsplease.helper_classes.savepath_parser import SavepathParser
@@ -48,8 +49,17 @@ class NewsPlease(object):
 
     __single_crawler = False
 
-    def __init__(self):
-        print("newsplease is starting on Python " + sys.version)
+    def __init__(self, cfg_file_path, is_resume, is_reset_elasticsearch, is_reset_json, is_reset_mysql, is_no_confirm):
+        """
+        The constructor of the main class, thus the real entry point to the tool.
+        :param cfg_file_path:
+        :param is_resume:
+        :param is_reset_elasticsearch:
+        :param is_reset_json:
+        :param is_reset_mysql:
+        :param is_no_confirm:
+        """
+        # print("newsplease is starting on Python " + sys.version)
         configure_logging({"LOG_LEVEL": "ERROR"})
         self.log = logging.getLogger(__name__)
 
@@ -614,5 +624,24 @@ Cleanup files:
 def main():
     NewsPlease()
 
+def cli(cfg_file_path: ('path to the config file', 'option', 'c'),
+        resume: ('resume crawling from last process', 'flag'),
+        reset_elasticsearch: ('reset Elasticsearch indexes', 'flag'),
+        reset_json: ('reset JSON files', 'flag'),
+        reset_mysql: ('reset MySQL database', 'flag'),
+        reset_all: ('combines all reset options', 'flag'),
+        no_confirm: ('skip confirm dialogs', 'flag')):
+    "A generic news crawler and extractor. If started without the -c ... todo"
+
+    if( reset_all):
+        reset_elasticsearch = True
+        reset_json = True
+        reset_mysql = True
+
+    NewsPlease(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, no_confirm)
+
+    pass
+
+
 if __name__ == "__main__":
-    main()
+    plac.call(cli)
