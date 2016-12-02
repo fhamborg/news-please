@@ -30,11 +30,15 @@ class LangExtractor(AbstractExtractor):
 
         # Check for general meta tags
         if lang is None:
-            lang = root.cssselect('meta[name="language"]')[0].get('content')
+            meta = root.cssselect('meta[name="language"]')
+            if len(meta) > 0:
+                lang = meta[0].get('content')
 
         # Check for open graph tags
         if lang is None:
-            lang = root.cssselect('meta[property="og:locale"]')[0].get('content')
+            meta = root.cssselect('meta[property="og:locale"]')
+            if len(meta) > 0:
+                lang = meta[0].get('content')
 
         # Look for <article> elements and inspect the one with the largest payload with langdetect
         if lang is None:
