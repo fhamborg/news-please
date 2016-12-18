@@ -37,17 +37,17 @@ $ sudo pip install news-please
 $ news-please
 ```
 
-news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill all processes (not recommended, though).
+news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kills the process (not recommended, though).
 
 The results are stored by default in JSON files in the `data` folder. 
 
 ### Crawl other pages
 
-Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs. 
+Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs of the news outlets' webpages of your choice. 
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) at `pythonx.x/dist-packages/newsplease` (this path is also displayed if you type in `newsplease -h`):
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can be changed also with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
     [Scrapy]
     
@@ -56,7 +56,7 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
                   'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                   }
 
-That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication you will also need to change the following.
+That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication. In these cases, you will also need to change the following.
 
     [Elasticsearch]
 
@@ -80,7 +80,7 @@ We have collected a bunch of useful information for both [users](https://bitbuck
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
-* Better logging
+* Better logging (currently, we think that the logging is either too detailed or too silent)
 * Improvement of detection whether a page is a news article or not
 
 ## Wiki and Documentation
@@ -108,6 +108,6 @@ Make sure that you use news-please in compliance with applicable law.
 
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
-The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know - we're always interested in where the tool is used to determine goals of further development. The news-please logo is courtesy of [Mario Hamborg](http://mario.hamborg.eu/).
+The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know. The news-please logo is courtesy of [Mario Hamborg](http://mario.hamborg.eu/).
 
 Copyright 2016 [Felix Hamborg](http://felix.hamborg.eu/)
