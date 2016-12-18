@@ -167,8 +167,9 @@ class NewsPlease(object):
         while not self.shutdown:
             try:
                 time.sleep(10)
-                # if no crawler is running any longer, all articles have been crawled and the tool can shut down
-                if self.number_of_active_crawlers == 0:
+                # if we are not in daemon mode and no crawler is running any longer,
+                # all articles have been crawled and the tool can shut down
+                if self.daemon_list.len() == 0 and self.number_of_active_crawlers == 0:
                     self.graceful_stop()
                     break
 
