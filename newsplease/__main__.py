@@ -185,6 +185,7 @@ class NewsPlease(object):
             thread_daemonized.start()
 
         while not self.shutdown:
+            print("hi")
             try:
                 time.sleep(10)
                 # if we are not in daemon mode and no crawler is running any longer,
