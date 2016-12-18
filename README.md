@@ -47,7 +47,7 @@ Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) at `pythonx.x/dist-packages/newsplease` (this path is also displayed if you type in `news-please -h`):
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can be changed also with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
     [Scrapy]
     
@@ -79,7 +79,6 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 We have collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) and the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls).
 
 ## Future Improvements
-* Better CLI
 * Better error handling incl. more descriptive messages
 * Better logging (currently, we think that the logging is either too detailed or too silent)
 * Improvement of detection whether a page is a news article or not
