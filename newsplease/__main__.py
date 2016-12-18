@@ -284,7 +284,7 @@ class NewsPlease(object):
         if os.path.exists(self.cfg_directory_path):
             return
 
-        sys.stdout.write("Config directory or file does not exist at '" + self.cfg_directory_path + "'. "
+        sys.stdout.write("Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
                          + "Should a default config directory be created at this path? [Y/n]")
         user_choice = input().lower().replace("yes", "y").replace("no", "n")
         if not user_choice or user_choice == '':  # the default is yes
@@ -297,7 +297,7 @@ class NewsPlease(object):
             sys.exit(1)
 
         # copy the default config file to the new path
-        copy_tree('config', self.cfg_directory_path)
+        copy_tree(os.environ['CColon'] + os.path.sep + 'config', self.cfg_directory_path)
         return
 
     def get_expanded_path(self, path):
@@ -604,10 +604,6 @@ Cleanup files:
             self.graceful_stop = True
 
 
-def main():
-    NewsPlease()
-
-
 def cli(cfg_file_path: ('path to the config file', 'option', 'c'),
         resume: ('resume crawling from last process', 'flag'),
         reset_elasticsearch: ('reset Elasticsearch indexes', 'flag'),
@@ -630,5 +626,9 @@ def cli(cfg_file_path: ('path to the config file', 'option', 'c'),
     pass
 
 
-if __name__ == "__main__":
+def main():
     plac.call(cli)
+
+
+if __name__ == "__main__":
+    main()
