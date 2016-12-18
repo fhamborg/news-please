@@ -47,6 +47,7 @@ class SavepathParser(object):
 
         self.working_path = working_path
 
+
     @staticmethod
     def time_replacer(match, timestamp):
         """
