@@ -38,6 +38,7 @@ class NewsPlease(object):
     cfg_file_path = None
     json_file_path = None
     shall_resume = False
+    no_confirm = False
     threads = []
     threads_daemonized = []
     crawler_list = None
@@ -52,7 +53,8 @@ class NewsPlease(object):
 
     __single_crawler = False
 
-    def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch, is_reset_json, is_reset_mysql, is_no_confirm):
+    def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch, is_reset_json, is_reset_mysql,
+                 is_no_confirm):
         """
         The constructor of the main class, thus the real entry point to the tool.
         :param cfg_file_path:
@@ -68,6 +70,7 @@ class NewsPlease(object):
 
         # other parameters
         self.shall_resume = is_resume
+        self.no_confirm = is_no_confirm
 
         # Sets an environmental variable called 'CColon', so scripts can import
         # modules of this project in relation to this script's dir
@@ -184,8 +187,9 @@ class NewsPlease(object):
         while not self.shutdown:
             try:
                 time.sleep(10)
-                # if no crawler is running any longer, all articles have been crawled and the tool can shut down
-                if self.number_of_active_crawlers == 0:
+                # if we are not in daemon mode and no crawler is running any longer,
+                # all articles have been crawled and the tool can shut down
+                if self.daemon_list.len() == 0 and self.number_of_active_crawlers == 0:
                     self.graceful_stop()
                     break
 
@@ -345,7 +349,7 @@ class NewsPlease(object):
         Resets the MySQL database.
         """
 
-        confirm = self.has_arg("--noconfirm")
+        confirm = self.no_confirm
 
         print("""
 Cleanup MySQL database:
@@ -390,7 +394,7 @@ Cleanup Elasticsearch database:
     This will truncate all tables and reset the whole Elasticsearch database.
               """)
 
-        confirm = self.has_arg("--noconfirm")
+        confirm = self.no_confirm
 
         if not confirm:
             confirm = 'yes' in builtins.input(
@@ -424,7 +428,7 @@ Do you really want to do this? Write 'yes' to confirm: {yes}"""
         """
         Resets the local data directory.
         """
-        confirm = self.has_arg("--noconfirm")
+        confirm = self.no_confirm
 
         path = SavepathParser.get_base_path(
             SavepathParser.get_abs_path_static(
