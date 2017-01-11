@@ -83,7 +83,6 @@ We have collected a bunch of useful information for both [users](https://bitbuck
 You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
 
 ## Acknowledgements
-
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
 
 * Moritz Bock
@@ -98,12 +97,10 @@ This project would not have been possible without the contributions of the follo
 * Claudio Spener
 * Moritz Steinmaier
 
-## Usage, License, Contribution and Contact
-
-Make sure that you use news-please in compliance with applicable law. 
-
+## Contribution
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
-The project is licensed under the [Apache License 2.0](LICENSE.txt). If you're using news-please and find it a useful tool (or not), please let us know. The news-please logo is courtesy of Mario Hamborg.
+## License
+The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of Mario Hamborg.
 
 Copyright 2016 [Felix Hamborg](http://felix.hamborg.eu/)
