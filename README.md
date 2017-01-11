@@ -24,16 +24,12 @@ It's super easy, we promise!
 ### Installation
 
 ```
-#!bash
-
 $ sudo pip install news-please
 ```
 
 ### Run the crawler
 
 ```
-#!bash
-
 $ news-please
 ```
 
