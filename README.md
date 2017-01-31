@@ -39,11 +39,11 @@ The results are stored by default in JSON files in the `data` folder.
 
 ### Crawl other pages
 
-Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls) file and add the root URLs of the news outlets' webpages of your choice. 
+Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' webpages of your choice. 
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can be changed also with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can be changed also with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
     [Scrapy]
     
@@ -72,7 +72,7 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 ### What's next?
 
-We have collected a bunch of useful information for both [users](https://bitbucket.org/fhamborg/news-please/wiki/user-guide)  and [developers](https://bitbucket.org/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://bitbucket.org/fhamborg/news-please/wiki/configuration) and the [`sitelist.hjson`](https://bitbucket.org/fhamborg/news-please/wiki/user-guide#markdown-header-add-own-urls).
+We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) and the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson).
 
 ## Future Improvements
 * Better error handling incl. more descriptive messages
@@ -80,7 +80,7 @@ We have collected a bunch of useful information for both [users](https://bitbuck
 * Improvement of detection whether a page is a news article or not
 
 ## Wiki and Documentation
-You can find more information on usage and development in our [wiki](https://bitbucket.org/fhamborg/news-please/wiki/Home)!
+You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
