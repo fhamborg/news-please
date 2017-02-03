@@ -97,6 +97,18 @@ This project would not have been possible without the contributions of the follo
 * Claudio Spener
 * Moritz Steinmaier
 
+## How to Cite
+If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf):
+```
+@InProceedings{Hamborg2017,
+  author     = {{H}amborg, {F}elix and {M}euschke, {N}orman and {B}reitinger, {C}orinna and {G}ipp, {B}ela},
+  title      = {{news-please}: {A} {G}eneric {N}ews {C}rawler and {E}xtractor},
+  year       = {2017},
+  booktitle  = {{P}roceedings of the 15th {I}nternational {S}ymposium of {I}nformation {S}cience},
+  location   = {Berlin},
+}
+```
+
 ## Contribution
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
