@@ -47,10 +47,11 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
 
     [Scrapy]
     
-    ITEM_PIPELINES = {'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
-                  'newscrawler.pipeline.pipelines.LocalStorage':200,
-                  'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
-                  }
+    ITEM_PIPELINES = {
+                       'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
+                       'newscrawler.pipeline.pipelines.LocalStorage':200,
+                       'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
+                     }
 
 That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication. In these cases, you will also need to change the following.
 
