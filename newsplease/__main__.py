@@ -50,11 +50,12 @@ class NewsPlease(object):
     number_of_active_crawlers = 0
     config_directory_default_path = "~/news-please/config/"
     config_file_default_name = "config.cfg"
+    library_mode = None
 
     __single_crawler = False
 
     def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch, is_reset_json, is_reset_mysql,
-                 is_no_confirm):
+                 is_no_confirm, library_mode=False):
         """
         The constructor of the main class, thus the real entry point to the tool.
         :param cfg_file_path:
@@ -64,13 +65,13 @@ class NewsPlease(object):
         :param is_reset_mysql:
         :param is_no_confirm:
         """
-        # print("newsplease is starting on Python " + sys.version)
         configure_logging({"LOG_LEVEL": "ERROR"})
         self.log = logging.getLogger(__name__)
 
         # other parameters
         self.shall_resume = is_resume
         self.no_confirm = is_no_confirm
+        self.library_mode = library_mode
 
         # Sets an environmental variable called 'CColon', so scripts can import
         # modules of this project in relation to this script's dir
@@ -120,8 +121,7 @@ class NewsPlease(object):
         self.crawler_list = self.CrawlerList()
         self.daemon_list = self.DaemonList()
 
-        self.__single_crawler = self.get_abs_file_path("./single_crawler.py",
-                                                       True, False)
+        self.__single_crawler = self.get_abs_file_path("./single_crawler.py", True, False)
 
         self.manage_crawlers()
 
@@ -284,9 +284,14 @@ class NewsPlease(object):
         if os.path.exists(self.cfg_directory_path):
             return
 
-        sys.stdout.write("Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
-                         + "Should a default config directory be created at this path? [Y/n]")
-        user_choice = input().lower().replace("yes", "y").replace("no", "n")
+        user_choice = 'n'
+        if self.no_confirm:
+            user_choice = 'y'
+        else:
+            sys.stdout.write("Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
+                             + "Should a default config directory be created at this path? [Y/n]")
+            user_choice = input().lower().replace("yes", "y").replace("no", "n")
+
         if not user_choice or user_choice == '':  # the default is yes
             user_choice = "y"
         if "y" not in user_choice and "n" not in user_choice:
