@@ -40,3 +40,6 @@ class NewsPleaseLib:
             articles.append(article)
             print(article['title'])
         return articles
+
+if __name__ == '__main__':
+    NewsPleaseLib.download_article('http://www.zeit.de/politik/deutschland/2017-02/fluechtlinge-asylverfahren-bamf-taeuschung-afghanistan')
