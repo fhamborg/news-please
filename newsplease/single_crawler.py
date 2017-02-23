@@ -34,7 +34,7 @@ class SingleCrawler(object):
     cfg = None
     json = None
     log = None
-    crawler = None
+    crawler_name = None
     process = None
     helper = None
     cfg_file_path = None
@@ -46,8 +46,21 @@ class SingleCrawler(object):
     shall_resume = False
     daemonize = False
 
+    @classmethod
+    def create_as_library(cls, url):
+        """
+        Creates a single crawler as in library mode. Crawling will start immediately.
+        :param url:
+        :return:
+        """
+        site = {
+            "crawler": "Download",
+            "url": url
+        }
+        return cls('config/config_lib.cfg', site, 0, False, False, True)
+
     def __init__(self, cfg_file_path, json_file_path,
-                 site_index, shall_resume, daemonize):
+                 site_index, shall_resume, daemonize, library_mode=False):
         # set up logging before it's defined via the config file,
         # this will be overwritten and all other levels will be put out
         # as well, if it will be changed.
@@ -69,11 +82,16 @@ class SingleCrawler(object):
 
         self.cfg_crawler = self.cfg.section("Crawler")
 
-        # load the URL-input-json-file
-        self.json = JsonConfig.get_instance()
-        self.json.setup(self.json_file_path)
-
-        site = self.json.get_site_objects()[self.site_number]
+        # load the URL-input-json-file or - if in library mode - take the json_file_path as the site information (
+        # kind of hacky..)
+        if not library_mode:
+            self.json = JsonConfig.get_instance()
+            self.json.setup(self.json_file_path)
+            sites = self.json.get_site_objects()
+            site = sites[self.site_number]
+        else:
+            sites = [json_file_path]
+            site = json_file_path
 
         if "ignore_regex" in site:
             ignore_regex = "(%s)|" % site["ignore_regex"]
@@ -83,13 +101,13 @@ class SingleCrawler(object):
 
         # Get the default crawler. The crawler can be overwritten by fallbacks.
         if "additional_rss_daemon" in site and self.daemonize:
-            self.crawler = "RssCrawler"
+            self.crawler_name = "RssCrawler"
         elif "crawler" in site:
-            self.crawler = site["crawler"]
+            self.crawler_name = site["crawler"]
         else:
-            self.crawler = self.cfg.section("Crawler")["default"]
+            self.crawler_name = self.cfg.section("Crawler")["default"]
         # Get the real crawler-class (already "fallen back")
-        crawler_class = self.get_crawler(self.crawler, site["url"])
+        crawler_class = self.get_crawler(self.crawler_name, site["url"])
 
         if not self.cfg.section('Files')['relative_to_start_processes_file']:
             relative_to_path = os.path.dirname(self.cfg_file_path)
@@ -101,7 +119,7 @@ class SingleCrawler(object):
                              self.cfg.section("Files")["local_data_directory"],
                              relative_to_path,
                              self.cfg.section('Files')['format_relative_path'],
-                             self.json.get_site_objects(),
+                             sites,
                              crawler_class,
                              self.cfg.get_working_path())
 
@@ -116,7 +134,6 @@ class SingleCrawler(object):
         self.load_crawler(crawler_class,
                           site["url"],
                           ignore_regex)
-
         self.process.start()
 
     def update_jobdir(self, site):
@@ -133,7 +150,7 @@ class SingleCrawler(object):
         if not jobdirname.endswith("/"):
             jobdirname += "/"
 
-        site_string = ''.join(site["url"]) + self.crawler
+        site_string = ''.join(site["url"]) + self.crawler_name
         hashed = hashlib.md5(site_string.encode('utf-8'))
 
         self.__scrapy_options["JOBDIR"] = working_path + jobdirname + hashed.hexdigest()
@@ -220,6 +237,7 @@ class SingleCrawler(object):
 
             self.log.info("Removed " + jobdir + " since '--resume' was not passed to"
                           " initial.py or this crawler was daemonized.")
+
 
 if __name__ == "__main__":
     SingleCrawler(cfg_file_path=sys.argv[1],
