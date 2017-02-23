@@ -40,6 +40,3 @@ class NewsPleaseLib:
             articles.append(article)
             print(article['title'])
         return articles
-
-if __name__ == '__main__':
-    NewsPleaseLib.download_article('www.zeit.de')

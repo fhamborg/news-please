@@ -58,7 +58,7 @@ class SingleCrawler(object):
             "crawler": "Download",
             "url": url
         }
-        return cls('config/config.cfg', site, 0, False, False, True)
+        return cls('config/config_lib.cfg', site, 0, False, False, True)
 
     def __init__(self, cfg_file_path, json_file_path,
                  site_index, shall_resume, daemonize, library_mode=False):
