@@ -35,7 +35,6 @@ class SingleCrawler(object):
     json = None
     log = None
     crawler_name = None
-    crawler = None
     process = None
     helper = None
     cfg_file_path = None
