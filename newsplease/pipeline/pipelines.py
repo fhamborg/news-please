@@ -292,6 +292,7 @@ class ExtractedInformationStorage(object):
     def extract_relevant_info(item):
         """
         extracts from an item only fields that we want to output as extracted information
+        :rtype: object
         :param item:
         :return:
         """
@@ -312,6 +313,27 @@ class ExtractedInformationStorage(object):
             'image': item['article_image'],
             'language': item['article_language'],
         }
+
+
+class InMemoryStorage(ExtractedInformationStorage):
+    """
+    Stores extracted information in a dictionary in memory - for use with library mode.
+    """
+
+    results = {}  # this is a static variable
+
+    def process_item(self, item, spider):
+        # get the original url, so that the library class (or whoever wants to read this) can access the article
+        if 'redirect_urls' in item._values['spider_response'].meta:
+            url = item._values['spider_response'].meta['redirect_urls'][0]
+        else:
+            url = item._values['url']
+        InMemoryStorage.results[url] = ExtractedInformationStorage.extract_relevant_info(item)
+        return item
+
+    @staticmethod
+    def get_results():
+        return InMemoryStorage.results
 
 
 class JsonFileStorage(ExtractedInformationStorage):

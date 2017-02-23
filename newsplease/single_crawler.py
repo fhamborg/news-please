@@ -49,6 +49,11 @@ class SingleCrawler(object):
 
     @classmethod
     def create_as_library(cls, url):
+        """
+        Creates a single crawler as in library mode. Crawling will start immediately.
+        :param url:
+        :return:
+        """
         site = {
             "crawler": "Download",
             "url": url
@@ -78,7 +83,8 @@ class SingleCrawler(object):
 
         self.cfg_crawler = self.cfg.section("Crawler")
 
-        # load the URL-input-json-file or - if in library mode - take the json_file_path as the site information (kind of hacky..)
+        # load the URL-input-json-file or - if in library mode - take the json_file_path as the site information (
+        # kind of hacky..)
         if not library_mode:
             self.json = JsonConfig.get_instance()
             self.json.setup(self.json_file_path)
@@ -126,10 +132,6 @@ class SingleCrawler(object):
         # if not stated otherwise in the arguments passed to this script
         self.remove_jobdir_if_not_resume()
 
-        #if library_mode:
-        #    self.crawler = crawler_class
-        #    self.library_mode = library_mode
-        #else:
         self.load_crawler(crawler_class,
                           site["url"],
                           ignore_regex)
@@ -237,16 +239,6 @@ class SingleCrawler(object):
             self.log.info("Removed " + jobdir + " since '--resume' was not passed to"
                           " initial.py or this crawler was daemonized.")
 
-    def library_download_urls(self, urls):
-        """
-        Downloads one or more articles given the urls
-        :param urls:
-        :return:
-        """
-        if not self.library_mode:
-            sys.exit("invoked library_download_urls without being in library mode")
-        self.load_crawler(self.crawler, urls, False)
-        self.process.start()
 
 if __name__ == "__main__":
     SingleCrawler(cfg_file_path=sys.argv[1],

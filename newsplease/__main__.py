@@ -25,7 +25,7 @@ if sys.version_info[0] < 3:
     ConnectionError = OSError
 
 
-class NewsPlease(object):
+class NewsPleaseLauncher(object):
     """
     This class is supposed to be called initially to start all processes.  It
     sets up and manages all crawlers.
@@ -626,7 +626,7 @@ def cli(cfg_file_path: ('path to the config file', 'option', 'c'),
     if cfg_file_path and not cfg_file_path.endswith(os.path.sep):
         cfg_file_path += os.path.sep
 
-    NewsPlease(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, no_confirm)
+    NewsPleaseLauncher(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, no_confirm)
 
     pass
 
