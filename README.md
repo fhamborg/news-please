@@ -12,10 +12,16 @@
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
+* execute it conveniently with the **CLI** or use it as a **library** within your own software
+
+### CLI mode
 * stores extracted results in **JSON files or ElasticSearch** (other storages can be added easily)
 * **simple but extensive configuration** (if you want to tweak the results)
 * runs on your favorite Python version (2.7+ and 3+)
 * revisions: crawl articles multiple times and track changes
+
+### Library mode
+* crawl and extract information for a list of article URLs (currently the fullsite-crawling is only supported via the CLI)
 
 ## Getting started
 
@@ -27,7 +33,14 @@ It's super easy, we promise!
 $ sudo pip install news-please
 ```
 
-### Run the crawler
+### Use within your own code
+```
+from newsplease import NewsPleaseLib
+article = NewsPleaseLib.download_article('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
+print(article['title'])
+```
+
+### Run the crawler (CLI)
 
 ```
 $ news-please
@@ -47,10 +60,11 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
 
     [Scrapy]
     
-    ITEM_PIPELINES = {'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
-                  'newscrawler.pipeline.pipelines.LocalStorage':200,
-                  'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
-                  }
+    ITEM_PIPELINES = {
+                       'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
+                       'newscrawler.pipeline.pipelines.LocalStorage':200,
+                       'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
+                     }
 
 That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication. In these cases, you will also need to change the following.
 

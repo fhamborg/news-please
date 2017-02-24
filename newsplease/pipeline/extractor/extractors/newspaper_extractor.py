@@ -1,7 +1,6 @@
 import logging
 from .abstract_extractor import AbstractExtractor
 from ..article_candidate import ArticleCandidate
-# Import Newspaper Article Extractor Library.
 from newspaper import Article
 
 
