@@ -1,4 +1,5 @@
 include newsplease/config/config.cfg
+include newsplease/config/config_lib.cfg
 include newsplease/config/sitelist.hjson
 include LICENSE.txt
 include README.md
