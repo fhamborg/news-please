@@ -6,7 +6,7 @@ from newsplease.pipeline.pipelines import InMemoryStorage
 from newsplease.single_crawler import SingleCrawler
 
 
-class NewsPleaseLib:
+class NewsPlease:
     """
     Access news-please functionality via this interface
     """
