@@ -12,10 +12,16 @@
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
+* execute it conveniently with the **CLI** or use it as a **library** within your own software
+
+### CLI mode
 * stores extracted results in **JSON files or ElasticSearch** (other storages can be added easily)
 * **simple but extensive configuration** (if you want to tweak the results)
 * runs on your favorite Python version (2.7+ and 3+)
 * revisions: crawl articles multiple times and track changes
+
+### Library mode
+* crawl and extract information for a list of article URLs (currently the fullsite-crawling is only supported via the CLI)
 
 ## Getting started
 
@@ -27,7 +33,14 @@ It's super easy, we promise!
 $ sudo pip install news-please
 ```
 
-### Run the crawler
+### Use within your own code
+```
+from newsplease import NewsPleaseLib
+article = NewsPleaseLib.download_article('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
+print(article['title'])
+```
+
+### Run the crawler (CLI)
 
 ```
 $ news-please
