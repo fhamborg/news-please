@@ -23,6 +23,8 @@ from scrapy.utils.log import configure_logging
 from newsplease.config import CrawlerConfig
 from newsplease.config import JsonConfig
 from newsplease.helper import Helper
+from _thread import start_new_thread
+from twisted.internet.error import ReactorAlreadyRunning
 
 
 class SingleCrawler(object):
@@ -57,7 +59,7 @@ class SingleCrawler(object):
             "crawler": "Download",
             "url": url
         }
-        cfg_file_path = os.environ['CColon'] + os.path.sep + 'config' + os.path.sep + 'config_lib.cfg'
+        cfg_file_path = os.path.dirname(__file__) + os.path.sep + 'config' + os.path.sep + 'config_lib.cfg'
         return cls(cfg_file_path, site, 0, False, False, True)
 
     def __init__(self, cfg_file_path, json_file_path,
@@ -135,7 +137,15 @@ class SingleCrawler(object):
         self.load_crawler(crawler_class,
                           site["url"],
                           ignore_regex)
-        self.process.start()
+
+        # start the job. if in library_mode, do not stop the reactor and so on after this job has finished
+        # so that further jobs can be executed. it also needs to run in a thread since the reactor.run method seems
+        # to not return. also, scrapy will attempt to start a new reactor, which fails with an exception, but
+        # the code continues to run. we catch this excepion in the function 'start_process'.
+        if library_mode:
+            start_new_thread(start_process, (self.process, False,))
+        else:
+            self.process.start()
 
     def update_jobdir(self, site):
         """
@@ -238,6 +248,13 @@ class SingleCrawler(object):
 
             self.log.info("Removed " + jobdir + " since '--resume' was not passed to"
                           " initial.py or this crawler was daemonized.")
+
+
+def start_process(process, stop_after_job):
+    try:
+        process.start(stop_after_job)
+    except ReactorAlreadyRunning:
+        pass
 
 
 if __name__ == "__main__":

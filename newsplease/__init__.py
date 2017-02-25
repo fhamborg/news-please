@@ -4,6 +4,7 @@ import os
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from newsplease.pipeline.pipelines import InMemoryStorage
 from newsplease.single_crawler import SingleCrawler
+import time
 
 
 class NewsPlease:
@@ -19,10 +20,15 @@ class NewsPlease:
         :return:
         """
         SingleCrawler.create_as_library(url)
-        results = InMemoryStorage.get_results()
-        article = results[url]
-        del results[url]
-        return article
+        while True:
+            results = InMemoryStorage.get_results()
+            if url in results:
+                article = results[url]
+                del results[url]
+                return article
+            else:
+                time.sleep(0.01)
+
 
     @staticmethod
     def download_articles(urls):
