@@ -38,11 +38,16 @@ class NewsPlease:
         :return:
         """
         SingleCrawler.create_as_library(urls)
-        results = InMemoryStorage.get_results()
         articles = []
-        for url in urls:
-            article = results[url]
-            del results[url]
-            articles.append(article)
-            print(article['title'])
-        return articles
+        while True:
+            results = InMemoryStorage.get_results()
+            already_crawled_articles = set(results.keys()) & set(urls)
+            for url in already_crawled_articles:
+                article = results[url]
+                del results[url]
+                articles.append(article)
+
+            if len(articles) == len(urls):
+                return articles
+            else:
+                time.sleep(0.01)
