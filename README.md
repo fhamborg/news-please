@@ -39,6 +39,10 @@ from newsplease import NewsPlease
 article = NewsPlease.download_article('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
 print(article['title'])
 ```
+or if you want to crawl multiple articles at a time
+```
+NewsPlease.download_articles([url1, url2, ...])
+```
 
 ### Run the crawler (CLI)
 
