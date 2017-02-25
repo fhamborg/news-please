@@ -92,12 +92,12 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
-## Future Improvements
+## Future improvements
 * Better error handling incl. more descriptive messages
 * Better logging (currently, we think that the logging is either too detailed or too silent)
 * Improvement of detection whether a page is a news article or not
 
-## Wiki and Documentation
+## Wiki and documentation
 You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
 
 ## Acknowledgements
@@ -115,7 +115,7 @@ This project would not have been possible without the contributions of the follo
 * Claudio Spener
 * Moritz Steinmaier
 
-## How to Cite
+## How to cite
 If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf):
 ```
 @InProceedings{Hamborg2017,
