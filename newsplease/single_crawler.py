@@ -57,7 +57,8 @@ class SingleCrawler(object):
             "crawler": "Download",
             "url": url
         }
-        return cls('config/config_lib.cfg', site, 0, False, False, True)
+        cfg_file_path = os.environ['CColon'] + os.path.sep + 'config' + os.path.sep + 'config_lib.cfg'
+        return cls(cfg_file_path, site, 0, False, False, True)
 
     def __init__(self, cfg_file_path, json_file_path,
                  site_index, shall_resume, daemonize, library_mode=False):
