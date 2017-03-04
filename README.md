@@ -9,6 +9,7 @@
 * main image
 * author's name
 * publication date
+* language
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
