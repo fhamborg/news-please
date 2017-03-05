@@ -14,11 +14,11 @@
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
 * execute it conveniently with the **CLI** or use it as a **library** within your own software
+* runs on your favorite Python version (2.7+ and 3+)
 
 ### CLI mode
 * stores extracted results in **JSON files or ElasticSearch** (other storages can be added easily)
 * **simple but extensive configuration** (if you want to tweak the results)
-* runs on your favorite Python version (2.7+ and 3+)
 * revisions: crawl articles multiple times and track changes
 
 ### Library mode
