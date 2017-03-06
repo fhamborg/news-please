@@ -53,7 +53,7 @@ $ news-please
 
 news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill the process (not recommended, though).
 
-The results are stored by default in JSON files in the `data` folder. 
+The results are stored by default in JSON files in the `data` folder. In the default configuration, news-please also stores the original HTML files.
 
 ### Crawl other pages
 
@@ -66,8 +66,6 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
     [Scrapy]
     
     ITEM_PIPELINES = {
-                       'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
-                       'newscrawler.pipeline.pipelines.LocalStorage':200,
                        'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                      }
 
