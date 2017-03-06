@@ -34,7 +34,7 @@ It's super easy, we promise!
 $ sudo pip install news-please
 ```
 
-### Use within your own code
+### Use within your own code (as a library)
 ```python
 from newsplease import NewsPlease
 article = NewsPlease.download_article('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
@@ -45,7 +45,7 @@ or if you want to crawl multiple articles at a time
 NewsPlease.download_articles([url1, url2, ...])
 ```
 
-### Run the crawler (CLI)
+### Run the crawler (via the CLI)
 
 ```
 $ news-please
