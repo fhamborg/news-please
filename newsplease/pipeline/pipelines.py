@@ -254,7 +254,7 @@ class MySQLStorage(object):
         self.conn.close()
 
 
-class LocalStorage(object):
+class HtmlFileStorage(object):
     """
     Handles storage of the file on the local system
     """
@@ -265,7 +265,7 @@ class LocalStorage(object):
     # Save the html and filename to the local storage folder
     def process_item(self, item, spider):
         # Add a log entry confirming the save
-        self.log.info("Saving to %s", item['abs_local_path'])
+        self.log.info("Saving HTML to %s", item['abs_local_path'])
 
         # Ensure path exists
         dir_ = os.path.dirname(item['abs_local_path'])
