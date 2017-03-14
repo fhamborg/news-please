@@ -34,7 +34,7 @@ It's super easy, we promise!
 $ sudo pip install news-please
 ```
 
-### Use within your own code
+### Use within your own code (as a library)
 ```python
 from newsplease import NewsPlease
 article = NewsPlease.download_article('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
@@ -45,7 +45,7 @@ or if you want to crawl multiple articles at a time
 NewsPlease.download_articles([url1, url2, ...])
 ```
 
-### Run the crawler (CLI)
+### Run the crawler (via the CLI)
 
 ```
 $ news-please
@@ -53,7 +53,7 @@ $ news-please
 
 news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill the process (not recommended, though).
 
-The results are stored by default in JSON files in the `data` folder. 
+The results are stored by default in JSON files in the `data` folder. In the default configuration, news-please also stores the original HTML files.
 
 ### Crawl other pages
 
@@ -66,8 +66,6 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
     [Scrapy]
     
     ITEM_PIPELINES = {
-                       'newscrawler.pipeline.pipelines.ArticleMasterExtractor':100,
-                       'newscrawler.pipeline.pipelines.LocalStorage':200,
                        'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                      }
 
