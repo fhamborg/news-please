@@ -23,7 +23,10 @@ from scrapy.utils.log import configure_logging
 from newsplease.config import CrawlerConfig
 from newsplease.config import JsonConfig
 from newsplease.helper import Helper
-from _thread import start_new_thread
+try:
+    from _thread import start_new_thread
+except ImportError:
+    from thread import start_new_thread
 from twisted.internet.error import ReactorAlreadyRunning
 
 
