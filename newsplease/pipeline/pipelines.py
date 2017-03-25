@@ -2,16 +2,18 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-import sys
 import datetime
-import os.path
+import json
 import logging
+import os.path
+import sys
+
 import pymysql
 from elasticsearch import Elasticsearch
-import json
 from scrapy.exceptions import DropItem
-from ..config import CrawlerConfig
+
 from .extractor import article_extractor
+from ..config import CrawlerConfig
 
 if sys.version_info[0] < 3:
     ConnectionError = OSError
@@ -289,6 +291,7 @@ class ExtractedInformationStorage(object):
     def __init__(self):
         self.log = logging.getLogger(__name__)
 
+    @staticmethod
     def extract_relevant_info(item):
         """
         extracts from an item only fields that we want to output as extracted information
