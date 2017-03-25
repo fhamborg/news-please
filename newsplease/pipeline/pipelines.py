@@ -256,31 +256,6 @@ class MySQLStorage(object):
         self.conn.close()
 
 
-class HtmlFileStorage(object):
-    """
-    Handles storage of the file on the local system
-    """
-
-    def __init__(self):
-        self.log = logging.getLogger(__name__)
-
-    # Save the html and filename to the local storage folder
-    def process_item(self, item, spider):
-        # Add a log entry confirming the save
-        self.log.info("Saving HTML to %s", item['abs_local_path'])
-
-        # Ensure path exists
-        dir_ = os.path.dirname(item['abs_local_path'])
-        if not os.path.exists(dir_):
-            os.makedirs(dir_)
-
-        # Write raw html to local file system
-        with open(item['abs_local_path'], 'wb') as file_:
-            file_.write(item['spider_response'].body)
-
-        return item
-
-
 class ExtractedInformationStorage(object):
     """
     Provides basic functionality for Storages
@@ -290,6 +265,9 @@ class ExtractedInformationStorage(object):
 
     def __init__(self):
         self.log = logging.getLogger(__name__)
+        self.log.addHandler(logging.NullHandler())
+        self.cfg = CrawlerConfig.get_instance()
+
 
     @staticmethod
     def extract_relevant_info(item):
@@ -339,6 +317,28 @@ class InMemoryStorage(ExtractedInformationStorage):
         return InMemoryStorage.results
 
 
+class HtmlFileStorage(ExtractedInformationStorage):
+    """
+    Handles storage of the file on the local system
+    """
+
+    # Save the html and filename to the local storage folder
+    def process_item(self, item, spider):
+        # Add a log entry confirming the save
+        self.log.info("Saving HTML to %s", item['abs_local_path'])
+
+        # Ensure path exists
+        dir_ = os.path.dirname(item['abs_local_path'])
+        if not os.path.exists(dir_):
+            os.makedirs(dir_)
+
+        # Write raw html to local file system
+        with open(item['abs_local_path'], 'wb') as file_:
+            file_.write(item['spider_response'].body)
+
+        return item
+
+
 class JsonFileStorage(ExtractedInformationStorage):
     """
     Handles remote storage of the data in Json files
@@ -346,11 +346,6 @@ class JsonFileStorage(ExtractedInformationStorage):
 
     log = None
     cfg = None
-
-    def __init__(self):
-        self.log = logging.getLogger(__name__)
-        self.log.addHandler(logging.NullHandler())
-        self.cfg = CrawlerConfig.get_instance()
 
     def process_item(self, item, spider):
         file_path = item['abs_local_path'] + '.json'
@@ -519,8 +514,8 @@ class DateFilter(object):
                     return item
             # Check interval boundaries
             if self.start_date is not None and self.start_date > publish_date:
-                raise DropItem('DateFilter: %s: Article is to old: %s' % (item['url'], publish_date))
+                raise DropItem('DateFilter: %s: Article is too old: %s' % (item['url'], publish_date))
             elif self.end_date is not None and self.end_date < publish_date:
-                raise DropItem('DateFilter: %s: Article is to young: %s ' % (item['url'], publish_date))
+                raise DropItem('DateFilter: %s: Article is too young: %s ' % (item['url'], publish_date))
             else:
                 return item

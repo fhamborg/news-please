@@ -1,18 +1,22 @@
-import os
-import sys
-import time
-import shutil
-from subprocess import Popen
-import threading
-import signal
 import logging
+import shutil
+import signal
+import sys
+import threading
+import time
+from distutils.dir_util import copy_tree
+from subprocess import Popen
+
+import os
+import plac
 import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
-import plac
-from distutils.dir_util import copy_tree
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+cur_path = os.path.dirname(os.path.realpath(__file__))
+par_path = os.path.dirname(cur_path)
+sys.path.append(cur_path)
+sys.path.append(par_path)
 from newsplease.helper_classes.savepath_parser import SavepathParser
 from newsplease.config import JsonConfig
 from newsplease.config import CrawlerConfig
@@ -288,8 +292,9 @@ class NewsPleaseLauncher(object):
         if self.no_confirm:
             user_choice = 'y'
         else:
-            sys.stdout.write("Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
-                             + "Should a default config directory be created at this path? [Y/n]")
+            sys.stdout.write(
+                "Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
+                + "Should a default config directory be created at this path? [Y/n]")
             user_choice = input().lower().replace("yes", "y").replace("no", "n")
 
         if not user_choice or user_choice == '':  # the default is yes
@@ -609,13 +614,16 @@ Cleanup files:
             self.graceful_stop = True
 
 
-def cli(cfg_file_path: ('path to the config file', 'option', 'c'),
-        resume: ('resume crawling from last process', 'flag'),
-        reset_elasticsearch: ('reset Elasticsearch indexes', 'flag'),
-        reset_json: ('reset JSON files', 'flag'),
-        reset_mysql: ('reset MySQL database', 'flag'),
-        reset_all: ('combines all reset options', 'flag'),
-        no_confirm: ('skip confirm dialogs', 'flag')):
+@plac.annotations(
+    cfg_file_path=plac.Annotation('path to the config file', 'option', 'c'),
+    resume=plac.Annotation('resume crawling from last process', 'flag'),
+    reset_elasticsearch=plac.Annotation('reset Elasticsearch indexes', 'flag'),
+    reset_json=plac.Annotation('reset JSON files', 'flag'),
+    reset_mysql=plac.Annotation('reset MySQL database', 'flag'),
+    reset_all=plac.Annotation('combines all reset options', 'flag'),
+    no_confirm=plac.Annotation('skip confirm dialogs', 'flag')
+)
+def cli(cfg_file_path, resume, reset_elasticsearch, reset_mysql, reset_json, reset_all, no_confirm):
     "A generic news crawler and extractor."
 
     if reset_all:

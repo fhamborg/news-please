@@ -4,22 +4,22 @@ This script should only be executed by the news-please initial script itself.
 This script starts a crawler.
 """
 
-import os
-import sys
-import shutil
-
 import hashlib
+import logging
+import shutil
+import sys
 from ast import literal_eval
 
-import logging
-
+import os
 from scrapy.crawler import CrawlerProcess
-
 from scrapy.settings import Settings
 from scrapy.spiderloader import SpiderLoader
-
 from scrapy.utils.log import configure_logging
 
+cur_path = os.path.dirname(os.path.realpath(__file__))
+par_path = os.path.dirname(cur_path)
+sys.path.append(cur_path)
+sys.path.append(par_path)
 from newsplease.config import CrawlerConfig
 from newsplease.config import JsonConfig
 from newsplease.helper import Helper
