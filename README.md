@@ -124,6 +124,9 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
   year       = {2017},
   booktitle  = {{P}roceedings of the 15th {I}nternational {S}ymposium of {I}nformation {S}cience},
   location   = {Berlin},
+  editor     = {Gaede, Maria and Trkulja, Violeta and Petra, Vivien},
+  pages      = {218--223},
+  month      = {March}
 }
 ```
 
