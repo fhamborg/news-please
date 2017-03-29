@@ -25,7 +25,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 	'Topic :: Internet',
 	'Topic :: Scientific/Engineering :: Information Analysis',
       ],
-	  keywords='news crawler,news scraper,news extractor,crawler,extractor,scraper,information retrieval',
+	  keywords='news crawler news scraper news extractor crawler extractor scraper information retrieval',
 	  author='Felix Hamborg',
 	  author_email='felix.hamborg@uni-konstanz.de',
 	  url='https://github.com/fhamborg/news-please',
