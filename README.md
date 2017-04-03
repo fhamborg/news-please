@@ -136,6 +136,6 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
 ## License
-The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of Mario Hamborg.
+The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/).
 
 Copyright 2016 [Felix Hamborg](http://felix.hamborg.eu/)
