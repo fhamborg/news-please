@@ -295,7 +295,11 @@ class NewsPleaseLauncher(object):
             sys.stdout.write(
                 "Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
                 + "Should a default config directory be created at this path? [Y/n]")
-            user_choice = input().lower().replace("yes", "y").replace("no", "n")
+            if sys.version_info[0] < 3:
+                user_choice = raw_input()
+            else:
+                user_choice = input()
+            user_choice = user_choice.lower().replace("yes", "y").replace("no", "n")
 
         if not user_choice or user_choice == '':  # the default is yes
             user_choice = "y"
