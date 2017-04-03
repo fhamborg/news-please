@@ -52,7 +52,7 @@ class NewsPleaseLauncher(object):
     mysql = None
     elasticsearch = None
     number_of_active_crawlers = 0
-    config_directory_default_path = "~/news-please/config/"
+    config_directory_default_path = "~/news-please-repo/config/"
     config_file_default_name = "config.cfg"
     library_mode = None
 
@@ -81,7 +81,7 @@ class NewsPleaseLauncher(object):
         # modules of this project in relation to this script's dir
         # example: sitemap_crawler can import UrlExtractor via
         #   from newsplease.helper_classderes.url_extractor import UrlExtractor
-        os.environ['CColon'] = os.path.dirname(__file__)
+        os.environ['CColon'] = os.path.abspath(os.path.dirname(__file__))
 
         # set stop handlers
         self.set_stop_handler()
@@ -293,8 +293,8 @@ class NewsPleaseLauncher(object):
             user_choice = 'y'
         else:
             sys.stdout.write(
-                "Config directory or file does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
-                + "Should a default config directory be created at this path? [Y/n]")
+                "Config directory does not exist at '" + os.path.abspath(self.cfg_directory_path) + "'. "
+                + "Should a default configuration be created at this path? [Y/n] ")
             if sys.version_info[0] < 3:
                 user_choice = raw_input()
             else:
