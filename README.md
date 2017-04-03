@@ -1,5 +1,7 @@
 # **news-please** #
 
+[![PyPI version](https://badge.fury.io/py/news-please.svg)](https://badge.fury.io/py/news-please)
+
 [//]: # ( <img align="right" height="128px" width"128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> )
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). 
 
@@ -92,13 +94,13 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
+## Wiki and documentation
+You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
+
 ## Future improvements
 * Better error handling incl. more descriptive messages
 * Better logging (currently, we think that the logging is either too detailed or too silent)
 * Improvement of detection whether a page is a news article or not
-
-## Wiki and documentation
-You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
