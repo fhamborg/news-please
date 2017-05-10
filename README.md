@@ -118,7 +118,7 @@ This project would not have been possible without the contributions of the follo
 * Moritz Steinmaier
 
 ## How to cite
-If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf):
+If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf) ([ResearchGate](https://www.researchgate.net/publication/314072045_news-please_A_Generic_News_Crawler_and_Extractor)):
 ```
 @InProceedings{Hamborg2017,
   author     = {{H}amborg, {F}elix and {M}euschke, {N}orman and {B}reitinger, {C}orinna and {G}ipp, {B}ela},
