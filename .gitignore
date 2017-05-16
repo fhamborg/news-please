@@ -4,3 +4,6 @@
 data/
 .resume_jobdir/
 __pycache__/
+.idea/
+.DS_Store
+news-please.iml
