@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/news-please.svg)](https://badge.fury.io/py/news-please)
 
 [//]: # ( <img align="right" height="128px" width"128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> )
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). 
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). 
 
 ## Extracted information
 * headline
@@ -118,7 +118,7 @@ This project would not have been possible without the contributions of the follo
 * Moritz Steinmaier
 
 ## How to cite
-If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf):
+If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf) ([ResearchGate](https://www.researchgate.net/publication/314072045_news-please_A_Generic_News_Crawler_and_Extractor)):
 ```
 @InProceedings{Hamborg2017,
   author     = {{H}amborg, {F}elix and {M}euschke, {N}orman and {B}reitinger, {C}orinna and {G}ipp, {B}ela},
@@ -131,11 +131,12 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
   month      = {March}
 }
 ```
+You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contribution
 You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: [felix.hamborg@uni-konstanz.de](felix.hamborg@uni-konstanz.de). By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
 ## License
-The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/).
+The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/). 
 
-Copyright 2016 [Felix Hamborg](http://felix.hamborg.eu/)
+Copyright 2016 The news-please team
