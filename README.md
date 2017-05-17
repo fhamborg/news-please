@@ -102,11 +102,6 @@ We have collected a bunch of useful information for both [users](https://github.
 ## Wiki and documentation
 You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
 
-## Future improvements
-* Better error handling incl. more descriptive messages
-* Better logging (currently, we think that the logging is either too detailed or too silent)
-* Improvement of detection whether a page is a news article or not
-
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
 
