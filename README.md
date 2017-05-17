@@ -47,6 +47,11 @@ or if you want to crawl multiple articles at a time
 ```python
 NewsPlease.download_articles([url1, url2, ...])
 ```
+or if you have a file containing all URLs (each line containing a single URL)
+```python
+NewsPlease.download_from_file(path)
+```
+In library mode, news-please will attempt to download and extract information from each URL. The previously described functions are blocking, i.e. will return once all URLs have been attempted. The resulting list contains all articles that have been extracted successfully.
 
 ### Run the crawler (via the CLI)
 
