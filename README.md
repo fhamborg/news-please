@@ -34,7 +34,7 @@ It's super easy, we promise!
 ### Installation
 
 ```
-$ sudo pip install news-please
+$ pip install news-please
 ```
 
 ### Use within your own code (as a library)
