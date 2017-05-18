@@ -74,6 +74,7 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
     [Scrapy]
     
     ITEM_PIPELINES = {
+    		       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
                        'newscrawler.pipeline.pipelines.ElasticSearchStorage':350
                      }
 
