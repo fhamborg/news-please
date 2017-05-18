@@ -283,6 +283,7 @@ class ExtractedInformationStorage(object):
             'pageTitle': item['html_title'].decode("utf-8"),
             'rss_title': item['rss_title'],
             'localpath': item['local_path'],
+            'filename': item['filename'],
             'descendant': False,
             'downloadDate': item['download_date'],
             'modifiedDate': item['modified_date'],

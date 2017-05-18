@@ -1,10 +1,12 @@
 """
 This is a helper class for the crawler's parse methods
 """
-import time
-import re
 import logging
+import re
+import time
+
 import scrapy
+
 from ..crawler.items import NewscrawlerItem
 
 
@@ -55,6 +57,7 @@ class ParseCrawler(object):
         article = NewscrawlerItem()
         article['local_path'] = self.helper.savepath_parser \
             .get_formatted_relative_path(relative_local_path)
+        article['filename'] = self.helper.savepath_parser.get_filename(article['local_path'])
         article['abs_local_path'] = self.helper.savepath_parser \
             .get_abs_path(relative_local_path)
         article['modified_date'] = timestamp

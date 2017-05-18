@@ -1,10 +1,12 @@
 """
 Helper class for parsing the savepath defined in the config.
 """
-import os
-import time
-import re
 import hashlib
+import ntpath
+import re
+import time
+
+import os
 
 from .url_extractor import UrlExtractor
 
@@ -276,3 +278,12 @@ class SavepathParser(object):
         max_size_per_occurrence = max_size / number_occurrences
 
         return max_size_per_occurrence
+
+    @staticmethod
+    def get_filename(savepath):
+        """
+        Returns only the filename of the given path.
+        :param savepath:
+        :return:
+        """
+        return ntpath.basename(savepath)
