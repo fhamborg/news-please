@@ -13,3 +13,4 @@ for url in articles:
     article = articles[url]
     with open(download_dir + article['filename'], 'w') as outfile:
         json.dump(article, outfile)
+
