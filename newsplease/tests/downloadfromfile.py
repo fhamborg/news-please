@@ -22,4 +22,4 @@ articles = NewsPlease.download_from_file(basepath + name)
 for url in articles:
     article = articles[url]
     with open(download_dir + article['filename'] + '.json', 'w') as outfile:
-        json.dump(article, outfile)
+        json.dump(article, outfile, indent=4, sort_keys=True)
