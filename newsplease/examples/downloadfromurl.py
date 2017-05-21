@@ -11,7 +11,7 @@ from newsplease import NewsPlease
 url = 'https://www.rt.com/news/203203-ukraine-russia-troops-border/'
 basepath = '/Users/felix/Downloads/'
 
-article = NewsPlease.download_article(url)
+article = NewsPlease.from_url(url)
 
 with open(basepath + article['filename'] + '.json', 'w') as outfile:
     json.dump(article, outfile, indent=4, sort_keys=True)

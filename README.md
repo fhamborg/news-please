@@ -40,16 +40,16 @@ $ pip install news-please
 ### Use within your own code (as a library)
 ```python
 from newsplease import NewsPlease
-article = NewsPlease.download_article('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
+article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
 print(article['title'])
 ```
 or if you want to crawl multiple articles at a time
 ```python
-NewsPlease.download_articles([url1, url2, ...])
+NewsPlease.from_urls([url1, url2, ...])
 ```
 or if you have a file containing all URLs (each line containing a single URL)
 ```python
-NewsPlease.download_from_file(path)
+NewsPlease.from_file(path)
 ```
 In library mode, news-please will attempt to download and extract information from each URL. The previously described functions are blocking, i.e. will return once all URLs have been attempted. The resulting list contains all articles that have been extracted successfully.
 

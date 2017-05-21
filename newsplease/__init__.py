@@ -17,23 +17,23 @@ class NewsPlease:
     is_crawler_closed = False
 
     @staticmethod
-    def download_article(url):
+    def from_url(url):
         """
         Crawls the article from the url and extracts relevant information.
         :param url:
         :return: A dict containing all the information of the article.
         """
-        return NewsPlease.download_articles([url])[url]
+        return NewsPlease.from_urls([url])[url]
 
     @staticmethod
-    def download_articles(urls):
+    def from_urls(urls):
         """
         Crawls articles from the urls and extracts relevant information.
         :param urls:
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
         SingleCrawler.create_as_library(urls)
-        dispatcher.connect(NewsPlease.spider_closed, signals.spider_closed)
+        dispatcher.connect(NewsPlease.__spider_closed, signals.spider_closed)
 
         # wait for the crawler to close
         while not NewsPlease.is_crawler_closed:
@@ -45,7 +45,7 @@ class NewsPlease:
         return results
 
     @staticmethod
-    def download_from_file(path):
+    def from_file(path):
         """
         Crawls articles from the urls and extracts relevant information.
         :param path: path to file containing urls (each line contains one URL)
@@ -56,8 +56,8 @@ class NewsPlease:
         content = [x.strip() for x in content]
         urls = list(filter(None, content))
 
-        return NewsPlease.download_articles(urls)
+        return NewsPlease.from_urls(urls)
 
     @staticmethod
-    def spider_closed(spider, reason):
+    def __spider_closed(spider, reason):
         NewsPlease.is_crawler_closed = True
