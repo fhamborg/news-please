@@ -12,6 +12,7 @@ from newsplease.pipeline.extractor import article_extractor
 from newsplease.crawler.items import NewscrawlerItem
 from dotmap import DotMap
 from newsplease.pipeline.pipelines import ExtractedInformationStorage
+from urllib.parse import urlparse
 
 
 class NewsPlease:
@@ -21,29 +22,25 @@ class NewsPlease:
     is_crawler_closed = False
 
     @staticmethod
-    def from_html(html, url=''):
+    def from_html(html, url='', title=''):
         extractor = article_extractor.Extractor(
             ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
+        title_encoded = title.encode()
         item = NewscrawlerItem()
         item['spider_response'] = DotMap()
         item['spider_response'].body = html
         item['url'] = url
+        item['source_domain'] = urlparse('http://www.google.com/').hostname.encode()
+        item['html_title'] = title_encoded
+        item['rss_title'] = title_encoded
+        item['local_path'] = None
+        item['filename'] = None
+        item['download_date'] = None
+        item['modified_date'] = None
         item = extractor.extract(item)
-        article = ExtractedInformationStorage.extract_relevant_info(item)
-        print(article)
 
-        # tmp_filename = os.path.realpath(uuid.uuid4().hex)
-        #
-        # with open(tmp_filename, 'w') as tmp_file:
-        #     tmp_file.write(text)
-        #     try:
-        #         tmp_article = NewsPlease.from_url(pathlib.Path(tmp_filename).as_uri())
-        #         if tmp_article:
-        #             print(tmp_article['title'])
-        #     except:
-        #         pass
-        #
-        # os.remove(tmp_filename)
+        article = ExtractedInformationStorage.extract_relevant_info(item)
+        return article
 
     @staticmethod
     def from_url(url):
@@ -94,7 +91,3 @@ class NewsPlease:
     @staticmethod
     def __spider_closed(spider, reason):
         NewsPlease.is_crawler_closed = True
-
-
-if __name__ == "__main__":
-    NewsPlease.from_html('<html></html>')
