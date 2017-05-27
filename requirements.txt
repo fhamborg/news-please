@@ -13,3 +13,4 @@ python-dateutil>=2.4.0
 plac>=0.9.6
 future>=0.16.0 ; python_version == '2.7'
 PyDispatcher>=2.0.5
+dotmap>=1.2.17

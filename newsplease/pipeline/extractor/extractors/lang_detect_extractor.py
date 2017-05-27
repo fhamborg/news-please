@@ -1,8 +1,11 @@
-from .abstract_extractor import AbstractExtractor
-from langdetect import detect
-from lxml import html
 import locale
 import re
+
+from langdetect import detect
+from langdetect.lang_detect_exception import LangDetectException
+from lxml import html
+
+from .abstract_extractor import AbstractExtractor
 
 
 class LangExtractor(AbstractExtractor):
@@ -50,7 +53,10 @@ class LangExtractor(AbstractExtractor):
 
         # Analyze the whole body with langdetect
         if lang is None:
-            lang = detect(root.text_content().strip())
+            try:
+                lang = detect(root.text_content().strip())
+            except LangDetectException:
+                pass
 
         # Try to normalize output
         if lang is not None:

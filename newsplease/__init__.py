@@ -8,10 +8,10 @@ from newsplease.single_crawler import SingleCrawler
 import time
 from scrapy import signals
 from pydispatch import dispatcher
-
-import pathlib
-import uuid
-import os
+from newsplease.pipeline.extractor import article_extractor
+from newsplease.crawler.items import NewscrawlerItem
+from dotmap import DotMap
+from newsplease.pipeline.pipelines import ExtractedInformationStorage
 
 
 class NewsPlease:
@@ -21,19 +21,29 @@ class NewsPlease:
     is_crawler_closed = False
 
     @staticmethod
-    def from_text(text):
-        tmp_filename = os.path.realpath(uuid.uuid4().hex)
+    def from_html(html, url=''):
+        extractor = article_extractor.Extractor(
+            ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
+        item = NewscrawlerItem()
+        item['spider_response'] = DotMap()
+        item['spider_response'].body = html
+        item['url'] = url
+        item = extractor.extract(item)
+        article = ExtractedInformationStorage.extract_relevant_info(item)
+        print(article)
 
-        with open(tmp_filename, 'w') as tmp_file:
-            tmp_file.write(text)
-            try:
-                tmp_article = NewsPlease.from_url(pathlib.Path(tmp_filename).as_uri())
-                if tmp_article:
-                    print(tmp_article['title'])
-            except:
-                pass
-
-        os.remove(tmp_filename)
+        # tmp_filename = os.path.realpath(uuid.uuid4().hex)
+        #
+        # with open(tmp_filename, 'w') as tmp_file:
+        #     tmp_file.write(text)
+        #     try:
+        #         tmp_article = NewsPlease.from_url(pathlib.Path(tmp_filename).as_uri())
+        #         if tmp_article:
+        #             print(tmp_article['title'])
+        #     except:
+        #         pass
+        #
+        # os.remove(tmp_filename)
 
     @staticmethod
     def from_url(url):
@@ -87,4 +97,4 @@ class NewsPlease:
 
 
 if __name__ == "__main__":
-    NewsPlease.from_text('<html></html>')
+    NewsPlease.from_html('<html></html>')
