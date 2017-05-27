@@ -9,6 +9,10 @@ import time
 from scrapy import signals
 from pydispatch import dispatcher
 
+import pathlib
+import uuid
+import os
+
 
 class NewsPlease:
     """
@@ -17,13 +21,32 @@ class NewsPlease:
     is_crawler_closed = False
 
     @staticmethod
+    def from_text(text):
+        tmp_filename = os.path.realpath(uuid.uuid4().hex)
+
+        with open(tmp_filename, 'w') as tmp_file:
+            tmp_file.write(text)
+            try:
+                tmp_article = NewsPlease.from_url(pathlib.Path(tmp_filename).as_uri())
+                if tmp_article:
+                    print(tmp_article['title'])
+            except:
+                pass
+
+        os.remove(tmp_filename)
+
+    @staticmethod
     def from_url(url):
         """
         Crawls the article from the url and extracts relevant information.
         :param url:
-        :return: A dict containing all the information of the article.
+        :return: A dict containing all the information of the article. Else, None.
         """
-        return NewsPlease.from_urls([url])[url]
+        articles = NewsPlease.from_urls([url])
+        if url in articles.keys():
+            return articles[url]
+        else:
+            return None
 
     @staticmethod
     def from_urls(urls):
@@ -61,3 +84,7 @@ class NewsPlease:
     @staticmethod
     def __spider_closed(spider, reason):
         NewsPlease.is_crawler_closed = True
+
+
+if __name__ == "__main__":
+    NewsPlease.from_text('<html></html>')
