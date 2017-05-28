@@ -22,15 +22,19 @@ class NewsPlease:
     is_crawler_closed = False
 
     @staticmethod
-    def from_html(html, url='', title=''):
+    def from_html(html, url=None):
         extractor = article_extractor.Extractor(
             ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
-        title_encoded = title.encode()
+
+        title_encoded = ''.encode()
+        if not url:
+            url = ''
+
         item = NewscrawlerItem()
         item['spider_response'] = DotMap()
         item['spider_response'].body = html
         item['url'] = url
-        item['source_domain'] = urlparse('http://www.google.com/').hostname.encode()
+        item['source_domain'] = urlparse(url).hostname.encode() if url != '' else ''.encode()
         item['html_title'] = title_encoded
         item['rss_title'] = title_encoded
         item['local_path'] = None

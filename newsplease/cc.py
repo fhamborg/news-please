@@ -8,7 +8,8 @@ with warc.open(path) as f:
     i = 0
     for record in f:
         html = str(record.payload.read())
-        article = NewsPlease.from_text(html)
+        url = record.url
+        article = NewsPlease.from_html(html, url)
         if article:
             print(article['title'])
 
