@@ -22,7 +22,27 @@ class NewsPlease:
     is_crawler_closed = False
 
     @staticmethod
+    def from_warc(warc_record):
+        """
+        Extracts relevant information from a WARC record. This function does not invoke scrapy but only uses the article
+        extractor.
+        :param warc_record:
+        :return:
+        """
+        html = str(warc_record.payload.read())
+        url = warc_record.url
+        article = NewsPlease.from_html(html, url)
+        return article
+
+    @staticmethod
     def from_html(html, url=None):
+        """
+        Extracts relevant information from an HTML page given as a string. This function does not invoke scrapy but only
+        uses the article extractor.
+        :param html:
+        :param url:
+        :return:
+        """
         extractor = article_extractor.Extractor(
             ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
 
