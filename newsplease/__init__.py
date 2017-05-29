@@ -63,7 +63,7 @@ class NewsPlease:
         item = extractor.extract(item)
 
         article = ExtractedInformationStorage.extract_relevant_info(item)
-        return article
+        return DotMap(article)
 
     @staticmethod
     def from_url(url):
@@ -95,6 +95,11 @@ class NewsPlease:
         # the crawler has completed, we need to get the results
         results = InMemoryStorage.get_results()
         NewsPlease.is_crawler_closed = False
+
+        # convert to DotMap
+        for url in results:
+            results[url] = DotMap(results[url])
+
         return results
 
     @staticmethod
