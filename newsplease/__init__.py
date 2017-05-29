@@ -25,9 +25,7 @@ class NewsPlease:
     def from_warc(warc_record):
         """
         Extracts relevant information from a WARC record. This function does not invoke scrapy but only uses the article
-        extractor. You need to install the WARC (Python 2.x) or WARC3 (Python 3) library. WARC can be installed with pip
-        install warc. WARC3 needs to be installed from the GitHub repository: https://github.com/erroneousboat/warc3
-        :param warc_record:
+        extractor.
         :return:
         """
         html = str(warc_record.payload.read())

@@ -14,3 +14,5 @@ plac>=0.9.6
 future>=0.16.0 ; python_version == '2.7'
 PyDispatcher>=2.0.5
 dotmap>=1.2.17
+warc ; python_version == '2.7'
+warc3 ; python_version >= '3.0'
