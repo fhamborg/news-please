@@ -268,7 +268,6 @@ class ExtractedInformationStorage(object):
         self.log.addHandler(logging.NullHandler())
         self.cfg = CrawlerConfig.get_instance()
 
-
     @staticmethod
     def extract_relevant_info(item):
         """

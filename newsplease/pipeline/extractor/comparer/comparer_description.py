@@ -1,4 +1,3 @@
-
 class ComparerDescription():
     """This class compares the descriptions of the list of ArticleCandidates and sends the result
     back to the Comparer.
@@ -28,7 +27,7 @@ class ComparerDescription():
         list_newspaper = [x for x in list_description if x[1] == "newspaper"]
         if len(list_newspaper) == 0:
 
-            #If there is no description extracted by newspaper, return the first result of list_description.
+            # If there is no description extracted by newspaper, return the first result of list_description.
             return list_description[0][0]
         else:
             return list_newspaper[0][0]

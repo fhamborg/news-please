@@ -1,4 +1,5 @@
 import logging
+
 import scrapy
 
 
@@ -36,7 +37,7 @@ class Download(scrapy.Spider):
         yield self.helper.parse_crawler.pass_to_pipeline(
             response,
             self.helper.url_extractor.get_allowed_domain(response.url)
-            )
+        )
 
     @staticmethod
     def supports_site(url):

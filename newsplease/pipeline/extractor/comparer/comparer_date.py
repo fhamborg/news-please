@@ -1,4 +1,3 @@
-
 class ComparerDate():
     """This class compares the dates of the list of ArticleCandidates and sends the result back to the Comparer."""
 

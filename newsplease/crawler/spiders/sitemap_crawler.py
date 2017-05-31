@@ -1,5 +1,7 @@
 import logging
+
 import scrapy
+
 from ...helper_classes.url_extractor import UrlExtractor
 
 
@@ -22,8 +24,8 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
         self.original_url = url
 
         self.allowed_domains = [self.helper.url_extractor
-                                .get_allowed_domain(url, config.section(
-                                    'Crawler')['sitemap_allow_subdomains'])]
+                                    .get_allowed_domain(url, config.section(
+            'Crawler')['sitemap_allow_subdomains'])]
         self.sitemap_urls = [self.helper.url_extractor.get_sitemap_url(
             url, config.section('Crawler')['sitemap_allow_subdomains'])]
 

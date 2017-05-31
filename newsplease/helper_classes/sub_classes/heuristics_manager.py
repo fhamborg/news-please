@@ -58,8 +58,8 @@ class HeuristicsManager(object):
             statement = re.sub(r"\b%s\b" % heuristic, str(check), statement)
 
             self.log.debug("Checking heuristic (%s)"
-                          " result (%s) on condition (%s): %s",
-                          heuristic, result, condition, check)
+                           " result (%s) on condition (%s): %s",
+                           heuristic, result, condition, check)
 
         self.log.debug("Condition (evaluated): %s", statement)
         is_article = eval(statement)
@@ -132,8 +132,8 @@ class HeuristicsManager(object):
         if isinstance(condition, basestring):
 
             # Check if result should match a string
-            if (condition.startswith("'") and condition.endswith("'")) or\
-               (condition.startswith('"') and condition.endswith('"')):
+            if (condition.startswith("'") and condition.endswith("'")) or \
+                    (condition.startswith('"') and condition.endswith('"')):
                 if isinstance(result, basestring):
                     self.log.debug("Condition %s recognized as string.",
                                    condition)

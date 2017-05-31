@@ -8,8 +8,9 @@ It handles the [General]-Section of the config.
 All object-getters create deepcopies.
 """
 
-from copy import deepcopy
 import logging
+from copy import deepcopy
+
 import hjson
 
 # import ConfigParser
@@ -39,6 +40,7 @@ class CrawlerConfig(object):
     # Source: http://code.activestate.com/recipes/52558-the-singleton-pattern-implemented-with-python/#c4
     class SingletonHelper(object):
         """The singleton-helper-class"""
+
         # https://pythontips.com/2013/08/04/args-and-kwargs-in-python-explained/
         def __call__(self, *args, **kw):
             if CrawlerConfig.instance is None:
@@ -117,7 +119,7 @@ class CrawlerConfig(object):
                             {"level": "debug",
                              "msg": "Option not literal_eval-parsable"
                                     " (maybe string): [{0}] {1}"
-                                    .format(section, option)})
+                                 .format(section, option)})
 
                     if self.__config[section][option] == -1:
                         self.log_output.append(
@@ -128,7 +130,7 @@ class CrawlerConfig(object):
                     self.log_output.append(
                         {"level": "error",
                          "msg": "Exception on [%s] %s: %s"
-                         % (section, option, exc)}
+                                % (section, option, exc)}
                     )
                     self.__config[section][option] = None
 
@@ -230,6 +232,7 @@ class JsonConfig(object):
     # Source: http://code.activestate.com/recipes/52558-the-singleton-pattern-implemented-with-python/#c4
     class SingletonHelper(object):
         """The singleton-helper-class"""
+
         def __call__(self, *args, **kw):
             if JsonConfig.instance is None:
                 JsonConfig.instance = JsonConfig()

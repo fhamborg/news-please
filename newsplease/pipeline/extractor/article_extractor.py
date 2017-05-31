@@ -1,9 +1,10 @@
-import logging
 import importlib
 import inspect
-from .extractors.abstract_extractor import AbstractExtractor
+import logging
+
 from .cleaner import Cleaner
 from .comparer.comparer import Comparer
+from .extractors.abstract_extractor import AbstractExtractor
 
 
 class Extractor:
@@ -12,7 +13,8 @@ class Extractor:
     """
 
     def __init__(self, extractor_list):
-        """Initializes all the extractors, comparers and the cleaner.
+        """
+        Initializes all the extractors, comparers and the cleaner.
 
         :param extractor_list: List of strings containing all extractors to be initialized.
         """
@@ -20,7 +22,7 @@ class Extractor:
         self.extractor_list = []
         for extractor in extractor_list:
 
-            module = importlib.import_module(__package__+'.extractors.'+extractor)
+            module = importlib.import_module(__package__ + '.extractors.' + extractor)
 
             # check module for subclasses of AbstractExtractor
             for member in inspect.getmembers(module, inspect.isclass):

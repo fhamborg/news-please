@@ -4,9 +4,9 @@ so they can be passed to other classes easily
 """
 
 from .helper_classes.heuristics import Heuristics
-from .helper_classes.url_extractor import UrlExtractor
-from .helper_classes.savepath_parser import SavepathParser
 from .helper_classes.parse_crawler import ParseCrawler
+from .helper_classes.savepath_parser import SavepathParser
+from .helper_classes.url_extractor import UrlExtractor
 
 
 class Helper(object):

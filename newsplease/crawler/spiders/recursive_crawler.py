@@ -1,4 +1,5 @@
 import logging
+
 import scrapy
 
 
@@ -29,7 +30,7 @@ class RecursiveCrawler(scrapy.Spider):
         self.original_url = url
 
         self.allowed_domains = [self.helper.url_extractor
-                                .get_allowed_domain(url)]
+                                    .get_allowed_domain(url)]
         self.start_urls = [self.helper.url_extractor.get_start_url(url)]
 
         super(RecursiveCrawler, self).__init__(*args, **kwargs)

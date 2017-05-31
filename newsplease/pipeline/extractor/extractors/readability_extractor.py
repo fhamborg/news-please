@@ -1,13 +1,17 @@
 from copy import deepcopy
+
 from readability import Document
+
 from .abstract_extractor import AbstractExtractor
 from ..article_candidate import ArticleCandidate
+
 
 class ReadabilityExtractor(AbstractExtractor):
     """This class implements Readability as an article extractor. Readability is
     a subclass of Extractors and newspaper.Article.
 
     """
+
     def __init__(self):
         self.name = "readability"
 
@@ -32,4 +36,3 @@ class ReadabilityExtractor(AbstractExtractor):
         article_candidate.language = self._language(item)
 
         return article_candidate
-

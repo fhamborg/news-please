@@ -23,6 +23,7 @@ sys.path.append(par_path)
 from newsplease.config import CrawlerConfig
 from newsplease.config import JsonConfig
 from newsplease.helper import Helper
+
 try:
     from _thread import start_new_thread
 except ImportError:
@@ -103,7 +104,7 @@ class SingleCrawler(object):
             ignore_regex = "(%s)|" % site["ignore_regex"]
         else:
             ignore_regex = "(%s)|" % \
-                self.cfg.section('Crawler')['ignore_regex']
+                           self.cfg.section('Crawler')['ignore_regex']
 
         # Get the default crawler. The crawler can be overwritten by fallbacks.
         if "additional_rss_daemon" in site and self.daemonize:
@@ -191,7 +192,7 @@ class SingleCrawler(object):
                                        crawler, url)
                         return current
                     elif (crawler in self.cfg_crawler["fallbacks"] and
-                          self.cfg_crawler["fallbacks"][crawler] is not None):
+                                  self.cfg_crawler["fallbacks"][crawler] is not None):
                         self.log.warn("Crawler %s not supported by %s. "
                                       "Trying to fall back.", crawler, url)
                         crawler = self.cfg_crawler["fallbacks"][crawler]
@@ -250,7 +251,7 @@ class SingleCrawler(object):
             shutil.rmtree(jobdir)
 
             self.log.info("Removed " + jobdir + " since '--resume' was not passed to"
-                          " initial.py or this crawler was daemonized.")
+                                                " initial.py or this crawler was daemonized.")
 
 
 def start_process(process, stop_after_job):

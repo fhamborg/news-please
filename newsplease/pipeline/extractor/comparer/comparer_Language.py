@@ -1,4 +1,3 @@
-
 class ComparerLanguage:
     """Implements a compare method for detected languages"""
 
@@ -37,7 +36,7 @@ class ComparerLanguage:
         for language in languages_extracted_set:
             languages_extracted_number.append((languages_extracted.count(language), language))
 
-        if not(languages_extracted_number):
+        if not (languages_extracted_number):
             return None
 
         # If there is no favorite language, return the language extracted by newspaper

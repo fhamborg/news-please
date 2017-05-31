@@ -1,9 +1,12 @@
-import re
 import json
+import re
 from copy import deepcopy
-from dateutil.parser import parse
+
 from bs4 import BeautifulSoup
+from dateutil.parser import parse
+
 from .abstract_extractor import AbstractExtractor
+
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -43,7 +46,9 @@ class DateExtractor(AbstractExtractor):
             if publish_date is None:
                 publish_date = self._extract_from_url(url)
         except Exception as e:
-            print(e.message, e.args)
+            # print(e.message, e.args)
+            pass
+
         return publish_date
 
     def parse_date_str(self, date_string):
@@ -57,7 +62,9 @@ class DateExtractor(AbstractExtractor):
         """Try to extract from the article URL - simple but might work as a fallback"""
 
         # Regex by Newspaper3k  - https://github.com/codelucas/newspaper/blob/master/newspaper/urls.py
-        m = re.search(r'([\./\-_]{0,1}(19|20)\d{2})[\./\-_]{0,1}(([0-3]{0,1}[0-9][\./\-_])|(\w{3,5}[\./\-_]))([0-3]{0,1}[0-9][\./\-]{0,1})?', url)
+        m = re.search(
+            r'([\./\-_]{0,1}(19|20)\d{2})[\./\-_]{0,1}(([0-3]{0,1}[0-9][\./\-_])|(\w{3,5}[\./\-_]))([0-3]{0,1}[0-9][\./\-]{0,1})?',
+            url)
         if m:
             return self.parse_date_str(m.group(0))
         return None
@@ -166,7 +173,7 @@ class DateExtractor(AbstractExtractor):
                 date = meta['content'].strip()
                 break
 
-            #<meta itemprop="datePublished" content="2015-11-26T11:53:00.000Z" />
+            # <meta itemprop="datePublished" content="2015-11-26T11:53:00.000Z" />
             if 'datecreated' == item_prop:
                 date = meta['content'].strip()
                 break

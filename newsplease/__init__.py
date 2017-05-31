@@ -19,7 +19,7 @@ class NewsPlease:
     """
     Access news-please functionality via this interface
     """
-    is_crawler_closed = False
+    __is_crawler_closed = False
 
     @staticmethod
     def from_warc(warc_record):
@@ -28,8 +28,8 @@ class NewsPlease:
         extractor.
         :return:
         """
-        html = str(warc_record.payload.read())
-        url = warc_record.url
+        html = str(warc_record.raw_stream.read())
+        url = warc_record.rec_headers.get_header('WARC-Target-URI')
         article = NewsPlease.from_html(html, url)
         return article
 
@@ -89,12 +89,12 @@ class NewsPlease:
         dispatcher.connect(NewsPlease.__spider_closed, signals.spider_closed)
 
         # wait for the crawler to close
-        while not NewsPlease.is_crawler_closed:
+        while not NewsPlease.__is_crawler_closed:
             time.sleep(0.01)
 
         # the crawler has completed, we need to get the results
         results = InMemoryStorage.get_results()
-        NewsPlease.is_crawler_closed = False
+        NewsPlease.__is_crawler_closed = False
 
         # convert to DotMap
         for url in results:
@@ -118,4 +118,4 @@ class NewsPlease:
 
     @staticmethod
     def __spider_closed(spider, reason):
-        NewsPlease.is_crawler_closed = True
+        NewsPlease.__is_crawler_closed = True

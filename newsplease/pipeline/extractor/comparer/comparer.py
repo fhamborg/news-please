@@ -1,11 +1,11 @@
-from ..article_candidate import ArticleCandidate
-from .comparer_title import ComparerTitle
-from .comparer_description import ComparerDescription
-from .comparer_text import ComparerText
-from .comparer_topimage import ComparerTopimage
+from .comparer_Language import ComparerLanguage
 from .comparer_author import ComparerAuthor
 from .comparer_date import ComparerDate
-from .comparer_Language import ComparerLanguage
+from .comparer_description import ComparerDescription
+from .comparer_text import ComparerText
+from .comparer_title import ComparerTitle
+from .comparer_topimage import ComparerTopimage
+from ..article_candidate import ArticleCandidate
 
 
 class Comparer:

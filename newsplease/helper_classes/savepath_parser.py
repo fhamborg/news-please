@@ -28,7 +28,7 @@ class SavepathParser(object):
             format_relative_path,
             helper,
             working_path
-            ):
+    ):
         self.helper = helper
 
         # this part can be replaced right now; no need to replace it over and
@@ -48,7 +48,6 @@ class SavepathParser(object):
         self.format_relative_path = format_relative_path
 
         self.working_path = working_path
-
 
     @staticmethod
     def time_replacer(match, timestamp):
@@ -108,7 +107,7 @@ class SavepathParser(object):
         savepath = re.sub(r'%domain\(([^\)]+)\)',
                           lambda match: UrlExtractor
                           .get_allowed_domain(url, False)[
-                              :int(match.group(1))], savepath)
+                                        :int(match.group(1))], savepath)
         savepath = re.sub(r'%appendmd5_domain\(([^\)]+)\)',
                           lambda match: SavepathParser.append_md5_if_too_long(
                               UrlExtractor.get_allowed_domain(url, False),
@@ -120,7 +119,7 @@ class SavepathParser(object):
 
         savepath = re.sub(r'%full_domain\(([^\)]+)\)',
                           lambda match: UrlExtractor.get_allowed_domain(url)[
-                              :int(match.group(1))], savepath)
+                                        :int(match.group(1))], savepath)
         savepath = re.sub(r'%appendmd5_full_domain\(([^\)]+)\)',
                           lambda match: SavepathParser.append_md5_if_too_long(
                               UrlExtractor.get_allowed_domain(url),
@@ -132,7 +131,7 @@ class SavepathParser(object):
 
         savepath = re.sub(r'%subdomains\(([^\)]+)\)',
                           lambda match: UrlExtractor.get_subdomain(url)[
-                              :int(match.group(1))], savepath)
+                                        :int(match.group(1))], savepath)
         savepath = re.sub(r'%appendmd5_subdomains\(([^\)]+)\)',
                           lambda match: SavepathParser.append_md5_if_too_long(
                               UrlExtractor.get_subdomain(url),
@@ -168,8 +167,8 @@ class SavepathParser(object):
 
         savepath = re.sub(r'%max_url_file_name',
                           lambda match: UrlExtractor.get_url_file_name(url)[
-                              :SavepathParser.get_max_url_file_name_length(
-                                  abs_savepath)], savepath)
+                                        :SavepathParser.get_max_url_file_name_length(
+                                            abs_savepath)], savepath)
         savepath = re.sub(r'%appendmd5_max_url_file_name',
                           lambda match: SavepathParser.append_md5_if_too_long(
                               UrlExtractor.get_url_file_name(url),
@@ -208,7 +207,7 @@ class SavepathParser(object):
         else:
             return os.path.abspath(
                 os.path.join(relative_to_path, (savepath))
-                )
+            )
 
     def get_abs_path(self, savepath):
         """
@@ -269,8 +268,8 @@ class SavepathParser(object):
         savepath_copy = savepath
         size_without_max_url_file_name = len(
             savepath_copy.replace('%max_url_file_name', '')
-            .replace('%appendmd5_max_url_file_name', '')
-            )
+                .replace('%appendmd5_max_url_file_name', '')
+        )
 
         # Windows: max file path length is 260 characters including
         # NULL (string end)

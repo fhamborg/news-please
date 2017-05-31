@@ -2,6 +2,7 @@
 Helper class for testing heuristics
 """
 import re
+
 from .sub_classes.heuristics_manager import HeuristicsManager
 from .url_extractor import UrlExtractor
 
@@ -41,7 +42,7 @@ class Heuristics(HeuristicsManager):
                       keyword 'article'
         """
         contains_meta = response.xpath('//meta') \
-                                .re('(= ?["\'][^"\']*article[^"\']*["\'])')
+            .re('(= ?["\'][^"\']*article[^"\']*["\'])')
 
         if not contains_meta:
             return False
@@ -89,17 +90,17 @@ class Heuristics(HeuristicsManager):
             for headline in response.xpath('//h%s' % i).extract():
                 h_all += 1
                 if "href" in headline and (
-                        not check_self or re.search(site_regex, headline)
+                            not check_self or re.search(site_regex, headline)
                         is not None):
                     h_linked += 1
 
         self.log.debug("Linked headlines test: headlines = %s, linked = %s",
-                      h_all, h_linked)
+                       h_all, h_linked)
 
         min_headlines = self.cfg_heuristics["min_headlines_for_linked_test"]
         if min_headlines > h_all:
             self.log.debug("Linked headlines test: Not enough headlines "
-                          "(%s < %s): Passing!", h_all, min_headlines)
+                           "(%s < %s): Passing!", h_all, min_headlines)
             return True
 
         return float(h_linked) / float(h_all)

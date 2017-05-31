@@ -1,4 +1,3 @@
-
 class ComparerAuthor():
     """This class compares the titles of the list of ArticleCandidates and sends the result back to the Comparer."""
 
@@ -24,7 +23,7 @@ class ComparerAuthor():
         list_newspaper = [x for x in list_author if x[1] == "newspaper"]
         if len(list_newspaper) == 0:
 
-            #If there is no author extracted by newspaper, return the first result of list_author.
+            # If there is no author extracted by newspaper, return the first result of list_author.
             return list_author[0][0]
         else:
             return list_newspaper[0][0]

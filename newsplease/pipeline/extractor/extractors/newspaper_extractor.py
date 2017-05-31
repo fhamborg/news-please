@@ -1,7 +1,9 @@
 import logging
+
+from newspaper import Article
+
 from .abstract_extractor import AbstractExtractor
 from ..article_candidate import ArticleCandidate
-from newspaper import Article
 
 
 class NewspaperExtractor(AbstractExtractor):
@@ -12,8 +14,6 @@ class NewspaperExtractor(AbstractExtractor):
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self.name = "newspaper"
-
-
 
     def extract(self, item):
         """Creates an instance of Article without a Download and returns an ArticleCandidate with the results of

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import sys
+
 from lxml import html
 
 
@@ -69,7 +70,6 @@ class Cleaner:
         results = []
 
         for article_candidate in list_article_candidates:
-
             article_candidate.title = self.do_cleaning(article_candidate.title)
             article_candidate.description = self.do_cleaning(article_candidate.description)
             article_candidate.text = self.do_cleaning(article_candidate.text)

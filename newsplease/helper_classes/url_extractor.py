@@ -2,6 +2,7 @@
 Helper class for url extraction.
 """
 import re
+
 import os
 
 # import urlparse
@@ -15,7 +16,6 @@ try:
     import urllib2
 except ImportError:
     import urllib.request as urllib2
-
 
 # len(".markdown") = 9
 MAX_FILE_EXTENSION_LENGTH = 9
