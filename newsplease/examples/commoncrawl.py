@@ -32,8 +32,9 @@ class CommonCrawl:
     filter_end_date = datetime.datetime(2016, 12, 31)
     # if date filtering is string, e.g., if we could not detect the date of an article, we will discard the article
     filter_strict_date = True
-    # normal mode, see self.run()
-    normal_mode = True
+    # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
+    # again. Note that there is no check whether the file has been downloaded completely or is valid!
+    reuse_previously_downloaded_files = True
     ############ END YOUR CONFIG #########
 
     # commoncrawl.org
@@ -120,8 +121,10 @@ class CommonCrawl:
         Gets the index of news crawl files from commoncrawl.org and returns an array of names
         :return:
         """
-        cmd = "rm tmpaws.txt && " \
-              "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " \
+        # cleanup
+        subprocess.getoutput("rm tmpaws.txt")
+        # get the remote info
+        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " \
               "awk '{ print $4 }' tmpaws.txt && " \
               "rm tmpaws.txt"
         self.logger.info('executing: %s', cmd)
@@ -156,11 +159,15 @@ class CommonCrawl:
         local_filename = urllib.parse.quote_plus(url)
         local_filepath = os.path.join(self.local_download_dir_warc, local_filename)
 
-        self.logger.info('downloading %s (local: %s)', url, local_filepath)
-        urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
-        self.logger.info('download completed, local file: %s', local_filepath)
-
-        return local_filepath
+        if os.path.isfile(local_filepath) and self.reuse_previously_downloaded_files:
+            self.logger.info("found local file, not downloading again (check reuse_previously_downloaded_files to "
+                             "control this behaviour")
+            return local_filepath
+        else:
+            self.logger.info('downloading %s (local: %s)', url, local_filepath)
+            urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
+            self.logger.info('download completed, local file: %s', local_filepath)
+            return local_filepath
 
     def __process_warc_gz_file(self, path_name):
         """
@@ -211,22 +218,14 @@ class CommonCrawl:
         """
         self.__setup__()
 
-        if self.normal_mode:
-            self.cc_news_crawl_names = self.__def_get_remote_index()
-            self.logger.info('found %i files at commoncrawl.org', len(self.cc_news_crawl_names))
+        self.cc_news_crawl_names = self.__def_get_remote_index()
+        self.logger.info('found %i files at commoncrawl.org', len(self.cc_news_crawl_names))
 
-            # iterate the list of crawl_names, and for each: download and process it
-            for name in self.cc_news_crawl_names:
-                download_url = self.__get_download_url(name)
-                local_path_name = self.__download(download_url)
-                self.__process_warc_gz_file(local_path_name)
-        else:
-            # for testing, it might be useful to execute the above (the normal workflow) and cancel the process when the
-            # first file is downloaded. once that's happened, copy the filepath from the log, paste it down here and
-            # set self.normal_mode = False. this way, the tool will not download all the files and you can work with one
-            # file locally before doing the full process on large scale
-            tmpfile = '/var/folders/qg/vmj6zq4s7hb2pbkp3b8kstvh0000gn/T/tmp888c4xp3'
-            self.__process_warc_gz_file(tmpfile)
+        # iterate the list of crawl_names, and for each: download and process it
+        for name in self.cc_news_crawl_names:
+            download_url = self.__get_download_url(name)
+            local_path_name = self.__download(download_url)
+            self.__process_warc_gz_file(local_path_name)
 
     def __get_pretty_filepath(self, path, article):
         """
