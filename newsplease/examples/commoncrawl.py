@@ -120,7 +120,8 @@ class CommonCrawl:
         Gets the index of news crawl files from commoncrawl.org and returns an array of names
         :return:
         """
-        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " \
+        cmd = "rm tmpaws.txt && " \
+              "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " \
               "awk '{ print $4 }' tmpaws.txt && " \
               "rm tmpaws.txt"
         self.logger.info('executing: %s', cmd)
