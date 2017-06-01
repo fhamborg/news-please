@@ -1,11 +1,16 @@
+import datetime
+import hashlib
 import json
 import logging
 import subprocess
 import sys
+import time
 import urllib
 from urllib.request import urlretrieve
 
 import os
+from ago import human
+from dateutil import parser
 from hurry.filesize import size
 from scrapy.utils.log import configure_logging
 from warcio.archiveiterator import ArchiveIterator
@@ -14,20 +19,22 @@ from newsplease import NewsPlease
 
 
 class CommonCrawl:
-    # YOUR CONFIG ############
+    ############ YOUR CONFIG ############
     # download dir for warc files
     local_download_dir_warc = './cc_download_warc/'
     # download dir for articles
-    local_download_dir_article = './cc_download_article/'
+    local_download_dir_article = './cc_download_articles/'
     # hosts (if None or empty list, any host is OK)
-    filter_valid_hosts = []
+    filter_valid_hosts = []  # example: ['elrancaguino.cl']
     # start date (if None, any date is OK as start date), as datetime
-    filter_start_date = None
+    filter_start_date = datetime.datetime(2016, 1, 1)
     # end date (if None, any date is OK as end date)
-    filter_end_date = None
+    filter_end_date = datetime.datetime(2016, 12, 31)
     # if date filtering is string, e.g., if we could not detect the date of an article, we will discard the article
     filter_strict_date = True
-    # END YOUR CONFIG #########
+    # normal mode, see self.run()
+    normal_mode = False
+    ############ END YOUR CONFIG #########
 
     # commoncrawl.org
     cc_base_url = 'https://commoncrawl.s3.amazonaws.com/'
@@ -46,6 +53,13 @@ class CommonCrawl:
             os.makedirs(self.local_download_dir_warc)
         if not os.path.exists(self.local_download_dir_article):
             os.makedirs(self.local_download_dir_article)
+
+        # make loggers quite
+        logging.getLogger('requests').setLevel(logging.CRITICAL)
+        logging.getLogger('readability').setLevel(logging.CRITICAL)
+        logging.getLogger('PIL').setLevel(logging.CRITICAL)
+        logging.getLogger('newspaper').setLevel(logging.CRITICAL)
+        logging.getLogger('newsplease').setLevel(logging.CRITICAL)
 
     def __filter_record(self, warc_record, article):
         """
@@ -88,8 +102,10 @@ class CommonCrawl:
         :param warc_record:
         :return:
         """
-
-        return None
+        if article.publish_date:
+            return parser.parse(article.publish_date)
+        else:
+            return None
 
     def __get_download_url(self, name):
         """
@@ -104,10 +120,12 @@ class CommonCrawl:
         Gets the index of news crawl files from commoncrawl.org and returns an array of names
         :return:
         """
-        stdout_data = subprocess.getoutput(
-            "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " +
-            "awk '{ print $4 }' tmpaws.txt && " +
-            "rm tmpaws.txt")
+        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " \
+              "awk '{ print $4 }' tmpaws.txt && " \
+              "rm tmpaws.txt"
+        self.logger.info('executing: %s', cmd)
+        stdout_data = subprocess.getoutput(cmd)
+
         lines = stdout_data.splitlines()
         return lines
 
@@ -139,7 +157,7 @@ class CommonCrawl:
 
         self.logger.info('downloading %s (local: %s)', url, local_filepath)
         urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
-        self.logger.info('download completed, local file: %s ()', local_filepath)
+        self.logger.info('download completed, local file: %s', local_filepath)
 
         return local_filepath
 
@@ -151,14 +169,37 @@ class CommonCrawl:
         :param path_name:
         :return:
         """
+        counter_article_total = 0
+        counter_article_passed = 0
+        counter_article_discarded = 0
+        start_time = time.time()
+
         with open(path_name, 'rb') as stream:
             for record in ArchiveIterator(stream):
                 if record.rec_type == 'response':
+                    counter_article_total += 1
+
                     article = NewsPlease.from_warc(record)
 
                     # if the article passes filter tests, we notify the user
                     if self.__filter_record(record, article):
+                        counter_article_passed += 1
+                        self.logger.info('article pass (%s; %s; %s)', article.sourceDomain, article.publish_date,
+                                         article.title)
                         self.on_valid_article_extracted(article)
+                    else:
+                        counter_article_discarded += 1
+                        self.logger.info('article discard (%s; %s; %s)', article.sourceDomain, article.publish_date,
+                                         article.title)
+
+                    if counter_article_total % 10 == 0:
+                        elapsed_secs = time.time() - start_time
+                        secs_per_article = elapsed_secs / counter_article_total
+                        self.logger.info('statistics')
+                        self.logger.info('pass = %i, discard = %i, total = %i', counter_article_passed,
+                                         counter_article_discarded, counter_article_total)
+                        self.logger.info('extraction from current WARC file started %s; %f s/article',
+                                         human(start_time), secs_per_article)
 
     def run(self):
         """
@@ -167,21 +208,38 @@ class CommonCrawl:
         on_valid_article_extracted will be invoked.
         :return:
         """
-        self.cc_news_crawl_names = self.__def_get_remote_index()
-        self.logger.info('found %i files at commoncrawl.org', len(self.cc_news_crawl_names))
+        self.__setup__()
 
-        # iterate the list of crawl_names, and for each: download and process it
-        for name in self.cc_news_crawl_names:
-            download_url = self.__get_download_url(name)
-            local_path_name = self.__download(download_url)
-            self.__process_warc_gz_file(local_path_name)
+        if self.normal_mode:
+            self.cc_news_crawl_names = self.__def_get_remote_index()
+            self.logger.info('found %i files at commoncrawl.org', len(self.cc_news_crawl_names))
 
+            # iterate the list of crawl_names, and for each: download and process it
+            for name in self.cc_news_crawl_names:
+                download_url = self.__get_download_url(name)
+                local_path_name = self.__download(download_url)
+                self.__process_warc_gz_file(local_path_name)
+        else:
             # for testing, it might be useful to execute the above (the normal workflow) and cancel the process when the
             # first file is downloaded. once that's happened, copy the filepath from the log, paste it down here and
-            # uncomment the following two lines, but comment the for loop above. this way, the tool will not download all
-            # the files and you can work with one file locally before doing the full process on large scale
-            # tmpfile = '/var/folders/qg/vmj6zq4s7hb2pbkp3b8kstvh0000gn/T/tmp888c4xp3'
-            # self.__process_warc_gz_file(tmpfile)
+            # set self.normal_mode = False. this way, the tool will not download all the files and you can work with one
+            # file locally before doing the full process on large scale
+            tmpfile = '/var/folders/qg/vmj6zq4s7hb2pbkp3b8kstvh0000gn/T/tmp888c4xp3'
+            self.__process_warc_gz_file(tmpfile)
+
+    def __get_pretty_filepath(self, path, article):
+        """
+        Pretty might be an euphemism, but this function tries to avoid too long filenames, while keeping some structure.
+        :param path:
+        :param name:
+        :return:
+        """
+        short_filename = hashlib.sha256(article.filename.encode()).hexdigest()
+        sub_dir = article.sourceDomain
+        final_path = path + sub_dir + '/'
+        if not os.path.exists(final_path):
+            os.makedirs(final_path)
+        return final_path + short_filename + '.json'
 
     def on_valid_article_extracted(self, article):
         """
@@ -190,8 +248,8 @@ class CommonCrawl:
         :param article:
         :return:
         """
-        # do whatever you need to do with the article (probably save it to disk, e.g.
-        with open(self.local_download_dir_article + article['filename'] + '.json', 'w') as outfile:
+        # do whatever you need to do with the article (e.g., save it to disk, store it in ElasticSearch, etc.)
+        with open(self.__get_pretty_filepath(self.local_download_dir_article, article), 'w') as outfile:
             json.dump(article, outfile, indent=4, sort_keys=True)
         # ...
 

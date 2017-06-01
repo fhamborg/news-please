@@ -25,7 +25,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * revisions: crawl articles multiple times and track changes
 
 ### Library mode
-* crawl and extract information for a list of article URLs (currently the fullsite-crawling is only supported via the CLI)
+* crawl and extract information for a list of article URLs. 
 
 ## Getting started
 
@@ -38,11 +38,15 @@ $ pip install news-please
 ```
 
 ### Use within your own code (as a library)
+If you want to crawl articles continuously or use the 
+full website extraction, you cannot use library mode but need to use the CLI mode.
 ```python
 from newsplease import NewsPlease
 article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
 print(article.title)
 ```
+A sample of an extracted article can be found [here (as a JSON file)](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json).
+
 or if you want to crawl multiple articles at a time
 ```python
 NewsPlease.from_urls([url1, url2, ...])

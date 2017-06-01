@@ -269,6 +269,13 @@ class ExtractedInformationStorage(object):
         self.cfg = CrawlerConfig.get_instance()
 
     @staticmethod
+    def ensure_str(text):
+        if isinstance(text, str):
+            return text
+        else:
+            return text.decode('utf-8')
+
+    @staticmethod
     def extract_relevant_info(item):
         """
         extracts from an item only fields that we want to output as extracted information
@@ -278,9 +285,9 @@ class ExtractedInformationStorage(object):
         """
         return {
             'url': item['url'],
-            'sourceDomain': item['source_domain'].decode("utf-8"),
-            'pageTitle': item['html_title'].decode("utf-8"),
-            'rss_title': item['rss_title'],
+            'sourceDomain': ExtractedInformationStorage.ensure_str(item['source_domain']),
+            'pageTitle': ExtractedInformationStorage.ensure_str(item['html_title']),
+            'rss_title': ExtractedInformationStorage.ensure_str(item['rss_title']),
             'localpath': item['local_path'],
             'filename': item['filename'],
             'descendant': False,

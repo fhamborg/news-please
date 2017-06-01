@@ -37,7 +37,7 @@ class NewspaperExtractor(AbstractExtractor):
             try:
                 article_candidate.publish_date = article.publish_date.strftime('%Y-%m-%d %H:%M:%S')
             except ValueError as exception:
-                self.log.info('%s: Newspaper failed to extract the date in the supported format,'
+                self.log.debug('%s: Newspaper failed to extract the date in the supported format,'
                               'Publishing date set to None' % item['url'])
         article_candidate.language = article.meta_lang
 
