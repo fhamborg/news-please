@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+"""
+This scripts downloads WARC files from commoncrawl.org's news crawl and extracts articles from these files. Users can
+define filter criteria that need to be met (see YOUR CONFIG section), otherwise an article is discarded. Currently, the
+script stores the extracted articles in JSON files, but this behaviour can be adapted to your needs in the method
+on_valid_article_extracted.
+"""
 import datetime
 import hashlib
 import json
@@ -161,7 +168,7 @@ class CommonCrawl:
 
         if os.path.isfile(local_filepath) and self.reuse_previously_downloaded_files:
             self.logger.info("found local file, not downloading again (check reuse_previously_downloaded_files to "
-                             "control this behaviour")
+                             "control this behaviour)")
             return local_filepath
         else:
             self.logger.info('downloading %s (local: %s)', url, local_filepath)
@@ -260,3 +267,7 @@ if __name__ == '__main__':
     configure_logging({"LOG_LEVEL": "ERROR"})
     common_crawl = CommonCrawl()
     common_crawl.run()
+
+__author__ = "Felix Hamborg"
+__copyright__ = "Copyright 2017"
+__credits__ = ["Sebastian Nagel"]

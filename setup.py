@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(name='news-please',
-	  version='1.1.27',
-	  description="news-please is an open source easy-to-use news extractor that just works.",
-	  long_description="""\
+      version='1.1.28',
+      description="news-please is an open source easy-to-use news extractor that just works.",
+      long_description="""\
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website.""",
-	  classifiers=[
+      classifiers=[
 	'Development Status :: 4 - Beta',
 	'Environment :: Console',
 	'Intended Audience :: Developers',
@@ -25,16 +25,16 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 	'Topic :: Internet',
 	'Topic :: Scientific/Engineering :: Information Analysis',
       ],
-	  keywords='news crawler news scraper news extractor crawler extractor scraper information retrieval',
-	  author='Felix Hamborg',
-	  author_email='felix.hamborg@uni-konstanz.de',
-	  url='https://github.com/fhamborg/news-please',
-	  download_url='https://github.com/fhamborg/news-please',
-	  license='Apache License 2.0',
-	  packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-	  include_package_data=True,
-	  zip_safe=False,
-	  install_requires=[
+      keywords='news crawler news scraper news extractor crawler extractor scraper information retrieval',
+      author='Felix Hamborg',
+      author_email='felix.hamborg@uni-konstanz.de',
+      url='https://github.com/fhamborg/news-please',
+      download_url='https://github.com/fhamborg/news-please',
+      license='Apache License 2.0',
+      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=[
         'Scrapy>=1.1.0',
 	'PyMySQL>=0.7.9',
 	'hjson>=1.5.8',
@@ -45,7 +45,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 	'python-dateutil>=2.4.0',
 	'plac>=0.9.6'
       ],
-	  extras_require={
+      extras_require={
 	':python_version == "2.7"':[
 		'newspaper',
 	],
@@ -53,7 +53,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 		'newspaper3k',
 	],
       },
-	  entry_points={
+      entry_points={
       	'console_scripts': ['news-please = newsplease.__main__:main',],
 	},
-	  )
+      )
