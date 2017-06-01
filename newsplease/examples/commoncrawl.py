@@ -33,7 +33,7 @@ class CommonCrawl:
     # if date filtering is string, e.g., if we could not detect the date of an article, we will discard the article
     filter_strict_date = True
     # normal mode, see self.run()
-    normal_mode = False
+    normal_mode = True
     ############ END YOUR CONFIG #########
 
     # commoncrawl.org
