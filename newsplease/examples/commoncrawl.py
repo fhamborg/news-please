@@ -24,6 +24,9 @@ from warcio.archiveiterator import ArchiveIterator
 
 from newsplease import NewsPlease
 
+__author__ = "Felix Hamborg"
+__copyright__ = "Copyright 2017"
+__credits__ = ["Sebastian Nagel"]
 
 class CommonCrawl:
     ############ YOUR CONFIG ############
@@ -69,11 +72,11 @@ class CommonCrawl:
         logging.getLogger('newspaper').setLevel(logging.CRITICAL)
         logging.getLogger('newsplease').setLevel(logging.CRITICAL)
 
-    def __filter_record(self, warc_record, article):
+    def __filter_record(self, warc_record, article=None):
         """
         Returns true if a record passes all tests: hosts, publishing date
         :param warc_record:
-        :return:
+        :return: A tuple of (True or False) and an article (might be None)
         """
         # filter by host
         if self.filter_valid_hosts:
@@ -85,24 +88,27 @@ class CommonCrawl:
             # facebook.com even though the actual host is g.co
             for valid_host in self.filter_valid_hosts:
                 if valid_host not in url:
-                    return False
+                    return False, article
 
         # filter by date
         if self.filter_start_date or self.filter_end_date:
+            if not article:
+                article = NewsPlease.from_warc(warc_record)
+
             publishing_date = self.__get_publishing_date(warc_record, article)
             if not publishing_date:
                 if self.filter_strict_date:
-                    return False
+                    return False, article
             else:  # here we for sure have a date
                 # is article published too early?
                 if self.filter_start_date:
                     if publishing_date < self.filter_start_date:
-                        return False
+                        return False, article
                 if self.filter_end_date:
                     if publishing_date > self.filter_end_date:
-                        return False
+                        return False, article
 
-        return True
+        return True, article
 
     def __get_publishing_date(self, warc_record, article):
         """
@@ -194,18 +200,25 @@ class CommonCrawl:
                 if record.rec_type == 'response':
                     counter_article_total += 1
 
-                    article = NewsPlease.from_warc(record)
-
                     # if the article passes filter tests, we notify the user
-                    if self.__filter_record(record, article):
+                    filter_pass, article = self.__filter_record(record)
+                    if filter_pass:
                         counter_article_passed += 1
+
+                        if not article:
+                            article = NewsPlease.from_warc(record)
+
                         self.logger.info('article pass (%s; %s; %s)', article.sourceDomain, article.publish_date,
                                          article.title)
                         self.on_valid_article_extracted(article)
                     else:
                         counter_article_discarded += 1
-                        self.logger.info('article discard (%s; %s; %s)', article.sourceDomain, article.publish_date,
-                                         article.title)
+
+                        if article:
+                            self.logger.info('article discard (%s; %s; %s)', article.sourceDomain, article.publish_date,
+                                             article.title)
+                        else:
+                            self.logger.info('article discard (%s)', record.rec_headers.get_header('WARC-Target-URI'))
 
                     if counter_article_total % 10 == 0:
                         elapsed_secs = time.time() - start_time
@@ -267,7 +280,3 @@ if __name__ == '__main__':
     configure_logging({"LOG_LEVEL": "ERROR"})
     common_crawl = CommonCrawl()
     common_crawl.run()
-
-__author__ = "Felix Hamborg"
-__copyright__ = "Copyright 2017"
-__credits__ = ["Sebastian Nagel"]
