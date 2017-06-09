@@ -56,7 +56,7 @@ or if you have a file containing all URLs (each line containing a single URL)
 ```python
 NewsPlease.from_file(path)
 ```
-or if you have a [WARC file](https://warc.readthedocs.io/en/latest/) 
+or if you have a [WARC file](https://github.com/webrecorder/warcio) 
 ```
 NewsPlease.from_warc(warc_record)
 ```
