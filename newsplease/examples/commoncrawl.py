@@ -45,6 +45,8 @@ class CommonCrawl:
     # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
     # again. Note that there is no check whether the file has been downloaded completely or is valid!
     reuse_previously_downloaded_files = True
+    # continue after error
+    continue_after_error = False
     ############ END YOUR CONFIG #########
 
     # commoncrawl.org
@@ -197,37 +199,46 @@ class CommonCrawl:
 
         with open(path_name, 'rb') as stream:
             for record in ArchiveIterator(stream):
-                if record.rec_type == 'response':
-                    counter_article_total += 1
+                try:
+                    if record.rec_type == 'response':
+                        counter_article_total += 1
 
-                    # if the article passes filter tests, we notify the user
-                    filter_pass, article = self.__filter_record(record)
-                    if filter_pass:
-                        counter_article_passed += 1
+                        # if the article passes filter tests, we notify the user
+                        filter_pass, article = self.__filter_record(record)
+                        if filter_pass:
+                            counter_article_passed += 1
 
-                        if not article:
-                            article = NewsPlease.from_warc(record)
+                            if not article:
+                                article = NewsPlease.from_warc(record)
 
-                        self.logger.info('article pass (%s; %s; %s)', article.sourceDomain, article.publish_date,
-                                         article.title)
-                        self.on_valid_article_extracted(article)
-                    else:
-                        counter_article_discarded += 1
-
-                        if article:
-                            self.logger.info('article discard (%s; %s; %s)', article.sourceDomain, article.publish_date,
+                            self.logger.info('article pass (%s; %s; %s)', article.sourceDomain, article.publish_date,
                                              article.title)
+                            self.on_valid_article_extracted(article)
                         else:
-                            self.logger.info('article discard (%s)', record.rec_headers.get_header('WARC-Target-URI'))
+                            counter_article_discarded += 1
 
-                    if counter_article_total % 10 == 0:
-                        elapsed_secs = time.time() - start_time
-                        secs_per_article = elapsed_secs / counter_article_total
-                        self.logger.info('statistics')
-                        self.logger.info('pass = %i, discard = %i, total = %i', counter_article_passed,
-                                         counter_article_discarded, counter_article_total)
-                        self.logger.info('extraction from current WARC file started %s; %f s/article',
-                                         human(start_time), secs_per_article)
+                            if article:
+                                self.logger.info('article discard (%s; %s; %s)', article.sourceDomain,
+                                                 article.publish_date,
+                                                 article.title)
+                            else:
+                                self.logger.info('article discard (%s)',
+                                                 record.rec_headers.get_header('WARC-Target-URI'))
+
+                        if counter_article_total % 10 == 0:
+                            elapsed_secs = time.time() - start_time
+                            secs_per_article = elapsed_secs / counter_article_total
+                            self.logger.info('statistics')
+                            self.logger.info('pass = %i, discard = %i, total = %i', counter_article_passed,
+                                             counter_article_discarded, counter_article_total)
+                            self.logger.info('extraction from current WARC file started %s; %f s/article',
+                                             human(start_time), secs_per_article)
+                except:
+                    if self.continue_after_error:
+                        self.logger.error('Unexpected error: %s', sys.exc_info()[0])
+                        pass
+                    else:
+                        raise
 
     def run(self):
         """
