@@ -98,7 +98,7 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
     # Credentials used  for authentication (supports CA-certificates):
 	
-    use_ca_certificates = False'           #If True authentification is performed 
+    use_ca_certificates = False'           #True if authentification is performed 
     ca_cert_path = '/path/to/cacert.pem'  
     client_cert_path = '/path/to/client_cert.pem'  
     client_key_path = '/path/to/client_key.pem'  
