@@ -13,6 +13,7 @@ from newsplease.crawler.items import NewscrawlerItem
 from dotmap import DotMap
 from newsplease.pipeline.pipelines import ExtractedInformationStorage
 from urllib.parse import urlparse
+import urllib
 
 
 class NewsPlease:
@@ -46,8 +47,12 @@ class NewsPlease:
             ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
 
         title_encoded = ''.encode()
+        filename = None
         if not url:
             url = ''
+
+        # if an url was given, we can use that as the filename
+        filename = urllib.parse.quote_plus(url) + '.json'
 
         item = NewscrawlerItem()
         item['spider_response'] = DotMap()
@@ -57,7 +62,7 @@ class NewsPlease:
         item['html_title'] = title_encoded
         item['rss_title'] = title_encoded
         item['local_path'] = None
-        item['filename'] = None
+        item['filename'] = filename
         item['download_date'] = None
         item['modified_date'] = None
         item = extractor.extract(item)

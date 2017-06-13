@@ -84,7 +84,7 @@ class SavepathParser(object):
         else:
             return component
 
-    def get_savepath(self, url):
+    def get_savepath(self, url, savepath=None):
         """
         Evaluates the savepath with the help of the given url.
 
@@ -93,7 +93,8 @@ class SavepathParser(object):
         """
         timestamp = int(time.time())
 
-        savepath = self.cfg_savepath
+        if not savepath:
+            savepath = self.cfg_savepath
 
         # lambda is used for lazy evaluation
         savepath = re.sub(r'%working_path',

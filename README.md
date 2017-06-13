@@ -2,7 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/news-please.svg)](https://badge.fury.io/py/news-please)
 
-[//]: # ( <img align="right" height="128px" width"128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> )
+<img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> 
+
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows developers to use the crawling and extraction functionality within their own program.
 
 ## Extracted information
@@ -25,7 +26,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * revisions: crawl articles multiple times and track changes
 
 ### Library mode
-* crawl and extract information for a list of article URLs (currently the fullsite-crawling is only supported via the CLI)
+* crawl and extract information for a list of article URLs. 
 
 ## Getting started
 
@@ -38,11 +39,15 @@ $ pip install news-please
 ```
 
 ### Use within your own code (as a library)
+If you want to crawl articles continuously or use the 
+full website extraction, you cannot use library mode but need to use the CLI mode.
 ```python
 from newsplease import NewsPlease
 article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
 print(article.title)
 ```
+A sample of an extracted article can be found [here (as a JSON file)](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json).
+
 or if you want to crawl multiple articles at a time
 ```python
 NewsPlease.from_urls([url1, url2, ...])
@@ -51,7 +56,7 @@ or if you have a file containing all URLs (each line containing a single URL)
 ```python
 NewsPlease.from_file(path)
 ```
-or if you have a [WARC file](https://warc.readthedocs.io/en/latest/) 
+or if you have a [WARC file](https://github.com/webrecorder/warcio) 
 ```
 NewsPlease.from_warc(warc_record)
 ```
