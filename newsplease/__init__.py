@@ -12,7 +12,11 @@ from newsplease.pipeline.extractor import article_extractor
 from newsplease.crawler.items import NewscrawlerItem
 from dotmap import DotMap
 from newsplease.pipeline.pipelines import ExtractedInformationStorage
-from urllib.parse import urlparse
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 import urllib
 
 

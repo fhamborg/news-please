@@ -4,7 +4,7 @@ Scrapy>=1.1.0
 PyMySQL>=0.7.9
 hjson>=1.5.8
 elasticsearch>=2.4
-beautifulsoup4>=4.5.1
+beautifulsoup4>=4.3.2
 readability-lxml>=0.6.2
 newspaper3k>=0.1.7 ; python_version >= '3.0'
 newspaper>=0.0.9.8 ; python_version == '2.7'
