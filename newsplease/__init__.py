@@ -1,30 +1,26 @@
 import sys
+import urllib
 
 import os
-
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-from newsplease.pipeline.pipelines import InMemoryStorage
-from newsplease.single_crawler import SingleCrawler
-import time
-from scrapy import signals
-from pydispatch import dispatcher
-from newsplease.pipeline.extractor import article_extractor
-from newsplease.crawler.items import NewscrawlerItem
-from dotmap import DotMap
-from newsplease.pipeline.pipelines import ExtractedInformationStorage
 
 try:
     from urllib.parse import urlparse
 except ImportError:
     from urlparse import urlparse
-import urllib
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+from newsplease.pipeline.extractor import article_extractor
+from newsplease.crawler.items import NewscrawlerItem
+from dotmap import DotMap
+from newsplease.pipeline.pipelines import ExtractedInformationStorage
+from newsplease.crawler.simple_crawler import SimpleCrawler
 
 
 class NewsPlease:
     """
     Access news-please functionality via this interface
     """
-    __is_crawler_closed = False
 
     @staticmethod
     def from_warc(warc_record):
@@ -51,7 +47,6 @@ class NewsPlease:
             ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
 
         title_encoded = ''.encode()
-        filename = None
         if not url:
             url = ''
 
@@ -94,20 +89,18 @@ class NewsPlease:
         :param urls:
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
-        SingleCrawler.create_as_library(urls)
-        dispatcher.connect(NewsPlease.__spider_closed, signals.spider_closed)
+        results = {}
 
-        # wait for the crawler to close
-        while not NewsPlease.__is_crawler_closed:
-            time.sleep(0.01)
-
-        # the crawler has completed, we need to get the results
-        results = InMemoryStorage.get_results()
-        NewsPlease.__is_crawler_closed = False
-
-        # convert to DotMap
-        for url in results:
-            results[url] = DotMap(results[url])
+        if len(urls) == 0:
+            pass
+        elif len(urls) == 1:
+            url = urls[0]
+            html = SimpleCrawler.fetch_url(url)
+            results[url] = NewsPlease.from_html(html, url)
+        else:
+            results = SimpleCrawler.fetch_urls(urls)
+            for url in results:
+                results[url] = NewsPlease.from_html(results[url], url)
 
         return results
 
@@ -128,3 +121,15 @@ class NewsPlease:
     @staticmethod
     def __spider_closed(spider, reason):
         NewsPlease.__is_crawler_closed = True
+
+
+if __name__ == '__main__':
+    articles = NewsPlease.from_urls([
+        'https://www.nytimes.com/2017/06/27/us/politics/mitch-mcconnell-health-care-repeal.html?&hp&action=click&pgtype=Homepage&clickSource=story-heading&module=first-column-region&region=top-news&WT.nav=top-news&_r=0',
+        'https://www.washingtonpost.com/powerpost/mcconnell-is-known-as-a-deal-closer-but-hes-never-done-policy-this-big/2017/06/28/df7a0810-5b76-11e7-a9f6-7c3296387341_story.html?hpid=hp_hp-top-table-main_pkcapitol-10am%3Ahomepage%2Fstory',
+        'felix.fadljh'
+    ])
+
+    for url in articles:
+        article = articles[url]
+        print(article.title)
