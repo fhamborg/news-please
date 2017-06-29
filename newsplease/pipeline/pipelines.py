@@ -283,7 +283,7 @@ class ExtractedInformationStorage(object):
         :param item:
         :return:
         """
-        return {
+        article = {
             'author': item['article_author'],
             'date-download': item['download_date'],
             'date-modified': item['modified_date'],
@@ -300,6 +300,15 @@ class ExtractedInformationStorage(object):
             'text': item['article_text'],
             'url': item['url']
         }
+
+        # clean values
+        for key in article:
+            value = article[key]
+            if isinstance(value, str):
+                if not value:
+                    article[key] = None
+
+        return article
 
 
 class InMemoryStorage(ExtractedInformationStorage):
