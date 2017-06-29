@@ -117,9 +117,3 @@ class NewsPlease:
         urls = list(filter(None, content))
 
         return NewsPlease.from_urls(urls)
-
-
-if __name__ == '__main__':
-    a = NewsPlease.from_url(
-        'https://www.nytimes.com/2017/06/29/opinion/mitch-mcconnell-health-care-medicaid.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-right-region&region=opinion-c-col-right-region&WT.nav=opinion-c-col-right-region&_r=0')
-    print(a.author)
