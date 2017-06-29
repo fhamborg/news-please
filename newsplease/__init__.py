@@ -118,18 +118,8 @@ class NewsPlease:
 
         return NewsPlease.from_urls(urls)
 
-    @staticmethod
-    def __spider_closed(spider, reason):
-        NewsPlease.__is_crawler_closed = True
-
 
 if __name__ == '__main__':
-    articles = NewsPlease.from_urls([
-        'https://www.nytimes.com/2017/06/27/us/politics/mitch-mcconnell-health-care-repeal.html?&hp&action=click&pgtype=Homepage&clickSource=story-heading&module=first-column-region&region=top-news&WT.nav=top-news&_r=0',
-        'https://www.washingtonpost.com/powerpost/mcconnell-is-known-as-a-deal-closer-but-hes-never-done-policy-this-big/2017/06/28/df7a0810-5b76-11e7-a9f6-7c3296387341_story.html?hpid=hp_hp-top-table-main_pkcapitol-10am%3Ahomepage%2Fstory',
-        'felix.fadljh'
-    ])
-
-    for url in articles:
-        article = articles[url]
-        print(article.title)
+    a = NewsPlease.from_url(
+        'https://www.nytimes.com/2017/06/29/opinion/mitch-mcconnell-health-care-medicaid.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-right-region&region=opinion-c-col-right-region&WT.nav=opinion-c-col-right-region&_r=0')
+    print(a.author)

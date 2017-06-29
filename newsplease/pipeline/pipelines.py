@@ -284,22 +284,21 @@ class ExtractedInformationStorage(object):
         :return:
         """
         return {
-            'url': item['url'],
-            'sourceDomain': ExtractedInformationStorage.ensure_str(item['source_domain']),
-            'pageTitle': ExtractedInformationStorage.ensure_str(item['html_title']),
-            'rss_title': ExtractedInformationStorage.ensure_str(item['rss_title']),
-            'localpath': item['local_path'],
-            'filename': item['filename'],
-            'descendant': False,
-            'downloadDate': item['download_date'],
-            'modifiedDate': item['modified_date'],
-            'publish_date': item['article_publish_date'],
-            'title': item['article_title'],
-            'description': item['article_description'],
-            'text': item['article_text'],
             'author': item['article_author'],
-            'image': item['article_image'],
+            'date-download': item['download_date'],
+            'date-modified': item['modified_date'],
+            'date-publish': item['article_publish_date'],
+            'description': item['article_description'],
+            'filename': item['filename'],
+            'image-url': item['article_image'],
             'language': item['article_language'],
+            'localpath': item['local_path'],
+            'title': item['article_title'],
+            'title-page': ExtractedInformationStorage.ensure_str(item['html_title']),
+            'title-rss': ExtractedInformationStorage.ensure_str(item['rss_title']),
+            'source-domain': ExtractedInformationStorage.ensure_str(item['source_domain']),
+            'text': item['article_text'],
+            'url': item['url']
         }
 
 

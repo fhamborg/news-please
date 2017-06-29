@@ -46,17 +46,24 @@ class Cleaner:
     def do_cleaning(self, arg):
         """Does the actual cleaning by using the delete methods above.
 
-        :param arg: A string, the string which shell be cleaned
-        :return: A string, the cleaned string
+        :param arg: A string, the string which shell be cleaned. Or a list, in which case each of the strings within the
+        list is cleaned.
+        :return: A string, the cleaned string. Or a list with cleaned string entries.
         """
         if arg is not None:
-            if sys.version_info[0] < 3:
-                arg = unicode(arg)
+            if isinstance(arg, list):
+                newlist = []
+                for entry in arg:
+                    newlist.append(self.do_cleaning(entry))
+                return newlist
             else:
-                arg = str(arg)
-            arg = self.delete_tags(arg)
-            arg = self.delete_whitespaces(arg)
-            return arg
+                if sys.version_info[0] < 3:
+                    arg = unicode(arg)
+                else:
+                    arg = str(arg)
+                arg = self.delete_tags(arg)
+                arg = self.delete_whitespaces(arg)
+                return arg
         else:
             return None
 
