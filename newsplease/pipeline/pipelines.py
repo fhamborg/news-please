@@ -286,7 +286,7 @@ class ExtractedInformationStorage(object):
         article = {
             'author': item['article_author'],
             'date-download': item['download_date'],
-            'date-modified': item['modified_date'],
+            'date-modify': item['modified_date'],
             'date-publish': item['article_publish_date'],
             'description': item['article_description'],
             'filename': item['filename'],
