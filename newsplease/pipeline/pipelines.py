@@ -284,7 +284,7 @@ class ExtractedInformationStorage(object):
         :return:
         """
         article = {
-            'author': item['article_author'],
+            'authors': item['article_author'],
             'date-download': item['download_date'],
             'date-modify': item['modified_date'],
             'date-publish': item['article_publish_date'],
