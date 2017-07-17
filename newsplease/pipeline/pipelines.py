@@ -285,18 +285,18 @@ class ExtractedInformationStorage(object):
         """
         article = {
             'authors': item['article_author'],
-            'date-download': item['download_date'],
-            'date-modify': item['modified_date'],
-            'date-publish': item['article_publish_date'],
+            'date_download': item['download_date'],
+            'date_modify': item['modified_date'],
+            'date_publish': item['article_publish_date'],
             'description': item['article_description'],
             'filename': item['filename'],
-            'image-url': item['article_image'],
+            'image_url': item['article_image'],
             'language': item['article_language'],
             'localpath': item['local_path'],
             'title': item['article_title'],
-            'title-page': ExtractedInformationStorage.ensure_str(item['html_title']),
-            'title-rss': ExtractedInformationStorage.ensure_str(item['rss_title']),
-            'source-domain': ExtractedInformationStorage.ensure_str(item['source_domain']),
+            'title_page': ExtractedInformationStorage.ensure_str(item['html_title']),
+            'title_rss': ExtractedInformationStorage.ensure_str(item['rss_title']),
+            'source_domain': ExtractedInformationStorage.ensure_str(item['source_domain']),
             'text': item['article_text'],
             'url': item['url']
         }
