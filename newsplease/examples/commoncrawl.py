@@ -243,8 +243,8 @@ class CommonCrawl:
     def run(self):
         """
         Main execution method, which consists of: get an up-to-date list of WARC files, and for each of them: download
-        and extract articles. Each articles are checked against a filter. Finally, for each valid article the method
-        on_valid_article_extracted will be invoked.
+        and extract articles. Each article is checked against a filter. Finally, for each valid article the method
+        on_valid_article_extracted will be invoked after the extraction of the article has completed.
         :return:
         """
         self.__setup__()
