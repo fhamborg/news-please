@@ -1,0 +1,1 @@
+You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request or drop us an email: felix.hamborg@uni-konstanz.de. By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
