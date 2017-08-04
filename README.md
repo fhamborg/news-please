@@ -47,7 +47,7 @@ print(article.title)
 ```
 A sample of an extracted article can be found [here (as a JSON file)](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json).
 
-or if you want to crawl multiple articles at a time
+If you want to crawl multiple articles at a time
 ```python
 NewsPlease.from_urls([url1, url2, ...])
 ```
