@@ -1,12 +1,13 @@
+import os
 import sys
 import urllib
 
-import os
+from six.moves import urllib
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+# try:
+#    from urllib.parse import urlparse
+# except ImportError:
+#    from urlparse import urlparse
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
@@ -57,7 +58,7 @@ class NewsPlease:
         item['spider_response'] = DotMap()
         item['spider_response'].body = html
         item['url'] = url
-        item['source_domain'] = urlparse(url).hostname.encode() if url != '' else ''.encode()
+        item['source_domain'] = urllib.parse.urlparse(url).hostname.encode() if url != '' else ''.encode()
         item['html_title'] = title_encoded
         item['rss_title'] = title_encoded
         item['local_path'] = None
@@ -117,3 +118,8 @@ class NewsPlease:
         urls = list(filter(None, content))
 
         return NewsPlease.from_urls(urls)
+
+
+if __name__ == '__main__':
+    print(NewsPlease.from_url(
+        'https://www.nytimes.com/2017/08/03/us/politics/john-kelly-chief-of-staff-trump.html?hp&action=click&pgtype=Homepage&clickSource=story-heading&module=first-column-region&region=top-news&WT.nav=top-news&_r=0'))

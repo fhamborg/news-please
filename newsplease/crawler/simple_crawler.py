@@ -1,6 +1,7 @@
 import copy
 import threading
-import urllib
+
+from six.moves import urllib
 
 
 class SimpleCrawler(object):
