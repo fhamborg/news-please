@@ -9,13 +9,13 @@ import datetime
 import hashlib
 import json
 import logging
+import os
 import subprocess
 import sys
 import time
 import urllib
 from urllib.request import urlretrieve
 
-import os
 from ago import human
 from dateutil import parser
 from hurry.filesize import size
@@ -131,7 +131,7 @@ class CommonCrawl:
         """
         return self.cc_base_url + name
 
-    def __def_get_remote_index(self):
+    def __get_remote_index(self):
         """
         Gets the index of news crawl files from commoncrawl.org and returns an array of names
         :return:
@@ -249,7 +249,7 @@ class CommonCrawl:
         """
         self.__setup__()
 
-        self.cc_news_crawl_names = self.__def_get_remote_index()
+        self.cc_news_crawl_names = self.__get_remote_index()
         self.logger.info('found %i files at commoncrawl.org', len(self.cc_news_crawl_names))
 
         # iterate the list of crawl_names, and for each: download and process it
