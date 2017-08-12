@@ -50,7 +50,8 @@ news-please is an open source, easy-to-use news crawler that extracts structured
           'warcio>=1.3.3',
           'ago>=0.0.9',
           'six>=1.10.0',
-          'lxml>=3.3.5'
+          'lxml>=3.3.5',
+          'awscli>=1.11.117'
       ],
       extras_require={
           ':python_version == "2.7"': [
