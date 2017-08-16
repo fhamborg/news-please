@@ -34,7 +34,8 @@ class NewsPlease:
     def from_html(html, url=None):
         """
         Extracts relevant information from an HTML page given as a string. This function does not invoke scrapy but only
-        uses the article extractor.
+        uses the article extractor. If you have the original URL make sure to provide it as this helps NewsPlease
+        to extract the publishing date and title.
         :param html:
         :param url:
         :return:
