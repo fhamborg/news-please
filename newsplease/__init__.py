@@ -27,11 +27,12 @@ class NewsPlease:
         """
         html = str(warc_record.raw_stream.read())
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
-        article = NewsPlease.from_html(html, url)
+        download_date = warc_record.rec_headers.get_header('WARC-Date')
+        article = NewsPlease.from_html(html, url=url, download_date=download_date)
         return article
 
     @staticmethod
-    def from_html(html, url=None):
+    def from_html(html, url=None, download_date=None):
         """
         Extracts relevant information from an HTML page given as a string. This function does not invoke scrapy but only
         uses the article extractor. If you have the original URL make sure to provide it as this helps NewsPlease
@@ -59,12 +60,13 @@ class NewsPlease:
         item['rss_title'] = title_encoded
         item['local_path'] = None
         item['filename'] = filename
-        item['download_date'] = None
+        item['download_date'] = download_date
         item['modified_date'] = None
         item = extractor.extract(item)
 
-        article = ExtractedInformationStorage.extract_relevant_info(item)
-        return DotMap(article)
+        tmp_article = ExtractedInformationStorage.extract_relevant_info(item)
+        final_article = DotMap(tmp_article)
+        return final_article
 
     @staticmethod
     def from_url(url):

@@ -117,6 +117,7 @@ class CommonCrawlCrawler:
 
         return True, article
 
+
     def __get_publishing_date(self, warc_record, article):
         """
         Extracts the publishing date from the record
@@ -222,15 +223,15 @@ class CommonCrawlCrawler:
                             if not article:
                                 article = NewsPlease.from_warc(record)
 
-                            self.__logger.info('article pass (%s; %s; %s)', article.sourceDomain, article.publish_date,
+                            self.__logger.info('article pass (%s; %s; %s)', article.source_domain, article.date_publish,
                                                article.title)
                             self.__callback_on_article_extracted(article)
                         else:
                             counter_article_discarded += 1
 
                             if article:
-                                self.__logger.info('article discard (%s; %s; %s)', article.sourceDomain,
-                                                   article.publish_date,
+                                self.__logger.info('article discard (%s; %s; %s)', article.source_domain,
+                                                   article.date_publish,
                                                    article.title)
                             else:
                                 self.__logger.info('article discard (%s)',

@@ -36,13 +36,13 @@ my_filter_strict_date = True
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
 my_reuse_previously_downloaded_files = True
 # continue after error
-my_continue_after_error = False
+my_continue_after_error = True
 # show the progress of downloading the WARC files
 my_show_download_progress = True
 # log_level
 my_log_level = logging.INFO
-
-
+# json export style
+my_json_export_style = 1  # 0 (minimize), 1 (pretty)
 ############ END YOUR CONFIG #########
 
 
@@ -79,7 +79,10 @@ def on_valid_article_extracted(article):
     """
     # do whatever you need to do with the article (e.g., save it to disk, store it in ElasticSearch, etc.)
     with open(__get_pretty_filepath(my_local_download_dir_article, article), 'w') as outfile:
-        json.dump(article, outfile, indent=4, sort_keys=True)
+        if my_json_export_style == 0:
+            json.dump(article, outfile, separators=(',', ':'))
+        elif my_json_export_style == 1:
+            json.dump(article, outfile, indent=4, sort_keys=True)
         # ...
 
 
