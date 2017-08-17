@@ -112,8 +112,8 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
-## Wiki and documentation
-You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
+## Wiki and support
+You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. 
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
