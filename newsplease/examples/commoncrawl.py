@@ -13,7 +13,7 @@ import json
 import logging
 import os
 
-from newsplease.crawler.commoncrawl_crawler import CommonCrawlCrawler
+import newsplease.crawler.commoncrawl_crawler as commoncrawl_crawler
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
@@ -43,6 +43,8 @@ my_show_download_progress = True
 my_log_level = logging.INFO
 # json export style
 my_json_export_style = 1  # 0 (minimize), 1 (pretty)
+# number of extraction processes
+my_number_of_extraction_processes = 4
 ############ END YOUR CONFIG #########
 
 
@@ -88,7 +90,6 @@ def on_valid_article_extracted(article):
 
 if __name__ == '__main__':
     __setup__()
-    commoncrawl_crawler = CommonCrawlCrawler()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
                                                valid_hosts=my_filter_valid_hosts,
                                                start_date=my_filter_start_date, end_date=my_filter_end_date,
@@ -97,4 +98,5 @@ if __name__ == '__main__':
                                                local_download_dir_warc=my_local_download_dir_warc,
                                                continue_after_error=my_continue_after_error,
                                                show_download_progress=my_show_download_progress,
+                                               number_of_extraction_processes=my_number_of_extraction_processes,
                                                log_level=my_log_level)
