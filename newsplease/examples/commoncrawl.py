@@ -3,12 +3,12 @@
 This scripts downloads WARC files from commoncrawl.org's news crawl and extracts articles from these files. You can
 define filter criteria that need to be met (see YOUR CONFIG section), otherwise an article is discarded. Currently, the
 script stores the extracted articles in JSON files, but this behaviour can be adapted to your needs in the method
-on_valid_article_extracted.
+on_valid_article_extracted. To speed up the crawling and extraction process, the script supports multiprocessing. You can
+control the number of processes with the parameter my_number_of_extraction_processes.
 
 You can also crawl and extract articles programmatically, i.e., from within your own code, by using the class
 CommonCrawlCrawler provided in newsplease.crawler.commoncrawl_crawler.py
 """
-import hashlib
 import json
 import logging
 import os
@@ -55,21 +55,6 @@ def __setup__():
     """
     if not os.path.exists(my_local_download_dir_article):
         os.makedirs(my_local_download_dir_article)
-
-
-def __get_pretty_filepath(path, article):
-    """
-    Pretty might be an euphemism, but this function tries to avoid too long filenames, while keeping some structure.
-    :param path:
-    :param name:
-    :return:
-    """
-    short_filename = hashlib.sha256(article.filename.encode()).hexdigest()
-    sub_dir = article.source_domain
-    final_path = path + sub_dir + '/'
-    if not os.path.exists(final_path):
-        os.makedirs(final_path)
-    return final_path + short_filename + '.json'
 
 
 def on_valid_article_extracted(article):
