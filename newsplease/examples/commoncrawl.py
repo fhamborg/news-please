@@ -20,6 +20,7 @@ __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
 
+
 ############ YOUR CONFIG ############
 # download dir for warc files
 my_local_download_dir_warc = './cc_download_warc/'
@@ -37,7 +38,7 @@ my_filter_strict_date = True
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
 my_reuse_previously_downloaded_files = True
 # continue after error
-my_continue_after_error = False
+my_continue_after_error = True
 # show the progress of downloading the WARC files
 my_show_download_progress = True
 # log_level
