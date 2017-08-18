@@ -17,7 +17,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
-* execute it conveniently with the **CLI** or use it as a **library** within your own software
+* execute it conveniently with the **CLI** or use it as a **library** within your own software or to extract articles from **the news archive of commoncrawl.org**
 * runs on your favorite Python version (2.7+ and 3+)
 
 ### CLI mode
@@ -27,6 +27,12 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 ### Library mode
 * crawl and extract information for a list of article URLs. 
+
+### News archive from commoncrawl.org
+* commoncrawl.org provides a large, free-to-use archive of news articles from small and major publishers world wide
+* news-please enables users to conventiently download and extract articles from commoncrawl.org
+* you can optionally define filter criteria, such as news publisher(s) or the date period, within which articles need to be published
+* clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), and execute `python3 newsplease/examples/commoncrawl.py`
 
 ## Getting started
 
@@ -112,8 +118,8 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
-## Wiki and documentation
-You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)!
+## Wiki and support
+You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. 
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
