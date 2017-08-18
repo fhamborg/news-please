@@ -48,6 +48,8 @@ __cc_news_crawl_names = None
 __callback_on_article_extracted = None
 # if the download progress is shown
 __show_download_progress = False
+# debug: same process
+__debug_same_process = False
 
 # logging
 logging.basicConfig(level=__log_level)
@@ -215,18 +217,32 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
     for name in __cc_news_crawl_names:
         warc_download_url = __get_download_url(name)
         warc_download_urls.append(warc_download_url)
-    with Pool(__number_of_extraction_processes) as extraction_process_pool:
-        extraction_process_pool.map(partial(__start_commoncrawl_extractor,
-                                            callback_on_article_extracted=__callback_on_article_extracted,
-                                            valid_hosts=valid_hosts,
-                                            start_date=start_date, end_date=end_date,
-                                            strict_date=strict_date,
-                                            reuse_previously_downloaded_files=reuse_previously_downloaded_files,
-                                            local_download_dir_warc=local_download_dir_warc,
-                                            continue_after_error=continue_after_error,
-                                            show_download_progress=show_download_progress,
-                                            log_level=log_level),
-                                    warc_download_urls)
+
+    if not __debug_same_process:
+        with Pool(__number_of_extraction_processes) as extraction_process_pool:
+            extraction_process_pool.map(partial(__start_commoncrawl_extractor,
+                                                callback_on_article_extracted=__callback_on_article_extracted,
+                                                valid_hosts=valid_hosts,
+                                                start_date=start_date, end_date=end_date,
+                                                strict_date=strict_date,
+                                                reuse_previously_downloaded_files=reuse_previously_downloaded_files,
+                                                local_download_dir_warc=local_download_dir_warc,
+                                                continue_after_error=continue_after_error,
+                                                show_download_progress=show_download_progress,
+                                                log_level=log_level),
+                                        warc_download_urls)
+    else:
+        for warc_download_url in warc_download_urls:
+            __start_commoncrawl_extractor(warc_download_url,
+                                          callback_on_article_extracted=__callback_on_article_extracted,
+                                          valid_hosts=valid_hosts,
+                                          start_date=start_date, end_date=end_date,
+                                          strict_date=strict_date,
+                                          reuse_previously_downloaded_files=reuse_previously_downloaded_files,
+                                          local_download_dir_warc=local_download_dir_warc,
+                                          continue_after_error=continue_after_error,
+                                          show_download_progress=show_download_progress,
+                                          log_level=log_level)
 
 
 def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extracted=None, valid_hosts=None,

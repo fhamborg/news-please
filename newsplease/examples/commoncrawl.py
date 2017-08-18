@@ -9,6 +9,7 @@ control the number of processes with the parameter my_number_of_extraction_proce
 You can also crawl and extract articles programmatically, i.e., from within your own code, by using the class
 CommonCrawlCrawler provided in newsplease.crawler.commoncrawl_crawler.py
 """
+import hashlib
 import json
 import logging
 import os
@@ -36,7 +37,7 @@ my_filter_strict_date = True
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
 my_reuse_previously_downloaded_files = True
 # continue after error
-my_continue_after_error = True
+my_continue_after_error = False
 # show the progress of downloading the WARC files
 my_show_download_progress = True
 # log_level
@@ -55,6 +56,21 @@ def __setup__():
     """
     if not os.path.exists(my_local_download_dir_article):
         os.makedirs(my_local_download_dir_article)
+
+
+def __get_pretty_filepath(path, article):
+    """
+    Pretty might be an euphemism, but this function tries to avoid too long filenames, while keeping some structure.
+    :param path:
+    :param name:
+    :return:
+    """
+    short_filename = hashlib.sha256(article.filename.encode()).hexdigest()
+    sub_dir = article.source_domain
+    final_path = path + sub_dir + '/'
+    if not os.path.exists(final_path):
+        os.makedirs(final_path)
+    return final_path + short_filename + '.json'
 
 
 def on_valid_article_extracted(article):
