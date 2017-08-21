@@ -8,6 +8,10 @@ control the number of processes with the parameter my_number_of_extraction_proce
 
 You can also crawl and extract articles programmatically, i.e., from within your own code, by using the class
 CommonCrawlCrawler provided in newsplease.crawler.commoncrawl_crawler.py
+
+In case the script crashes and contains a log message in the beginning that states that only 1 file on AWS storage
+was found, make sure that awscli was correctly installed. You can check that by executing aws --version from a terminal.
+If aws is not installed, you can (on Ubuntu) also install it using sudo apt-get install awscli.
 """
 import hashlib
 import json
