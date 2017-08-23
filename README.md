@@ -153,7 +153,7 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contribution and support
-You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request. By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, simply open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement requested features. 
+You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request. By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, simply open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement features requested by users ourselves - instead we recommend to implement them yourself, and send a pull request. 
 
 ## License
 The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/). 
