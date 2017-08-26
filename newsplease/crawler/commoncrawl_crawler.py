@@ -48,8 +48,6 @@ __cc_news_crawl_names = None
 __callback_on_article_extracted = None
 # if the download progress is shown
 __show_download_progress = False
-# debug: same process
-__debug_same_process = False
 
 # logging
 logging.basicConfig(level=__log_level)
@@ -218,7 +216,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
         warc_download_url = __get_download_url(name)
         warc_download_urls.append(warc_download_url)
 
-    if not __debug_same_process:
+    # run the crawler in the current, single process if number of extraction processes is set to 1
+    if __number_of_extraction_processes == 1:
         with Pool(__number_of_extraction_processes) as extraction_process_pool:
             extraction_process_pool.map(partial(__start_commoncrawl_extractor,
                                                 callback_on_article_extracted=__callback_on_article_extracted,
