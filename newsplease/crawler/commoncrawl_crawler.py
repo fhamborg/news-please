@@ -217,7 +217,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
         warc_download_urls.append(warc_download_url)
 
     # run the crawler in the current, single process if number of extraction processes is set to 1
-    if __number_of_extraction_processes == 1:
+    if __number_of_extraction_processes > 1:
         with Pool(__number_of_extraction_processes) as extraction_process_pool:
             extraction_process_pool.map(partial(__start_commoncrawl_extractor,
                                                 callback_on_article_extracted=__callback_on_article_extracted,
