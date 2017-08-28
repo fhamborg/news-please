@@ -375,7 +375,7 @@ class JsonFileStorage(ExtractedInformationStorage):
 
         # Write JSON to local file system
         with open(file_path, 'w') as file_:
-            json.dump(ExtractedInformationStorage.extract_relevant_info(item), file_)
+            json.dump(ExtractedInformationStorage.extract_relevant_info(item), file_, ensure_ascii=False)
 
         return item
 
