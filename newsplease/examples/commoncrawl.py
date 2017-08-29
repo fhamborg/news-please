@@ -51,6 +51,11 @@ my_log_level = logging.INFO
 my_json_export_style = 1  # 0 (minimize), 1 (pretty)
 # number of extraction processes
 my_number_of_extraction_processes = 4
+# if True, the WARC file will be deleted after all articles have been extracted from it
+my_delete_warc_after_extraction = True
+# if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
+# crawling new WARC files. This assumes that the filter criteria have not been changed since the previous run!
+my_continue_process = True
 ############ END YOUR CONFIG #########
 
 
@@ -105,4 +110,6 @@ if __name__ == '__main__':
                                                continue_after_error=my_continue_after_error,
                                                show_download_progress=my_show_download_progress,
                                                number_of_extraction_processes=my_number_of_extraction_processes,
-                                               log_level=my_log_level)
+                                               log_level=my_log_level,
+                                               delete_warc_after_extraction=True,
+                                               continue_process=True)

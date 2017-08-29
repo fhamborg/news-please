@@ -45,6 +45,8 @@ class CommonCrawlExtractor:
     __continue_after_error = False
     # log level
     __log_level = logging.INFO
+    __delete_warc_after_extraction = True
+    ____log_pathname_fully_extracted_warcs = None
 
     # commoncrawl.org
     __cc_base_url = 'https://commoncrawl.s3.amazonaws.com/'
@@ -80,6 +82,15 @@ class CommonCrawlExtractor:
         logging.basicConfig(level=self.__log_level)
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(self.__log_level)
+
+    def __register_fully_extracted_warc_file(self, warc_url):
+        """
+        Saves the URL warc_url in the log file for fully extracted WARC URLs
+        :param warc_url:
+        :return:
+        """
+        with open(self.__log_pathname_fully_extracted_warcs, 'a') as log_file:
+            log_file.write(warc_url)
 
     def __filter_record(self, warc_record, article=None):
         """
@@ -151,6 +162,7 @@ class CommonCrawlExtractor:
               "rm tmpaws.txt"
         self.__logger.info('executing: %s', cmd)
         stdout_data = subprocess.getoutput(cmd)
+        print(stdout_data)
 
         lines = stdout_data.splitlines()
         return lines
@@ -189,7 +201,10 @@ class CommonCrawlExtractor:
             return local_filepath
         else:
             # cleanup
-            subprocess.getoutput("rm " + local_filepath)
+            try:
+                os.remove(local_filepath)
+            except OSError:
+                pass
 
             # download
             self.__logger.info('downloading %s (local: %s)', url, local_filepath)
@@ -253,6 +268,12 @@ class CommonCrawlExtractor:
                     else:
                         raise
 
+        # cleanup
+        if self.__delete_warc_after_extraction:
+            os.remove(path_name)
+
+        self.__register_fully_extracted_warc_file(self.__warc_download_url)
+
     def __run(self):
         """
         Main execution method, which consists of: get an up-to-date list of WARC files, and for each of them: download
@@ -269,11 +290,14 @@ class CommonCrawlExtractor:
                                  start_date=None, end_date=None,
                                  strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
                                  continue_after_error=True, show_download_progress=False,
-                                 log_level=logging.ERROR):
+                                 log_level=logging.ERROR, delete_warc_after_extraction=True,
+                                 log_pathname_fully_extracted_warcs=None):
         """
         Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
         successfully the callback function callback_on_article_extracted is invoked where the first parameter is the
         article object.
+        :param log_pathname_fully_extracted_warcs:
+        :param delete_warc_after_extraction:
         :param warc_download_url:
         :param callback_on_article_extracted:
         :param valid_hosts:
@@ -299,5 +323,7 @@ class CommonCrawlExtractor:
         self.__callback_on_article_extracted = callback_on_article_extracted
         self.__show_download_progress = show_download_progress
         self.__log_level = log_level
+        self.__delete_warc_after_extraction = delete_warc_after_extraction
+        self.__log_pathname_fully_extracted_warcs = log_pathname_fully_extracted_warcs
 
         self.__run()
