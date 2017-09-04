@@ -107,8 +107,10 @@ class CommonCrawlExtractor:
             # because currently something like g.co?forward_url=facebook.com would yield a positive filter test for
             # facebook.com even though the actual host is g.co
             for valid_host in self.__filter_valid_hosts:
-                if valid_host not in url:
-                    return False, article
+                if valid_host in url:
+                    break
+            else:
+                return False, article
 
         # filter by date
         if self.__filter_start_date or self.__filter_end_date:
