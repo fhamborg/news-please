@@ -1,8 +1,4 @@
-# **news-please** #
 
-[![PyPI version](https://badge.fury.io/py/news-please.svg)](https://badge.fury.io/py/news-please)
-
-<img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> 
 
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows developers to use the crawling and extraction functionality within their own program. news-please also allows to conveniently [crawl and extract articles](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py) from commoncrawl.org.
 
@@ -21,16 +17,16 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * runs on your favorite Python version (2.7+ and 3+)
 
 ### CLI mode
-* stores extracted results in **JSON files or ElasticSearch** (other storages can be added easily)
+* stores extracted results in **JSON files or ElasticSearch** (you can implement other storages easily)
 * **simple but extensive configuration** (if you want to tweak the results)
 * revisions: crawl articles multiple times and track changes
 
 ### Library mode
-* crawl and extract information for a list of article URLs. 
+* crawl and extract information given a list of article URLs. 
 
 ### News archive from commoncrawl.org
-* commoncrawl.org provides a large, free-to-use archive of news articles from small and major publishers world wide
-* news-please enables users to conventiently download and extract articles from commoncrawl.org
+* commoncrawl.org provides an extensive, free-to-use archive of news articles from small and major publishers world wide
+* news-please enables users to conveniently download and extract articles from commoncrawl.org
 * you can optionally define filter criteria, such as news publisher(s) or the date period, within which articles need to be published
 * clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), and execute `python3 newsplease/examples/commoncrawl.py`
 
@@ -69,7 +65,7 @@ or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check 
 ```
 NewsPlease.from_warc(warc_record)
 ```
-In library mode, news-please will attempt to download and extract information from each URL. The previously described functions are blocking, i.e. will return once all URLs have been attempted. The resulting list contains all articles that have been extracted successfully.
+In library mode, news-please will attempt to download and extract information from each URL. The previously described functions are blocking, i.e., will return once news-please has attempted all URLs. The resulting list contains all successfully extracted articles.
 
 ### Run the crawler (via the CLI)
 
@@ -77,17 +73,17 @@ In library mode, news-please will attempt to download and extract information fr
 $ news-please
 ```
 
-news-please will then start crawling a few examples pages. To terminate the process simply press `CTRL+C`. news-please will then shutdown within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill the process (not recommended, though).
+news-please will then start crawling a few examples pages. To terminate the process press `CTRL+C`. news-please will then shut down within 5-60 seconds. You can also press `CTRL+C` twice, which will immediately kill the process (not recommended, though).
 
 The results are stored by default in JSON files in the `data` folder. In the default configuration, news-please also stores the original HTML files.
 
 ### Crawl other pages
 
-Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' webpages of your choice. 
+Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. 
 
 ### ElasticSearch
 
-news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can be changed also with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
+news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can also be changed with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
     [Scrapy]
     
@@ -96,17 +92,17 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
                        'newsplease.pipeline.pipelines.ElasticsearchStorage':350
                      }
 
-That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username / password or CA-certificate authentication. In these cases, you will also need to change the following.
+That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username/password or CA-certificate authentication. In these cases, you will also need to change the following.
 
     [Elasticsearch]
 
     host = localhost
-    port = 9200	
+    port = 9200    
 
     ...
 
     # Credentials used  for authentication (supports CA-certificates):
-	
+    
     use_ca_certificates = False           # True if authentification needs to be performed 
     ca_cert_path = '/path/to/cacert.pem'  
     client_cert_path = '/path/to/client_cert.pem'  
@@ -155,7 +151,7 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contribution and support
-You want to contribute? Great, we are always happy for any support on this project! Simply send a pull request. By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, simply open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement features requested by users ourselves - instead we recommend to implement them yourself, and send a pull request. 
+Do you want to contribute? Great, we are always happy for any support on this project! Just send a pull request. By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request. 
 
 ## License
 The project is licensed under the [Apache License 2.0](LICENSE.txt). Make sure that you use news-please in compliance with applicable law. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/). 
