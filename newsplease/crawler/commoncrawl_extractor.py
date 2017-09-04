@@ -90,7 +90,7 @@ class CommonCrawlExtractor:
         :return:
         """
         with open(self.__log_pathname_fully_extracted_warcs, 'a') as log_file:
-            log_file.write(warc_url)
+            log_file.write(warc_url + '\n')
 
     def __filter_record(self, warc_record, article=None):
         """
