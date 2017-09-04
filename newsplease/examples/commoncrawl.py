@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 """
+This script uses relative imports to ensure that the latest, local version of news-please is used, instead of the one
+that might have been installed with pip. Hence, you must run this script following this workflow.
+git clone https://github.com/fhamborg/news-please.git
+cd news-please
+python3 -m newsplease.examples.commoncrawl
+
 This scripts downloads WARC files from commoncrawl.org's news crawl and extracts articles from these files. You can
 define filter criteria that need to be met (see YOUR CONFIG section), otherwise an article is discarded. Currently, the
 script stores the extracted articles in JSON files, but this behaviour can be adapted to your needs in the method
@@ -18,7 +24,7 @@ import json
 import logging
 import os
 
-import newsplease.crawler.commoncrawl_crawler as commoncrawl_crawler
+from ..crawler import commoncrawl_crawler as commoncrawl_crawler
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
