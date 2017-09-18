@@ -63,7 +63,7 @@ NewsPlease.from_file(path)
 ```
 or if you have raw HTML
 ```python
-NewsPlease.from_html(html) # you can optionally provide the original URL of the HTML
+NewsPlease.from_html(html) # you can optionally provide the original URL of the HTML data
 ```
 or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [example](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter for specific hosts and dates)
 ```
