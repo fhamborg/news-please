@@ -1,4 +1,4 @@
-class NewsArticle(dict):
+class NewsArticle(object):
     """
     Class representing a single news article containing all the information that news-please can extract.
     """
@@ -23,4 +23,20 @@ class NewsArticle(dict):
         Get the dict of the instance of this class.
         :return:
         """
-        return self.__dict__
+        return {
+            'authors': self.authors,
+            'date_download': self.date_download,
+            'date_modify': self.date_modify,
+            'date_publish': self.date_publish,
+            'description': self.description,
+            'filename': self.filename,
+            'image_url': self.image_url,
+            'language': self.language,
+            'localpath': self.localpath,
+            'source_domain': self.source_domain,
+            'text': self.text,
+            'title': self.title,
+            'title_page': self.title_page,
+            'title_rss': self.title_rss,
+            'url': self.url
+        }

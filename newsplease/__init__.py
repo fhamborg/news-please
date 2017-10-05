@@ -117,9 +117,3 @@ class NewsPlease:
         urls = list(filter(None, content))
 
         return NewsPlease.from_urls(urls)
-
-
-if __name__ == '__main__':
-    a = NewsPlease.from_url(
-        'https://www.nytimes.com/2017/09/10/us/hurricane-irma-florida.html?action=click&pgtype=Homepage&clickSource=story-heading&module=span-abc-region&region=span-abc-region&WT.nav=span-abc-region&_r=0')
-    print(a)
