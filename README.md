@@ -17,7 +17,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
-* execute it conveniently with the **CLI** or use it as a **library** within your own software or to extract articles from **the news archive of commoncrawl.org**
+* run news-please conveniently with the **CLI** or use it as a **library** within your own software or to extract articles from **the news archive of commoncrawl.org**
 * runs on your favorite Python version (2.7+ and 3+)
 
 ### CLI mode
@@ -32,7 +32,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * commoncrawl.org provides an extensive, free-to-use archive of news articles from small and major publishers world wide
 * news-please enables users to conveniently download and extract articles from commoncrawl.org
 * you can optionally define filter criteria, such as news publisher(s) or the date period, within which articles need to be published
-* clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), and execute `python3 newsplease/examples/commoncrawl.py`
+* clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), and execute `python3 -m newsplease.examples.commoncrawl`
 
 ## Getting started
 
@@ -63,7 +63,7 @@ NewsPlease.from_file(path)
 ```
 or if you have raw HTML
 ```python
-NewsPlease.from_html(html) # you can optionally provide the original URL of the HTML
+NewsPlease.from_html(html) # you can optionally provide the original URL of the HTML data
 ```
 or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [example](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter for specific hosts and dates)
 ```
