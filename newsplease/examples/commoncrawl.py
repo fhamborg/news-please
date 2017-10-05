@@ -56,7 +56,7 @@ my_log_level = logging.INFO
 # json export style
 my_json_export_style = 1  # 0 (minimize), 1 (pretty)
 # number of extraction processes
-my_number_of_extraction_processes = 4
+my_number_of_extraction_processes = 1
 # if True, the WARC file will be deleted after all articles have been extracted from it
 my_delete_warc_after_extraction = True
 # if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
@@ -99,9 +99,9 @@ def on_valid_article_extracted(article):
     # do whatever you need to do with the article (e.g., save it to disk, store it in ElasticSearch, etc.)
     with open(__get_pretty_filepath(my_local_download_dir_article, article), 'w') as outfile:
         if my_json_export_style == 0:
-            json.dump(article, outfile, separators=(',', ':'))
+            json.dump(article.__dict__, outfile, default=str, separators=(',', ':'))
         elif my_json_export_style == 1:
-            json.dump(article, outfile, indent=4, sort_keys=True)
+            json.dump(article.__dict__, outfile, default=str, indent=4, sort_keys=True)
         # ...
 
 

@@ -13,7 +13,7 @@ from multiprocessing import Pool
 from dateutil import parser
 from scrapy.utils.log import configure_logging
 
-from newsplease.crawler.commoncrawl_extractor import CommonCrawlExtractor
+from ..crawler.commoncrawl_extractor import CommonCrawlExtractor
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"

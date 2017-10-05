@@ -9,16 +9,17 @@ import os
 import subprocess
 import sys
 import time
-import urllib
-from urllib.request import urlretrieve
 
 from ago import human
 from dateutil import parser
 from hurry.filesize import size
 from scrapy.utils.log import configure_logging
+from six.moves import urllib
 from warcio.archiveiterator import ArchiveIterator
 
-from newsplease import NewsPlease
+from .. import NewsPlease
+
+# from urllib.request import urlretrieve
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
@@ -210,7 +211,7 @@ class CommonCrawlExtractor:
 
             # download
             self.__logger.info('downloading %s (local: %s)', url, local_filepath)
-            urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
+            urllib.request.urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
             self.__logger.info('download completed, local file: %s', local_filepath)
             return local_filepath
 
@@ -229,46 +230,46 @@ class CommonCrawlExtractor:
 
         with open(path_name, 'rb') as stream:
             for record in ArchiveIterator(stream):
-                try:
-                    if record.rec_type == 'response':
-                        counter_article_total += 1
+                # try:
+                if record.rec_type == 'response':
+                    counter_article_total += 1
 
-                        # if the article passes filter tests, we notify the user
-                        filter_pass, article = self.__filter_record(record)
-                        if filter_pass:
-                            counter_article_passed += 1
+                    # if the article passes filter tests, we notify the user
+                    filter_pass, article = self.__filter_record(record)
+                    if filter_pass:
+                        counter_article_passed += 1
 
-                            if not article:
-                                article = NewsPlease.from_warc(record)
+                        if not article:
+                            article = NewsPlease.from_warc(record)
 
-                            self.__logger.info('article pass (%s; %s; %s)', article.source_domain, article.date_publish,
-                                               article.title)
-                            self.__callback_on_article_extracted(article)
-                        else:
-                            counter_article_discarded += 1
-
-                            if article:
-                                self.__logger.info('article discard (%s; %s; %s)', article.source_domain,
-                                                   article.date_publish,
-                                                   article.title)
-                            else:
-                                self.__logger.info('article discard (%s)',
-                                                   record.rec_headers.get_header('WARC-Target-URI'))
-
-                        if counter_article_total % 10 == 0:
-                            elapsed_secs = time.time() - start_time
-                            secs_per_article = elapsed_secs / counter_article_total
-                            self.__logger.info('statistics')
-                            self.__logger.info('pass = %i, discard = %i, total = %i', counter_article_passed,
-                                               counter_article_discarded, counter_article_total)
-                            self.__logger.info('extraction from current WARC file started %s; %f s/article',
-                                               human(start_time), secs_per_article)
-                except:
-                    if self.__continue_after_error:
-                        self.__logger.error('Unexpected error: %s', sys.exc_info()[0])
-                        pass
+                        self.__logger.info('article pass (%s; %s; %s)', article.source_domain, article.date_publish,
+                                           article.title)
+                        self.__callback_on_article_extracted(article)
                     else:
-                        raise
+                        counter_article_discarded += 1
+
+                        if article:
+                            self.__logger.info('article discard (%s; %s; %s)', article.source_domain,
+                                               article.date_publish,
+                                               article.title)
+                        else:
+                            self.__logger.info('article discard (%s)',
+                                               record.rec_headers.get_header('WARC-Target-URI'))
+
+                    if counter_article_total % 10 == 0:
+                        elapsed_secs = time.time() - start_time
+                        secs_per_article = elapsed_secs / counter_article_total
+                        self.__logger.info('statistics')
+                        self.__logger.info('pass = %i, discard = %i, total = %i', counter_article_passed,
+                                           counter_article_discarded, counter_article_total)
+                        self.__logger.info('extraction from current WARC file started %s; %f s/article',
+                                           human(start_time), secs_per_article)
+                        # except:
+                        #    if self.__continue_after_error:
+                        #        self.__logger.error('Unexpected error: %s', sys.exc_info()[0])
+                        #        pass
+                        #    else:
+                        #        raise
 
         # cleanup
         if self.__delete_warc_after_extraction:
