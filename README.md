@@ -35,13 +35,12 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), and execute `python3 -m newsplease.examples.commoncrawl`
 
 ## Getting started
-
 It's super easy, we promise!
 
 ### Installation
-
+We prefer Python 3, but Python 2.7 is supported, too!
 ```
-$ pip install news-please
+$ pip3 install news-please 
 ```
 
 ### Use within your own code (as a library)
