@@ -141,10 +141,10 @@ We also thank all other contributors, which you can find on the [contributors' p
 If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf) ([ResearchGate](https://www.researchgate.net/publication/314072045_news-please_A_Generic_News_Crawler_and_Extractor), [Mendeley](https://www.mendeley.com/research-papers/newsplease-generic-news-crawler-extractor/)):
 ```
 @InProceedings{Hamborg2017,
-  author     = {{H}amborg, {F}elix and {M}euschke, {N}orman and {B}reitinger, {C}orinna and {G}ipp, {B}ela},
-  title      = {{news-please}: {A} {G}eneric {N}ews {C}rawler and {E}xtractor},
+  author     = {Hamborg, Felix and Meuschke, Norman and Breitinger, Corinna and Gipp, Bela},
+  title      = {news-please: A Generic News Crawler and Extractor},
   year       = {2017},
-  booktitle  = {{P}roceedings of the 15th {I}nternational {S}ymposium of {I}nformation {S}cience},
+  booktitle  = {Proceedings of the 15th International Symposium of Information Science},
   location   = {Berlin},
   editor     = {Gaede, Maria and Trkulja, Violeta and Petra, Vivien},
   pages      = {218--223},
