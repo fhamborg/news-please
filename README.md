@@ -60,9 +60,9 @@ or if you have a file containing all URLs (each line containing a single URL)
 ```python
 NewsPlease.from_file(path)
 ```
-or if you have raw HTML
+or if you have raw HTML data (you can also provide the original URL to increase the accuracy of extracting the correct publishing date)
 ```python
-NewsPlease.from_html(html) # you can optionally provide the original URL of the HTML data
+NewsPlease.from_html(html, url=None) # you can optionally provide the original URL of the HTML data
 ```
 or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [example](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter for specific hosts and dates)
 ```
