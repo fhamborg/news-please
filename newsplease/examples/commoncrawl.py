@@ -109,7 +109,8 @@ if __name__ == '__main__':
     __setup__()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
                                                valid_hosts=my_filter_valid_hosts,
-                                               start_date=my_filter_start_date, end_date=my_filter_end_date,
+                                               start_date=my_filter_start_date,
+                                               end_date=my_filter_end_date,
                                                strict_date=my_filter_strict_date,
                                                reuse_previously_downloaded_files=my_reuse_previously_downloaded_files,
                                                local_download_dir_warc=my_local_download_dir_warc,
