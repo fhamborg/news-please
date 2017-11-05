@@ -44,7 +44,7 @@ $ pip3 install news-please
 ```
 
 ### Use within your own code (as a library)
-You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction or continuous crawling mode (using RSS), you need to use the CLI mode as the library mode does only support single URL extraction.
+You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction (given only the root URL) or continuous crawling mode (using RSS), you need to use the CLI mode.
 ```python
 from newsplease import NewsPlease
 article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
