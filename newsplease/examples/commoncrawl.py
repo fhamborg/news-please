@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 """
-This script uses relative imports to ensure that the latest, local version of news-please is used, instead of the one
-that might have been installed with pip. Hence, you must run this script following this workflow.
-git clone https://github.com/fhamborg/news-please.git
-cd news-please
-python3 -m newsplease.examples.commoncrawl
-
 This scripts downloads WARC files from commoncrawl.org's news crawl and extracts articles from these files. You can
 define filter criteria that need to be met (see YOUR CONFIG section), otherwise an article is discarded. Currently, the
 script stores the extracted articles in JSON files, but this behaviour can be adapted to your needs in the method
@@ -18,6 +12,12 @@ CommonCrawlCrawler provided in newsplease.crawler.commoncrawl_crawler.py
 In case the script crashes and contains a log message in the beginning that states that only 1 file on AWS storage
 was found, make sure that awscli was correctly installed. You can check that by executing aws --version from a terminal.
 If aws is not installed, you can (on Ubuntu) also install it using sudo apt-get install awscli.
+
+This script uses relative imports to ensure that the latest, local version of news-please is used, instead of the one
+that might have been installed with pip. Hence, you must run this script following this workflow.
+git clone https://github.com/fhamborg/news-please.git
+cd news-please
+python3 -m newsplease.examples.commoncrawl
 """
 import hashlib
 import json
@@ -40,9 +40,9 @@ my_local_download_dir_article = './cc_download_articles/'
 my_filter_valid_hosts = []  # example: ['elrancaguino.cl']
 # start date (if None, any date is OK as start date), as datetime
 my_filter_start_date = None  # datetime.datetime(2016, 1, 1)
-# end date (if None, any date is OK as end date)
+# end date (if None, any date is OK as end date), as datetime
 my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
-# if date filtering is string, e.g., if we could not detect the date of an article, we will discard the article
+# if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
 my_filter_strict_date = True
 # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
