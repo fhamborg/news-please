@@ -20,15 +20,18 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 * run news-please conveniently with the **CLI** or use it as a **library** within your own software or to extract articles from **the news archive of commoncrawl.org**
 * runs on your favorite Python version (2.7 and 3+)
 
-### CLI mode
+### Modes and use cases
+news-please supports three use cases, which are explained in more detail in the following.
+
+#### CLI mode
 * stores extracted results in **JSON files or ElasticSearch** (you can implement other storages easily)
 * **simple but extensive configuration** (if you want to tweak the results)
 * revisions: crawl articles multiple times and track changes
 
-### Library mode
+#### Library mode
 * crawl and extract information given a list of article URLs. 
 
-### News archive from commoncrawl.org
+#### News archive from commoncrawl.org
 * commoncrawl.org provides an extensive, free-to-use archive of news articles from small and major publishers world wide
 * news-please enables users to conveniently download and extract articles from commoncrawl.org
 * you can optionally define filter criteria, such as news publisher(s) or the date period, within which articles need to be published
