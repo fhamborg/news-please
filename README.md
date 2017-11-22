@@ -67,7 +67,7 @@ or if you have raw HTML data (you can also provide the original URL to increase 
 ```python
 NewsPlease.from_html(html, url=None) 
 ```
-or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [example](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter for specific hosts and dates)
+or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [commoncrawl workflow](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter commoncrawl's archive for specific hosts and dates)
 ```
 NewsPlease.from_warc(warc_record)
 ```
