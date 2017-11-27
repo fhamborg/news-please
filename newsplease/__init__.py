@@ -1,3 +1,4 @@
+import datetime
 import os
 import sys
 import urllib
@@ -90,17 +91,18 @@ class NewsPlease:
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
         results = {}
+        download_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         if len(urls) == 0:
             pass
         elif len(urls) == 1:
             url = urls[0]
             html = SimpleCrawler.fetch_url(url)
-            results[url] = NewsPlease.from_html(html, url)
+            results[url] = NewsPlease.from_html(html, url, download_date)
         else:
             results = SimpleCrawler.fetch_urls(urls)
             for url in results:
-                results[url] = NewsPlease.from_html(results[url], url)
+                results[url] = NewsPlease.from_html(results[url], url, download_date)
 
         return results
 
