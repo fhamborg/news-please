@@ -139,7 +139,7 @@ class CommonCrawlExtractor:
         :param warc_record:
         :return:
         """
-        if article.publish_date:
+        if 'publish_date' in article:
             return parser.parse(article.publish_date)
         else:
             return None
