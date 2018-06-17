@@ -185,7 +185,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
             # check if the current WARC has already been fully extracted (assuming that the filter criteria have not
             # been changed!)
             if warc_download_url in fully_extracted_warc_urls:
-                __logger.info('skipping WARC because fully extracted: %s')
+                __logger.info('skipping WARC because fully extracted: %s' % warc_download_url)
                 pass
             else:
                 warc_download_urls.append(warc_download_url)
