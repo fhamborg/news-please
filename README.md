@@ -32,7 +32,8 @@ news-please supports three use cases, which are explained in more detail in the 
 * revisions: crawl articles multiple times and track changes
 
 #### Library mode
-* crawl and extract information given a list of article URLs. 
+* crawl and extract information given a list of article URLs
+* to use news-please within your own Python code
 
 #### News archive from commoncrawl.org
 * commoncrawl.org provides an extensive, free-to-use archive of news articles from small and major publishers world wide
