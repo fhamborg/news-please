@@ -89,7 +89,7 @@ The results are stored by default in JSON files in the `data` folder. In the def
 
 ### Crawl other pages
 
-Of course, you want to crawl other websites. Simply go into the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. 
+Most likely, you will not want to crawl from the websites provided in our example configuration. Simply head ofer to the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. 
 
 ### ElasticSearch
 
