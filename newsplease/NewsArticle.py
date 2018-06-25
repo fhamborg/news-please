@@ -18,6 +18,17 @@ class NewsArticle(object):
     title_rss = None
     url = None
 
+    def get_serializable_dict(self):
+        """
+        Get a serializable dict of the instance of this class.
+        :return:
+        """
+        tmp = self.get_dict()
+        tmp['date_download'] = str(tmp['date_download'])
+        tmp['date_modify'] = str(tmp['date_modify'])
+        tmp['date_publish'] = str(tmp['date_publish'])
+        return tmp
+
     def get_dict(self):
         """
         Get the dict of the instance of this class.
