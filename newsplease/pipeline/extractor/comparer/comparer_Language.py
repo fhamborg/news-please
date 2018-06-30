@@ -40,9 +40,8 @@ class ComparerLanguage:
             return None
 
         # If there is no favorite language, return the language extracted by newspaper
-        if max(languages_extracted_number)[0] == min(languages_extracted_number)[0]:
-            if language_newspaper is not None:
-                return language_newspaper
+        if max(languages_extracted_number)[0] == min(languages_extracted_number)[0] and language_newspaper is not None:
+            return language_newspaper
 
         if languages_extracted_number:
             return (max(languages_extracted_number))[1]

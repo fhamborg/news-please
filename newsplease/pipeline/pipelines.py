@@ -100,14 +100,13 @@ class RSSCrawlCompare(object):
             #   otherwise the result will be overwritten in the buffer
             old_version = self.cursor.fetchone()
 
-            if old_version is not None:
+            if old_version is not None and (datetime.datetime.strptime(
+                    item['download_date'], "%y-%m-%d %H:%M:%S") -
+                                            old_version[3]) \
+                    < datetime.timedelta(hours=self.delta_time):
                 # Compare the two download dates. index 3 of old_version
-                #   corresponds to the download_date attribute in the DB
-                if (datetime.datetime.strptime(
-                        item['download_date'], "%y-%m-%d %H:%M:%S") -
-                        old_version[3]) \
-                        < datetime.timedelta(hours=self.delta_time):
-                    raise DropItem("Article in DB too recent. Not saving.")
+                # corresponds to the download_date attribute in the DB
+                raise DropItem("Article in DB too recent. Not saving.")
 
         return item
 
@@ -306,9 +305,8 @@ class ExtractedInformationStorage(object):
         # clean values
         for key in article:
             value = article[key]
-            if isinstance(value, str):
-                if not value:
-                    article[key] = None
+            if isinstance(value, str) and not value:
+                article[key] = None
 
         return article
 

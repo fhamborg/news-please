@@ -194,9 +194,8 @@ class HeuristicsManager(object):
             return result == number
 
         # Check if the condition is a number and matches the result
-        if isinstance(condition, (float, int)):
-            if isinstance(result, (float, int)):
-                return condition == result
+        if isinstance(condition, (float, int)) and isinstance(result, (float, int)):
+            return condition == result
 
         return self.__evaluation_error(result, condition, "Unknown")
 
