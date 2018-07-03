@@ -13,7 +13,6 @@ from copy import deepcopy
 
 import hjson
 
-# import ConfigParser
 try:
     import ConfigParser
 except ImportError:

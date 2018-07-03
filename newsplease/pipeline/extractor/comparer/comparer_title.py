@@ -32,9 +32,8 @@ class ComparerTitle():
         for match in list_title_matches_set:
             list_title_count.append((list_title_matches.count(match), match))
 
-        if list_title_count:
-            if max(list_title_count)[0] != min(list_title_count)[0]:
-                return max(list_title_count)[1]
+        if list_title_count and max(list_title_count)[0] != min(list_title_count)[0]:
+            return max(list_title_count)[1]
 
         return None
 

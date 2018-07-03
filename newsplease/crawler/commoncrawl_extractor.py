@@ -19,8 +19,6 @@ from warcio.archiveiterator import ArchiveIterator
 
 from .. import NewsPlease
 
-# from urllib.request import urlretrieve
-
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
@@ -124,12 +122,10 @@ class CommonCrawlExtractor:
                     return False, article
             else:  # here we for sure have a date
                 # is article published too early?
-                if self.__filter_start_date:
-                    if publishing_date < self.__filter_start_date:
-                        return False, article
-                if self.__filter_end_date:
-                    if publishing_date > self.__filter_end_date:
-                        return False, article
+                if self.__filter_start_date and publishing_date < self.__filter_start_date:
+                    return False, article
+                if self.__filter_end_date and publishing_date > self.__filter_end_date:
+                    return False, article
 
         return True, article
 

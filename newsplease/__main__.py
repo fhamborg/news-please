@@ -640,7 +640,6 @@ def cli(cfg_file_path, resume, reset_elasticsearch, reset_mysql, reset_json, res
 
     NewsPleaseLauncher(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, no_confirm)
 
-    pass
 
 
 def main():

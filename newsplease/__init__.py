@@ -67,7 +67,6 @@ class NewsPlease:
 
         tmp_article = ExtractedInformationStorage.extract_relevant_info(item)
         final_article = ExtractedInformationStorage.convert_to_class(tmp_article)
-        # final_article = DotMap(tmp_article)
         return final_article
 
     @staticmethod
@@ -96,6 +95,8 @@ class NewsPlease:
         download_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         if len(urls) == 0:
+            # Nested blocks of code should not be left empty.
+            # When a block contains a comment, this block is not considered to be empty
             pass
         elif len(urls) == 1:
             url = urls[0]
