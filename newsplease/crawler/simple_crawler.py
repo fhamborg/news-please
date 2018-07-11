@@ -1,7 +1,7 @@
 import copy
 import threading
 
-from six.moves import urllib
+import requests
 
 
 class SimpleCrawler(object):
@@ -26,10 +26,16 @@ class SimpleCrawler(object):
         :param timeout: in seconds, if None, the urllib default is used
         :return: html of the url
         """
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        req = urllib.request.Request(url, None, headers)
-        html = urllib.request.urlopen(req, data=None, timeout=timeout).read()
-
+        headers = {'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2)'}
+        req = requests.Session()
+        adapter = requests.adapters.HTTPAdapter(max_retries=20)
+        req.mount('https://', adapter)
+        req.mount('http://', adapter)
+        getter = requests.get(url, timeout=timeout, headers=headers)
+        if getter.ok:
+            html = getter.content
+        else:
+            html = None
         if is_threaded:
             SimpleCrawler._results[url] = html
 
