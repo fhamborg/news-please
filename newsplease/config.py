@@ -51,7 +51,7 @@ class CrawlerConfig(object):
     get_instance = SingletonHelper()
     instance = None
 
-    # Here starts the actual class!
+    # Here starts the actual class
     log = None
     log_output = []
     sections = None
