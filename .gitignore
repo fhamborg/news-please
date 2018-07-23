@@ -9,5 +9,3 @@ __pycache__/
 news-please.iml
 
 venv/
-.scannerwork/
-sonar-project.properties
