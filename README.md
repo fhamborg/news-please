@@ -126,8 +126,9 @@ We have collected a bunch of useful information for both [users](https://github.
 
 ## Wiki and support (also, how to open an issue)
 You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. 
+
 ### Issues
-Make sure to include information about your Python version, operating system, which version of news-please you are running (make sure it is the latest, no support for older versions), and how you use news-please (installed via pip or git clone).
+For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by mail.
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
