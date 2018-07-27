@@ -128,7 +128,7 @@ We have collected a bunch of useful information for both [users](https://github.
 You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. 
 
 ### Issues
-For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
+For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
