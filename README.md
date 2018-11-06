@@ -7,7 +7,7 @@ If you're interested in news analysis, you might also want to check out our new 
 
 <img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> 
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py) from commoncrawl.org.
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from commoncrawl.org.
 
 ## Extracted information
 * headline
@@ -20,7 +20,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
-* run news-please conveniently with the [**CLI**](#run-the-crawler-via-the-cli) or use it as a [**library**](#use-within-your-own-code-as-a-library) within your own software or to extract articles from (**the news archive of commoncrawl.org**)[https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py]
+* run news-please conveniently with the [**CLI**](#run-the-crawler-via-the-cli) or use it as a [**library**](#use-within-your-own-code-as-a-library) within your own software or to extract articles from [**the news archive of commoncrawl.org**](#news-archive-from-commoncrawlorg)
 * runs on your favorite Python version (2.7 and 3+)
 
 ### Modes and use cases
@@ -39,7 +39,7 @@ news-please supports three use cases, which are explained in more detail in the 
 * commoncrawl.org provides an extensive, free-to-use archive of news articles from small and major publishers world wide
 * news-please enables users to conveniently download and extract articles from commoncrawl.org
 * you can optionally define filter criteria, such as news publisher(s) or the date period, within which articles need to be published
-* clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), and execute `python3 -m newsplease.examples.commoncrawl`
+* clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](/newsplease/examples/commoncrawl.py), and execute `python3 -m newsplease.examples.commoncrawl`
 
 ## Getting started
 It's super easy, we promise!
