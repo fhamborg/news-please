@@ -67,7 +67,7 @@ or if you have a file containing all URLs (each line containing a single URL)
 ```python
 NewsPlease.from_file(path)
 ```
-or if you have raw HTML data (you can also provide the original URL to increase the accuracy of extracting the correct publishing date)
+or if you have raw HTML data (you can also provide the original URL to increase the accuracy of extracting the publishing date)
 ```python
 NewsPlease.from_html(html, url=None) 
 ```
