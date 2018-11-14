@@ -601,8 +601,10 @@ Cleanup files:
             """
             if self.graceful_stop:
                 return None
+
             self.lock.acquire()
             self.sort_queue()
+
             try:
                 item = self.queue.pop(0)
                 prev_time = self.queue_times.pop(0)
@@ -616,6 +618,8 @@ Cleanup files:
 
             return item
 
+        def stop(self):
+            self.graceful_stop = True
 
 
 @plac.annotations(
