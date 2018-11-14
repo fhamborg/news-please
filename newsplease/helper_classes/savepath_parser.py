@@ -115,7 +115,7 @@ class SavepathParser(object):
                               int(match.group(1))), savepath)
         savepath = re.sub(r'%md5_domain\(([^\)]+)\)',
                           lambda match: hashlib.md5(
-                              UrlExtractor.get_allowed_domain(url, False))
+                              UrlExtractor.get_allowed_domain(url, False).encode('utf-8'))
                           .hexdigest()[:int(match.group(1))], savepath)
 
         savepath = re.sub(r'%full_domain\(([^\)]+)\)',
@@ -127,7 +127,7 @@ class SavepathParser(object):
                               int(match.group(1))), savepath)
         savepath = re.sub(r'%md5_full_domain\(([^\)]+)\)',
                           lambda match: hashlib.md5(
-                              UrlExtractor.get_allowed_domain(url))
+                              UrlExtractor.get_allowed_domain(url).encode('utf-8'))
                           .hexdigest()[:int(match.group(1))], savepath)
 
         savepath = re.sub(r'%subdomains\(([^\)]+)\)',
@@ -139,7 +139,7 @@ class SavepathParser(object):
                               int(match.group(1))), savepath)
         savepath = re.sub(r'%md5_subdomains\(([^\)]+)\)',
                           lambda match: hashlib.md5(
-                              UrlExtractor.get_subdomain(url))
+                              UrlExtractor.get_subdomain(url).encode('utf-8'))
                           .hexdigest()[:int(match.group(1))], savepath)
 
         savepath = re.sub(r'%url_directory_string\(([^\)]+)\)',
@@ -152,7 +152,7 @@ class SavepathParser(object):
                               int(match.group(1))), savepath)
         savepath = re.sub(r'%md5_url_directory_string\(([^\)]+)\)',
                           lambda match: hashlib.md5(
-                              UrlExtractor.get_url_directory_string(url))
+                              UrlExtractor.get_url_directory_string(url).encode('utf-8'))
                           .hexdigest()[:int(match.group(1))], savepath)
 
         savepath = re.sub(r'%url_file_name\(([^\)]+)\)',
@@ -161,7 +161,7 @@ class SavepathParser(object):
                           savepath)
         savepath = re.sub(r'%md5_url_file_name\(([^\)]+)\)',
                           lambda match: hashlib.md5(
-                              UrlExtractor.get_url_file_name(url))
+                              UrlExtractor.get_url_file_name(url).encode('utf-8'))
                           .hexdigest()[:int(match.group(1))], savepath)
 
         abs_savepath = self.get_abs_path(savepath)
