@@ -1,4 +1,5 @@
 import logging
+import os
 import shutil
 import signal
 import sys
@@ -7,7 +8,6 @@ import time
 from distutils.dir_util import copy_tree
 from subprocess import Popen
 
-import os
 import plac
 import pymysql
 from elasticsearch import Elasticsearch
@@ -605,17 +605,17 @@ Cleanup files:
             self.sort_queue()
             try:
                 item = self.queue.pop(0)
-                self.queue_times.pop(0)
+                prev_time = self.queue_times.pop(0)
+
                 self.add_execution(
-                    time.time() + self.daemons[item[1]], item[1]
+                    # prev + daemonize if in time, now + daemonize if in delay
+                    max(prev_time, time.time()) + self.daemons[item[1]], item[1]
                 )
             finally:
                 self.lock.release()
 
             return item
 
-        def stop(self):
-            self.graceful_stop = True
 
 
 @plac.annotations(
