@@ -88,7 +88,7 @@ class RSSCrawlCompare(object):
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
-        if spider.name == 'RssCrawler':
+        if spider.name in ['RssCrawler', 'GdeltCrawler']:
             # Search the CurrentVersion table for a version of the article
             try:
                 self.cursor.execute(self.compare_versions, (item['url'],))
