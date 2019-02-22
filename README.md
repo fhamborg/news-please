@@ -122,7 +122,6 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
     secret = 'password' 
 
 ### What's next?
-
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
 ## Wiki and support (also, how to open an issue)
@@ -132,7 +131,7 @@ You can find more information on usage and development in our [wiki](https://git
 For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
 
 ## Donation
-If news-please is useful to you, please consider a donation. Your donation will directly support the work on news-please, e.g., in the form of coffee ;o)
+If news-please is useful to you, please consider [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url). Your donation will directly support the work on news-please, e.g., in the form of coffee.
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
