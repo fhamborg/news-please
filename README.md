@@ -130,7 +130,7 @@ You can find more information on usage and development in our [wiki](https://git
 ### Issues
 For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
 
-## Donation
+### Donation
 If news-please is useful to you, please consider [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url). Your donation will directly support the work on news-please, e.g., in the form of coffee.
 
 ## Acknowledgements
