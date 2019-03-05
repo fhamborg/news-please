@@ -59,11 +59,8 @@ def __get_publishing_date(warc_record, article):
     :param warc_record:
     :return:
     """
-    if article.publish_date:
-        return parser.parse(article.publish_date)
-    else:
-        return None
-
+    return article.date_publish
+    
 
 def __get_download_url(name):
     """
