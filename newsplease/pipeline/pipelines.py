@@ -436,7 +436,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                                 client_key=self.database["client_key_path"])
         self.index_current = self.database["index_current"]
         self.index_archive = self.database["index_archive"]
-        self.mapping = {'properties': self.database["mapping"]}
+        self.mapping = self.database["mapping"]
 
         # check connection to Database and set the configuration
 
@@ -452,10 +452,10 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             # check if the necessary indices exist and create them if needed
             if not self.es.indices.exists(self.index_current):
                 self.es.indices.create(index=self.index_current, ignore=[400, 404])
-                self.es.indices.put_mapping(index=self.index_current, doc_type='article', body=self.mapping)
+                self.es.indices.put_mapping(index=self.index_current, doc_type='_doc', body=self.mapping)
             if not self.es.indices.exists(self.index_archive):
                 self.es.indices.create(index=self.index_archive, ignore=[400, 404])
-                self.es.indices.put_mapping(index=self.index_archive, doc_type='article', body=self.mapping)
+                self.es.indices.put_mapping(index=self.index_archive, doc_type='_doc', body=self.mapping)
             self.running = True
 
             # restore previous logging level
@@ -479,7 +479,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                     # save old version into index_archive
                     old_version = request['hits']['hits'][0]
                     old_version['_source']['descendent'] = True
-                    self.es.index(index=self.index_archive, doc_type='article', body=old_version['_source'])
+                    self.es.index(index=self.index_archive, doc_type='_doc', body=old_version['_source'])
                     version += 1
                     ancestor = old_version['_id']
 
@@ -488,7 +488,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info['ancestor'] = ancestor
                 extracted_info['version'] = version
-                self.es.index(index=self.index_current, doc_type='article', id=ancestor,
+                self.es.index(index=self.index_current, doc_type='_doc', id=ancestor,
                               body=extracted_info)
 
 
