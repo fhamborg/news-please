@@ -7,6 +7,7 @@ import json
 import logging
 import os.path
 import sys
+from pathlib import Path
 
 import pymysql
 from dateutil import parser as dateparser
@@ -19,6 +20,13 @@ from ..config import CrawlerConfig
 
 if sys.version_info[0] < 3:
     ConnectionError = OSError
+
+try:
+    import numpy as np
+    import pandas as pd
+except ModuleNotFoundError:
+    np = None
+    pd = None
 
 
 class HTMLCodeHandling(object):
@@ -561,3 +569,101 @@ class DateFilter(object):
                 raise DropItem('DateFilter: %s: Article is too young: %s ' % (item['url'], publish_date))
             else:
                 return item
+
+
+class PandasStorage(ExtractedInformationStorage):
+    """
+    Store meta data a Pandas data frame
+    """
+
+    log = None
+    cfg = None
+    es = None
+    index_current = None
+    index_archive = None
+    mapping = None
+    running = False
+
+    def __init__(self):
+        if np is None:
+            raise ModuleNotFoundError("Using PandasStorage requires numpy and pandas")
+        self.log = logging.getLogger(__name__)
+        self.cfg = CrawlerConfig.get_instance()
+        self.database = self.cfg.section("Pandas")
+
+        df_index = "url"
+        columns = {
+            "source_domain": 'object',
+            "title_page": 'object',
+            "title_rss": 'object',
+            "localpath": 'object',
+            "filename": 'object',
+            "date_download": 'datetime64[ns]',
+            "date_modify": 'datetime64[ns]',
+            "date_publish": 'datetime64[ns]',
+            "title": 'object',
+            "description": 'object',
+            "text": 'object',
+            "authors": 'object',
+            "image_url": 'object',
+            "language": 'object',
+            'url': 'object'
+        }
+        columns = {c: np.dtype(d) for c, d in columns.items()}
+
+        working_path = Path(self.cfg.section("Files")['working_path'])
+        file_name = self.database['file_name']
+        self.full_path = working_path.joinpath(file_name).with_suffix('.pickle')
+        try:
+            self.df = pd.read_pickle(self.full_path)
+            self.log.error("Found existing Pandas file with %i rows at %s",
+                           len(self.df), self.full_path)
+            for col, dtype in columns.items():
+                actual_dtype = self.df[col].dtype
+                if actual_dtype != np.dtype(dtype):
+                    raise TypeError("Column '%s' in file %s has dtype '%s' "
+                                    "but expected '%s'" % (col, str(self.full_path),
+                                                         str(actual_dtype), dtype))
+        except FileNotFoundError:
+            self.df = pd.DataFrame(columns=columns.keys())
+            self.log.info("Created new Pandas file at '%s'", self.full_path)
+            self.df = self.df.astype(columns)
+            self.df.set_index(df_index, inplace=True, drop=False)
+        except KeyError as e:
+            self.log.error("%s is missing a column.", self.full_path)
+            raise e
+
+    @staticmethod
+    def datestring_to_date(text):
+        if text:
+            return dateparser.parse(text)
+        return np.nan
+
+    def process_item(self, item, _spider):
+        article = {
+            'authors': item['article_author'],
+            'date_download': self.datestring_to_date(item['download_date']),
+            'date_modify': self.datestring_to_date(item['modified_date']),
+            'date_publish': self.datestring_to_date(item['article_publish_date']),
+            'description': item['article_description'],
+            'filename': item['filename'],
+            'image_url': item['article_image'],
+            'language': item['article_language'],
+            'localpath': item['local_path'],
+            'title': item['article_title'],
+            'title_page': ExtractedInformationStorage.ensure_str(item['html_title']),
+            'title_rss': ExtractedInformationStorage.ensure_str(item['rss_title']),
+            'source_domain':
+            ExtractedInformationStorage.ensure_str(item['source_domain']),
+            'text': item['article_text'],
+            'url': item['url']
+        }
+        self.df.loc[item['url']] = article
+        return item
+
+    def close_spider(self, _spider):
+        """
+        Write out to file
+        """
+        self.df.to_pickle(self.full_path)
+        self.log.info("Wrote to Pandas to %s", self.full_path)
