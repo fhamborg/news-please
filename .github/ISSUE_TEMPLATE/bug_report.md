@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve news-please. Bugs reported not using the issue template will likely be closed without further comment, since they usually do not provide sufficient information.
+about: Create a report to help us improve news-please. Please use this issue template when reporting a bug or other issue, always. It helps us to understand your problem.
 
 ---
 
