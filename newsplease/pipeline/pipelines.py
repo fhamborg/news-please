@@ -592,59 +592,38 @@ class PandasStorage(ExtractedInformationStorage):
         self.database = self.cfg.section("Pandas")
 
         df_index = "url"
-        columns = {
-            "source_domain": 'object',
-            "title_page": 'object',
-            "title_rss": 'object',
-            "localpath": 'object',
-            "filename": 'object',
-            "date_download": 'datetime64[ns]',
-            "date_modify": 'datetime64[ns]',
-            "date_publish": 'datetime64[ns]',
-            "title": 'object',
-            "description": 'object',
-            "text": 'object',
-            "authors": 'object',
-            "image_url": 'object',
-            "language": 'object',
-            'url': 'object'
-        }
-        columns = {c: np.dtype(d) for c, d in columns.items()}
+        columns = [
+            "source_domain", "title_page", "title_rss", "localpath", "filename",
+            "date_download", "date_modify", "date_publish", "title", "description",
+            "text", "authors", "image_url", "language", 'url'
+        ]
 
         working_path = Path(self.cfg.section("Files")['working_path'])
         file_name = self.database['file_name']
         self.full_path = working_path.joinpath(file_name).with_suffix('.pickle')
         try:
             self.df = pd.read_pickle(self.full_path)
-            self.log.error("Found existing Pandas file with %i rows at %s",
-                           len(self.df), self.full_path)
-            for col, dtype in columns.items():
-                actual_dtype = self.df[col].dtype
-                if actual_dtype != np.dtype(dtype):
-                    raise TypeError("Column '%s' in file %s has dtype '%s' "
-                                    "but expected '%s'" % (col, str(self.full_path),
-                                                         str(actual_dtype), dtype))
+            self.log.info(
+                "Found existing Pandas file with %i rows at %s", len(self.df),
+                self.full_path
+            )
+            for col in columns:
+                if col not in self.df.columns:
+                    raise KeyError(col)
         except FileNotFoundError:
             self.df = pd.DataFrame(columns=columns.keys())
             self.log.info("Created new Pandas file at '%s'", self.full_path)
-            self.df = self.df.astype(columns)
             self.df.set_index(df_index, inplace=True, drop=False)
         except KeyError as e:
             self.log.error("%s is missing a column.", self.full_path)
             raise e
 
-    @staticmethod
-    def datestring_to_date(text):
-        if text:
-            return dateparser.parse(text)
-        return np.nan
-
     def process_item(self, item, _spider):
         article = {
             'authors': item['article_author'],
-            'date_download': self.datestring_to_date(item['download_date']),
-            'date_modify': self.datestring_to_date(item['modified_date']),
-            'date_publish': self.datestring_to_date(item['article_publish_date']),
+            'date_download': item['download_date'],
+            'date_modify': item['modified_date'],
+            'date_publish': item['article_publish_date'],
             'description': item['article_description'],
             'filename': item['filename'],
             'image_url': item['article_image'],
@@ -665,5 +644,14 @@ class PandasStorage(ExtractedInformationStorage):
         """
         Write out to file
         """
+        self.df['date_download'] = pd.to_datetime(
+            self.df['date_download'], errors='coerce', infer_datetime_format=True
+        )
+        self.df['date_modify'] = pd.to_datetime(
+            self.df['date_modify'], errors='coerce', infer_datetime_format=True
+        )
+        self.df['date_publish'] = pd.to_datetime(
+            self.df['date_publish'], errors='coerce', infer_datetime_format=True
+        )
         self.df.to_pickle(self.full_path)
         self.log.info("Wrote to Pandas to %s", self.full_path)
