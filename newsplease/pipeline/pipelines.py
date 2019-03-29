@@ -7,7 +7,6 @@ import json
 import logging
 import os.path
 import sys
-from pathlib import Path
 
 import pymysql
 from dateutil import parser as dateparser
@@ -598,9 +597,10 @@ class PandasStorage(ExtractedInformationStorage):
             "text", "authors", "image_url", "language", 'url'
         ]
 
-        working_path = Path(self.cfg.section("Files")['working_path'])
+        working_path = self.cfg.section("Files")['working_path']
         file_name = self.database['file_name']
-        self.full_path = working_path.joinpath(file_name).with_suffix('.pickle')
+        self.full_path = os.path.join(working_path, file_name, '.pickle')
+
         try:
             self.df = pd.read_pickle(self.full_path)
             self.log.info(
