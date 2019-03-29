@@ -7,7 +7,6 @@ import json
 import logging
 import os.path
 import sys
-from pathlib import Path
 
 import pymysql
 from dateutil import parser as dateparser
