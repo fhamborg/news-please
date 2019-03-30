@@ -9,6 +9,7 @@ import re
 import requests, zipfile, io
 import csv
 import os
+re_export = re.compile(r'.*?(http.*?export\.CSV\.zip)')
 
 
 class GdeltCrawler(scrapy.Spider):
@@ -51,7 +52,7 @@ class GdeltCrawler(scrapy.Spider):
         :param obj response: The scrapy response
         """
         # get last_update zip url
-        match = re.match(r'.*?(http.*?export\.CSV\.zip)', response.text)
+        match = re.match(re_export, response.text)
         if match:
             last_update_zip_url = match.group(1)
             # fetch zip file

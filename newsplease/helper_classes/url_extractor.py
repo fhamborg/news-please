@@ -20,6 +20,9 @@ except ImportError:
 # len(".markdown") = 9
 MAX_FILE_EXTENSION_LENGTH = 9
 
+re_www = re.compile(r'^(www.)')
+re_domain = re.compile(r'[^/.]+\.[^/.]+$', )
+
 
 class UrlExtractor(object):
     """
@@ -36,11 +39,9 @@ class UrlExtractor(object):
         :return str: subdomains.domain.topleveldomain or domain.topleveldomain
         """
         if allow_subdomains:
-            return re.sub(r'^(www.)',
-                          '', re.search(r'[^/]+\.[^/]+', url).group(0))
+            return re.sub(re_www, '', re.search(r'[^/]+\.[^/]+', url).group(0))
         else:
-            return re.search(r'[^/.]+\.[^/.]+$',
-                             UrlExtractor.get_allowed_domain(url)).group(0)
+            return re.search(re_domain, UrlExtractor.get_allowed_domain(url)).group(0)
 
     @staticmethod
     def get_subdomain(url):

@@ -7,6 +7,11 @@ import re
 
 import scrapy
 
+re_rss = re.compile(
+    r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|' +
+    r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
+)
+
 
 class RssCrawler(scrapy.Spider):
     name = "RssCrawler"
@@ -93,7 +98,4 @@ class RssCrawler(scrapy.Spider):
         response = urllib2.urlopen(redirect).read()
 
         # Check if a standard rss feed exists
-        return re.search(
-            r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|' +
-            r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)',
-            response.decode('utf-8')) is not None
+        return re.search(re_rss, response.decode('utf-8')) is not None

@@ -6,6 +6,8 @@ import re
 from .sub_classes.heuristics_manager import HeuristicsManager
 from .url_extractor import UrlExtractor
 
+re_url_root = re.compile(r'https?://[a-z]+.')
+
 
 class Heuristics(HeuristicsManager):
     """
@@ -126,5 +128,5 @@ class Heuristics(HeuristicsManager):
         :return bool: Determines if the response's url is from a subdomain
         """
 
-        root_url = re.sub(r'https?://[a-z]+.', '', site_dict["url"])
+        root_url = re.sub(re_url_root, '', site_dict["url"])
         return UrlExtractor.get_allowed_domain(response.url) == root_url

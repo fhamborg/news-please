@@ -12,6 +12,11 @@ try:
 except ImportError:
     import urllib2
 
+re_pub_date = re.compile(
+    r'([\./\-_]{0,1}(19|20)\d{2})[\./\-_]{0,1}(([0-3]{0,1}[0-9][\./\-_])|(\w{3,5}[\./\-_]))([0-3]{0,1}[0-9][\./\-]{0,1})?'
+)
+re_class = re.compile("pubdate|timestamp|article_date|articledate|date", re.IGNORECASE)
+
 
 class DateExtractor(AbstractExtractor):
     """This class implements ArticleDateExtractor as an article extractor. ArticleDateExtractor is
@@ -62,9 +67,7 @@ class DateExtractor(AbstractExtractor):
         """Try to extract from the article URL - simple but might work as a fallback"""
 
         # Regex by Newspaper3k  - https://github.com/codelucas/newspaper/blob/master/newspaper/urls.py
-        m = re.search(
-            r'([\./\-_]{0,1}(19|20)\d{2})[\./\-_]{0,1}(([0-3]{0,1}[0-9][\./\-_])|(\w{3,5}[\./\-_]))([0-3]{0,1}[0-9][\./\-]{0,1})?',
-            url)
+        m = re.search(re_pub_date, url)
         if m:
             return self.parse_date_str(m.group(0))
         return None
@@ -216,8 +219,7 @@ class DateExtractor(AbstractExtractor):
                 return self.parse_date_str(date_string)
 
         # class=
-        for tag in html.find_all(['span', 'p', 'div'],
-                                 class_=re.compile("pubdate|timestamp|article_date|articledate|date", re.IGNORECASE)):
+        for tag in html.find_all(['span', 'p', 'div'], class_=re_class):
             date_string = tag.string
             if date_string is None:
                 date_string = tag.text

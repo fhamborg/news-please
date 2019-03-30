@@ -9,6 +9,8 @@ import scrapy
 
 from ..crawler.items import NewscrawlerItem
 
+re_html = re.compile('text/html')
+
 
 class ParseCrawler(object):
     """
@@ -99,12 +101,14 @@ class ParseCrawler(object):
         # Recursivly crawl all URLs on the current page
         # that do not point to irrelevant file types
         # or contain any of the given ignore_regex regexes
-        return [scrapy.Request(response.urljoin(href), callback=spider.parse)
-                for href in response.css("a::attr('href')").extract()
-                if re.match(r'.*\.' + ignore_file_extensions + r'$',
-                            response.urljoin(href), re.IGNORECASE) is None and
-                len(re.match(ignore_regex,
-                             response.urljoin(href)).group(0)) == 0]
+        return [
+            scrapy.Request(response.urljoin(href), callback=spider.parse)
+            for href in response.css("a::attr('href')").extract() if re.match(
+                r'.*\.' + ignore_file_extensions +
+                r'$', response.urljoin(href), re.IGNORECASE
+            ) is None
+            and len(re.match(ignore_regex, response.urljoin(href)).group(0)) == 0
+        ]
 
     def content_type(self, response):
         """
@@ -113,10 +117,11 @@ class ParseCrawler(object):
         :param obj response: The scrapy response
         :return bool: Determines wether the response is of the correct type
         """
-        if not re.match('text/html', response.headers.get('Content-Type').decode('utf-8')):
-            self.log.warn("Dropped: %s's content is not of type "
-                          "text/html but %s", response.url,
-                          response.headers.get('Content-Type'))
+        if not re_html.match(response.headers.get('Content-Type').decode('utf-8')):
+            self.log.warn(
+                "Dropped: %s's content is not of type "
+                "text/html but %s", response.url, response.headers.get('Content-Type')
+            )
             return False
         else:
             return True

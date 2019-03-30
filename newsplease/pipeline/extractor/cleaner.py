@@ -4,6 +4,12 @@ import sys
 
 from lxml import html
 
+rex1 = re.compile(r'(?<=\n)( )+')
+rex2 = re.compile(r'^[ \t\n\r\f]*')
+rex3 = re.compile(r'[ \t]+(?=([ \t]))')
+rex4 = re.compile(r'[ \n]+(?=(\n))')
+rex5 = re.compile(r'[ \n]*$')
+
 
 class Cleaner:
     """The Cleaner-Class tries to get the raw extracted text of the extractors
@@ -32,15 +38,15 @@ class Cleaner:
         :return: A string, the cleaned string
         """
         # Deletes whitespaces after a newline
-        arg = re.sub(r'(?<=\n)( )+', '', arg)
+        arg = re.sub(rex1, '', arg)
         # Deletes every whitespace, tabulator, newline at the beginning of the string
-        arg = re.sub(r'^[ \t\n\r\f]*', '', arg)
+        arg = re.sub(rex2, '', arg)
         # Deletes whitespace or tabulator if followed by whitespace or tabulator
-        arg = re.sub(r'[ \t]+(?=([ \t]))', '', arg)
+        arg = re.sub(rex3, '', arg)
         #  Deletes newline if it is followed by an other one
-        arg = re.sub(r'[ \n]+(?=(\n))', '', arg)
+        arg = re.sub(rex4, '', arg)
         # Deletes newlines and whitespaces at the end of the string
-        arg = re.sub(r'[ \n]*$', '', arg)
+        arg = re.sub(rex5, '', arg)
         return arg
 
     def do_cleaning(self, arg):
