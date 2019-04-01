@@ -90,7 +90,7 @@ The results are stored by default in JSON files in the `data` folder. In the def
 
 ### Crawl other pages
 
-Most likely, you will not want to crawl from the websites provided in our example configuration. Simply head ofer to the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. news-please also can extract the most recent events from the [GDELT project](https://www.gdeltproject.org/), see [here](https://github.com/fhamborg/news-please/blob/master/newsplease/crawler/spiders/gdelt_crawler.py).
+Most likely, you will not want to crawl from the websites provided in our example configuration. Simply head over to the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. news-please also can extract the most recent events from the [GDELT project](https://www.gdeltproject.org/), see [here](https://github.com/fhamborg/news-please/blob/master/newsplease/crawler/spiders/gdelt_crawler.py).
 
 ### ElasticSearch
 
