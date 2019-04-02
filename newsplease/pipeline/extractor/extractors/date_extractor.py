@@ -12,6 +12,7 @@ try:
 except ImportError:
     import urllib2
 
+# to improve performance, regex statements are compiled only once per module
 re_pub_date = re.compile(
     r'([\./\-_]{0,1}(19|20)\d{2})[\./\-_]{0,1}(([0-3]{0,1}[0-9][\./\-_])|(\w{3,5}[\./\-_]))([0-3]{0,1}[0-9][\./\-]{0,1})?'
 )

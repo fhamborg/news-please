@@ -1,17 +1,14 @@
 """
 Helper class for url extraction.
 """
+import os
 import re
 
-import os
-
-# import urlparse
 try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
 
-# import urllib2
 try:
     import urllib2
 except ImportError:
@@ -20,6 +17,7 @@ except ImportError:
 # len(".markdown") = 9
 MAX_FILE_EXTENSION_LENGTH = 9
 
+# to improve performance, regex statements are compiled only once per module
 re_www = re.compile(r'^(www.)')
 re_domain = re.compile(r'[^/.]+\.[^/.]+$', )
 

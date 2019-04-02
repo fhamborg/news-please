@@ -5,6 +5,7 @@ try:
 except ImportError:
     from urllib.parse import urljoin
 
+# to improve performance, regex statements are compiled only once per module
 re_http = re.compile('http://*')
 
 

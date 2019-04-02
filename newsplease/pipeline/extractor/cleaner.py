@@ -4,6 +4,7 @@ import sys
 
 from lxml import html
 
+# to improve performance, regex statements are compiled only once per module
 re_newline_spc = re.compile(r'(?<=\n)( )+')
 re_starting_whitespc = re.compile(r'^[ \t\n\r\f]*')
 re_multi_spc_tab = re.compile(r'[ \t]+(?=([ \t]))')

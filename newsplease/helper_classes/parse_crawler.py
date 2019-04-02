@@ -9,6 +9,7 @@ import scrapy
 
 from ..crawler.items import NewscrawlerItem
 
+# to improve performance, regex statements are compiled only once per module
 re_html = re.compile('text/html')
 
 

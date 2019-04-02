@@ -3,13 +3,13 @@ Helper class for parsing the savepath defined in the config.
 """
 import hashlib
 import ntpath
+import os
 import re
 import time
 
-import os
-
 from .url_extractor import UrlExtractor
 
+# to improve performance, regex statements are compiled only once per module
 re_time_exec = re.compile(r'%time_execution\(([^\)]+)\)')
 re_timestamp_exec = re.compile(r'%timestamp_execution')
 

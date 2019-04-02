@@ -6,6 +6,7 @@ import re
 from .sub_classes.heuristics_manager import HeuristicsManager
 from .url_extractor import UrlExtractor
 
+# to improve performance, regex statements are compiled only once per module
 re_url_root = re.compile(r'https?://[a-z]+.')
 
 
