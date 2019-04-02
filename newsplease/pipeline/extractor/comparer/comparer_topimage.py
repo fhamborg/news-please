@@ -5,6 +5,8 @@ try:
 except ImportError:
     from urllib.parse import urljoin
 
+re_http = re.compile('http://*')
+
 
 class ComparerTopimage():
     """This class compares the topimages of the list of ArticleCandidates and sends the result back to the Comparer."""
@@ -40,7 +42,7 @@ class ComparerTopimage():
     def image_absoulte_path(self, url, image):
         """if the image url does not start with 'http://' it will take the absolute path from the url
         and fuses them with urljoin"""
-        if not re.match('http://*', image):
+        if not re.match(re_http, image):
             topimage = urljoin(url, image)
             return topimage
         return image

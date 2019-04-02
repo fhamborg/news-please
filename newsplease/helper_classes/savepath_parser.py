@@ -10,6 +10,29 @@ import os
 
 from .url_extractor import UrlExtractor
 
+re_time_exec = re.compile(r'%time_execution\(([^\)]+)\)')
+re_timestamp_exec = re.compile(r'%timestamp_execution')
+
+re_working_path = re.compile(r'%working_path')
+re_time_dl = re.compile(r'%time_download\(([^\)]+)\)')
+re_timstamp_dl = re.compile(r'%timestamp_download')
+re_domain = re.compile(r'%domain\(([^\)]+)\)')
+re_appendmd5_domain = re.compile(r'%appendmd5_domain\(([^\)]+)\)')
+re_md5_domain = re.compile(r'%md5_domain\(([^\)]+)\)')
+re_full_domain = re.compile(r'%full_domain\(([^\)]+)\)')
+re_appendmd5_full_domain = re.compile(r'%appendmd5_full_domain\(([^\)]+)\)')
+re_md5_full_domain = re.compile(r'%md5_full_domain\(([^\)]+)\)')
+re_subdomains = re.compile(r'%subdomains\(([^\)]+)\)')
+re_appendmd5_subdomains = re.compile(r'%appendmd5_subdomains\(([^\)]+)\)')
+re_md5_subdomains = re.compile(r'%md5_subdomains\(([^\)]+)\)')
+re_url_dir = re.compile(r'%url_directory_string\(([^\)]+)\)')
+re_appendmd5_url_dir = re.compile(r'%appendmd5_url_directory_string\(([^\)]+)\)')
+re_md5_url_dir = re.compile(r'%md5_url_directory_string\(([^\)]+)\)')
+re_url_file = re.compile(r'%url_file_name\(([^\)]+)\)')
+re_md5_url_file = re.compile(r'%md5_url_file_name\(([^\)]+)\)')
+re_max_url_file = re.compile(r'%max_url_file_name')
+re_appendmd5_max_url_file = re.compile(r'%appendmd5_max_url_file_name')
+
 
 class SavepathParser(object):
     """
@@ -97,84 +120,97 @@ class SavepathParser(object):
             savepath = self.cfg_savepath
 
         # lambda is used for lazy evaluation
-        savepath = re.sub(r'%working_path',
-                          lambda match: self.working_path, savepath)
+        savepath = re.sub(re_working_path, lambda match: self.working_path, savepath)
 
-        savepath = re.sub(r'%time_download\(([^\)]+)\)',
-                          lambda match: SavepathParser.time_replacer(
-                              match, timestamp), savepath)
-        savepath = re.sub(r'%timestamp_download', str(timestamp), savepath)
+        savepath = re.sub(
+            re_time_dl, lambda match: SavepathParser.time_replacer(match, timestamp),
+            savepath
+        )
+        savepath = re.sub(re_timstamp_dl, str(timestamp), savepath)
 
-        savepath = re.sub(r'%domain\(([^\)]+)\)',
-                          lambda match: UrlExtractor
-                          .get_allowed_domain(url, False)[
-                                        :int(match.group(1))], savepath)
-        savepath = re.sub(r'%appendmd5_domain\(([^\)]+)\)',
-                          lambda match: SavepathParser.append_md5_if_too_long(
-                              UrlExtractor.get_allowed_domain(url, False),
-                              int(match.group(1))), savepath)
-        savepath = re.sub(r'%md5_domain\(([^\)]+)\)',
-                          lambda match: hashlib.md5(
-                              UrlExtractor.get_allowed_domain(url, False).encode('utf-8'))
-                          .hexdigest()[:int(match.group(1))], savepath)
+        savepath = re.sub(
+            re_domain, lambda match: UrlExtractor.get_allowed_domain(url, False)
+            [:int(match.group(1))], savepath
+        )
+        savepath = re.sub(
+            re_appendmd5_domain, lambda match: SavepathParser.append_md5_if_too_long(
+                UrlExtractor.get_allowed_domain(url, False), int(match.group(1))
+            ), savepath
+        )
+        savepath = re.sub(
+            re_md5_domain, lambda match: hashlib.md5(
+                UrlExtractor.get_allowed_domain(url, False).encode('utf-8')
+            ).hexdigest()[:int(match.group(1))], savepath
+        )
 
-        savepath = re.sub(r'%full_domain\(([^\)]+)\)',
-                          lambda match: UrlExtractor.get_allowed_domain(url)[
-                                        :int(match.group(1))], savepath)
-        savepath = re.sub(r'%appendmd5_full_domain\(([^\)]+)\)',
-                          lambda match: SavepathParser.append_md5_if_too_long(
-                              UrlExtractor.get_allowed_domain(url),
-                              int(match.group(1))), savepath)
-        savepath = re.sub(r'%md5_full_domain\(([^\)]+)\)',
-                          lambda match: hashlib.md5(
-                              UrlExtractor.get_allowed_domain(url).encode('utf-8'))
-                          .hexdigest()[:int(match.group(1))], savepath)
+        savepath = re.sub(
+            re_full_domain, lambda match: UrlExtractor.get_allowed_domain(url)
+            [:int(match.group(1))], savepath
+        )
+        savepath = re.sub(
+            re_appendmd5_full_domain, lambda match: SavepathParser.append_md5_if_too_long(
+                UrlExtractor.get_allowed_domain(url), int(match.group(1))
+            ), savepath
+        )
+        savepath = re.sub(
+            re_md5_full_domain, lambda match: hashlib.md5(
+                UrlExtractor.get_allowed_domain(url).encode('utf-8')
+            ).hexdigest()[:int(match.group(1))], savepath
+        )
 
-        savepath = re.sub(r'%subdomains\(([^\)]+)\)',
-                          lambda match: UrlExtractor.get_subdomain(url)[
-                                        :int(match.group(1))], savepath)
-        savepath = re.sub(r'%appendmd5_subdomains\(([^\)]+)\)',
-                          lambda match: SavepathParser.append_md5_if_too_long(
-                              UrlExtractor.get_subdomain(url),
-                              int(match.group(1))), savepath)
-        savepath = re.sub(r'%md5_subdomains\(([^\)]+)\)',
-                          lambda match: hashlib.md5(
-                              UrlExtractor.get_subdomain(url).encode('utf-8'))
-                          .hexdigest()[:int(match.group(1))], savepath)
+        savepath = re.sub(
+            re_subdomains, lambda match: UrlExtractor.get_subdomain(url)
+            [:int(match.group(1))], savepath
+        )
+        savepath = re.sub(
+            re_appendmd5_subdomains, lambda match: SavepathParser.
+            append_md5_if_too_long(UrlExtractor.get_subdomain(url), int(match.group(1))),
+            savepath
+        )
+        savepath = re.sub(
+            re_md5_subdomains, lambda match: hashlib.md5(
+                UrlExtractor.get_subdomain(url).encode('utf-8')
+            ).hexdigest()[:int(match.group(1))], savepath
+        )
 
-        savepath = re.sub(r'%url_directory_string\(([^\)]+)\)',
-                          lambda match: UrlExtractor
-                          .get_url_directory_string(url)[:int(match.group(1))],
-                          savepath)
-        savepath = re.sub(r'%appendmd5_url_directory_string\(([^\)]+)\)',
-                          lambda match: SavepathParser.append_md5_if_too_long(
-                              UrlExtractor.get_url_directory_string(url),
-                              int(match.group(1))), savepath)
-        savepath = re.sub(r'%md5_url_directory_string\(([^\)]+)\)',
-                          lambda match: hashlib.md5(
-                              UrlExtractor.get_url_directory_string(url).encode('utf-8'))
-                          .hexdigest()[:int(match.group(1))], savepath)
+        savepath = re.sub(
+            re_url_dir, lambda match: UrlExtractor.get_url_directory_string(url)
+            [:int(match.group(1))], savepath
+        )
+        savepath = re.sub(
+            re_appendmd5_url_dir, lambda match: SavepathParser.append_md5_if_too_long(
+                UrlExtractor.get_url_directory_string(url), int(match.group(1))
+            ), savepath
+        )
+        savepath = re.sub(
+            re_md5_url_dir, lambda match: hashlib.md5(
+                UrlExtractor.get_url_directory_string(url).encode('utf-8')
+            ).hexdigest()[:int(match.group(1))], savepath
+        )
 
-        savepath = re.sub(r'%url_file_name\(([^\)]+)\)',
-                          lambda match: UrlExtractor
-                          .get_url_file_name(url)[:int(match.group(1))],
-                          savepath)
-        savepath = re.sub(r'%md5_url_file_name\(([^\)]+)\)',
-                          lambda match: hashlib.md5(
-                              UrlExtractor.get_url_file_name(url).encode('utf-8'))
-                          .hexdigest()[:int(match.group(1))], savepath)
+        savepath = re.sub(
+            re_url_file, lambda match: UrlExtractor.get_url_file_name(url)
+            [:int(match.group(1))], savepath
+        )
+        savepath = re.sub(
+            re_md5_url_file, lambda match: hashlib.md5(
+                UrlExtractor.get_url_file_name(url).encode('utf-8')
+            ).hexdigest()[:int(match.group(1))], savepath
+        )
 
         abs_savepath = self.get_abs_path(savepath)
 
-        savepath = re.sub(r'%max_url_file_name',
-                          lambda match: UrlExtractor.get_url_file_name(url)[
-                                        :SavepathParser.get_max_url_file_name_length(
-                                            abs_savepath)], savepath)
-        savepath = re.sub(r'%appendmd5_max_url_file_name',
-                          lambda match: SavepathParser.append_md5_if_too_long(
-                              UrlExtractor.get_url_file_name(url),
-                              SavepathParser.get_max_url_file_name_length(
-                                  abs_savepath)), savepath)
+        savepath = re.sub(
+            re_max_url_file, lambda match: UrlExtractor.get_url_file_name(url)
+            [:SavepathParser.get_max_url_file_name_length(abs_savepath)], savepath
+        )
+        savepath = re.sub(
+            re_appendmd5_max_url_file, lambda match: SavepathParser.
+            append_md5_if_too_long(
+                UrlExtractor.get_url_file_name(url),
+                SavepathParser.get_max_url_file_name_length(abs_savepath)
+            ), savepath
+        )
 
         # ensure the savepath doesn't contain any invalid characters
         return SavepathParser.remove_not_allowed_chars(savepath)

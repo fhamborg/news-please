@@ -4,6 +4,12 @@ import sys
 
 from lxml import html
 
+re_newline_spc = re.compile(r'(?<=\n)( )+')
+re_starting_whitespc = re.compile(r'^[ \t\n\r\f]*')
+re_multi_spc_tab = re.compile(r'[ \t]+(?=([ \t]))')
+re_double_newline = re.compile(r'[ \n]+(?=(\n))')
+re_ending_spc_newline = re.compile(r'[ \n]*$')
+
 
 class Cleaner:
     """The Cleaner-Class tries to get the raw extracted text of the extractors
@@ -32,15 +38,15 @@ class Cleaner:
         :return: A string, the cleaned string
         """
         # Deletes whitespaces after a newline
-        arg = re.sub(r'(?<=\n)( )+', '', arg)
+        arg = re.sub(re_newline_spc, '', arg)
         # Deletes every whitespace, tabulator, newline at the beginning of the string
-        arg = re.sub(r'^[ \t\n\r\f]*', '', arg)
+        arg = re.sub(re_starting_whitespc, '', arg)
         # Deletes whitespace or tabulator if followed by whitespace or tabulator
-        arg = re.sub(r'[ \t]+(?=([ \t]))', '', arg)
+        arg = re.sub(re_multi_spc_tab, '', arg)
         #  Deletes newline if it is followed by an other one
-        arg = re.sub(r'[ \n]+(?=(\n))', '', arg)
+        arg = re.sub(re_double_newline, '', arg)
         # Deletes newlines and whitespaces at the end of the string
-        arg = re.sub(r'[ \n]*$', '', arg)
+        arg = re.sub(re_ending_spc_newline, '', arg)
         return arg
 
     def do_cleaning(self, arg):
