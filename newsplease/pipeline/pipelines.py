@@ -7,6 +7,7 @@ import json
 import logging
 import os.path
 import sys
+import re
 
 import pymysql
 from dateutil import parser as dateparser
@@ -568,6 +569,147 @@ class DateFilter(object):
                 raise DropItem('DateFilter: %s: Article is too young: %s ' % (item['url'], publish_date))
             else:
                 return item
+
+
+class ContentFilter(object):
+
+    class BiOp(object):
+
+        def __init__(self, op, left, right):
+            self.op = op
+            self.left = left
+            self.right = right
+
+        @staticmethod
+        def _str(operand):
+            return "'%s'" % operand if isinstance(operand, str) else str(operand)
+
+        def __str__(self):
+            return "%s(%s, %s)" % (self.op, self._str(self.left), self._str(self.right))
+
+    log = None
+    cfg = None
+    ignore_case = True
+    filter_predicates = None
+    pass_condition = None
+    filter_functions = None
+
+    def __init__(self):
+        self.log = logging.getLogger(__name__ + '.ContentFilter')
+        self.cfg = CrawlerConfig.get_instance()
+        self.config = self.cfg.section("ContentFilter")
+        self.ignore_case = self.config['ignore_case']
+        self.filter_predicates = self.config['filter_predicates']
+        self.pass_condition = self.config['pass_condition']
+        self.filter_functions = {}
+
+    def process_item(self, item, spider):
+        condition = self.pass_condition
+        for name, predicate in self.filter_predicates.items():
+            fun = self._get_or_parse(predicate)
+            result = fun(item['article_%s' % name])
+            condition = re.sub(r"\b%s\b" % name, str(result), condition)
+        self.log.debug("Condition (evaluated): %s", condition)
+        if eval(condition):
+            return item
+        else:
+            raise DropItem('ContentFilter: %s: Article is not pass the filter predicates: %s and condition: %s'
+                           % (item['url'], self.filter_predicates, self.pass_condition))
+
+    def _get_or_parse(self, predicate):
+        if predicate in self.filter_functions:
+            return self.filter_functions[predicate]
+        else:
+            expr = self._parse_expr(predicate)
+            fun = self._handle(expr)
+            self.filter_functions[predicate] = fun
+            return fun
+
+    def _parse_expr(self, predicate):
+        if predicate == '':
+            return self._parse_error(predicate)
+        op_stack = []
+        value_stack = []
+        current = ''
+        i = 0
+        while i < len(predicate):
+            c = predicate[i]
+            if c in '&|':
+                current = current.strip(' ')
+                if current != '':
+                    value_stack.append(current)
+                    current = ''
+                op_stack.append(c)
+            elif c == '(' and current.strip(' ') == '':
+                count = 1
+                i += 1
+                sub = ''
+                while True:
+                    if i >= len(predicate):
+                        return self._parse_error(predicate)
+                    c = predicate[i]
+                    if c == '(':
+                        count += 1
+                    if c == ')':
+                        count -= 1
+                    if count == 0:
+                        expr = self._parse_expr(sub)
+                        if expr is None:
+                            return self._parse_error(predicate)
+                        else:
+                            value_stack.append(expr)
+                        break
+                    sub += c
+                    i += 1
+                current = ''
+            else:
+                current += c
+            i += 1
+        current = current.strip(' ')
+        if current != '':
+            value_stack.append(current)
+        if (len(op_stack) != 0 or len(value_stack) != 0) and len(value_stack) - len(op_stack) != 1:
+            return self._parse_error(predicate)
+        if len(op_stack) == 0:
+            return value_stack.pop() if len(value_stack) > 0 else predicate
+        left = value_stack.pop(0)
+        right = value_stack.pop(0)
+        root = self.BiOp(op_stack.pop(0), left, right)
+        while len(op_stack) > 0:
+            root = self.BiOp(op_stack.pop(0), root, value_stack.pop(0))
+        return root
+
+    def _parse_error(self, predicate):
+        self.log.error("invalid predicate: %s", predicate)
+        return None
+
+    def _handle(self, expr):
+
+        def always_true(content):
+            return True
+
+        return always_true if expr is None else self._handle_str(expr) \
+            if isinstance(expr, str) else self._handle_bi_op(expr)
+
+    def _handle_str(self, value):
+
+        def is_in(content):
+            if self.ignore_case:
+                return value.lower() in content.lower()
+            else:
+                return value in content
+
+        return is_in
+
+    def _handle_bi_op(self, bi_op):
+
+        def and_op(content):
+            return self._handle(bi_op.left)(content) and self._handle(bi_op.right)(content)
+
+        def or_op(content):
+            return self._handle(bi_op.left)(content) or self._handle(bi_op.right)(content)
+
+        return and_op if bi_op.op == '&' else or_op
 
 
 class PandasStorage(ExtractedInformationStorage):
