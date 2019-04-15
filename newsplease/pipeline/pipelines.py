@@ -573,7 +573,15 @@ class DateFilter(object):
 
 class ContentFilter(object):
 
-    class BiOp(object):
+    class BiOperation(object):
+        """
+        BiOperation helps to build filter logic tree.
+        Name BiOperation is borrowed from python ast(Abstract Syntax Trees),
+        meaning logic '&' and '|' operation is a bi-function.
+        BiOperation represents the node in the logic tree.
+        E.g. a & b will be parsed as BiOperation('&', 'a', 'b'),
+        a & b | c will be parsed as BiOperation('|', BiOperation('&', 'a', 'b'), 'c')
+        """
 
         def __init__(self, op, left, right):
             self.op = op
@@ -625,6 +633,7 @@ class ContentFilter(object):
             self.filter_functions[predicate] = fun
             return fun
 
+    # parse the predicate to build logic operation tree
     def _parse_expr(self, predicate):
         if predicate == '':
             return self._parse_error(predicate)
@@ -674,9 +683,9 @@ class ContentFilter(object):
             return value_stack.pop() if len(value_stack) > 0 else predicate
         left = value_stack.pop(0)
         right = value_stack.pop(0)
-        root = self.BiOp(op_stack.pop(0), left, right)
+        root = self.BiOperation(op_stack.pop(0), left, right)
         while len(op_stack) > 0:
-            root = self.BiOp(op_stack.pop(0), root, value_stack.pop(0))
+            root = self.BiOperation(op_stack.pop(0), root, value_stack.pop(0))
         return root
 
     def _parse_error(self, predicate):
