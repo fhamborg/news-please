@@ -573,28 +573,6 @@ class DateFilter(object):
 
 class ContentFilter(object):
 
-    class BiOperation(object):
-        """
-        BiOperation helps to build filter logic tree.
-        Name BiOperation is borrowed from python ast(Abstract Syntax Trees),
-        meaning logic '&' and '|' operation is a bi-function.
-        BiOperation represents the node in the logic tree.
-        E.g. a & b will be parsed as BiOperation('&', 'a', 'b'),
-        a & b | c will be parsed as BiOperation('|', BiOperation('&', 'a', 'b'), 'c')
-        """
-
-        def __init__(self, op, left, right):
-            self.op = op
-            self.left = left
-            self.right = right
-
-        @staticmethod
-        def _str(operand):
-            return "'%s'" % operand if isinstance(operand, str) else str(operand)
-
-        def __str__(self):
-            return "%s(%s, %s)" % (self.op, self._str(self.left), self._str(self.right))
-
     log = None
     cfg = None
     ignore_case = True
@@ -628,31 +606,32 @@ class ContentFilter(object):
         if predicate in self.filter_functions:
             return self.filter_functions[predicate]
         else:
-            expr = self._parse_expr(predicate)
-            fun = self._handle(expr)
+            fun = self._parse_expr(predicate)
             self.filter_functions[predicate] = fun
             return fun
 
-    # parse the predicate to build logic operation tree
+    # parse the predicate to filter function
     def _parse_expr(self, predicate):
+
+        def only_not(op_array):
+            return len(op_array) == 0 or set(op_array) == {'!'}
+
         if predicate == '':
             return self._parse_error(predicate)
-        op_stack = []
-        value_stack = []
-        current = ''
-        i = 0
-        while i < len(predicate):
+        root, current, sub_str, op_stack, i = None, None, '', [], 0
+        while True:
+            if i >= len(predicate):
+                break
             c = predicate[i]
-            if c in '&|':
-                current = current.strip(' ')
-                if current != '':
-                    value_stack.append(current)
-                    current = ''
-                op_stack.append(c)
-            elif c == '(' and current.strip(' ') == '':
+            if c in '&|!':
+                sub_str = sub_str.strip(' ')
+                if sub_str != '':
+                    current = sub_str
+                sub_str = ''
+            elif c == '(' and sub_str.strip(' ') == '':
                 count = 1
                 i += 1
-                sub = ''
+                sub_expr = ''
                 while True:
                     if i >= len(predicate):
                         return self._parse_error(predicate)
@@ -662,43 +641,48 @@ class ContentFilter(object):
                     if c == ')':
                         count -= 1
                     if count == 0:
-                        expr = self._parse_expr(sub)
-                        if expr is None:
+                        current = self._parse_expr(sub_expr)
+                        if current is None:
                             return self._parse_error(predicate)
-                        else:
-                            value_stack.append(expr)
                         break
-                    sub += c
+                    sub_expr += c
                     i += 1
-                current = ''
             else:
-                current += c
+                sub_str += c
+
+            if i == len(predicate) - 1:
+                sub_str = sub_str.strip(' ')
+                if sub_str != '':
+                    current = sub_str
+            if current is not None:
+                if (root is None and not only_not(op_stack)) or (
+                        root is not None and (only_not(op_stack) or not only_not(op_stack[1:]))):
+                    return self._parse_error(predicate)
+                while len(op_stack) > 0:
+                    op = op_stack.pop()
+                    if op == '!':
+                        current = self._handle_not(current)
+                    else:
+                        current = self._handle_and_or(op, root, current)
+                    if current is None:
+                        return self._parse_error(predicate)
+                root = current
+                current = None
+            if c in '&|!':
+                if i == len(predicate) - 1:
+                    return self._parse_error(predicate)
+                op_stack.append(c)
             i += 1
-        current = current.strip(' ')
-        if current != '':
-            value_stack.append(current)
-        if (len(op_stack) != 0 or len(value_stack) != 0) and len(value_stack) - len(op_stack) != 1:
+        if len(op_stack) > 0:
             return self._parse_error(predicate)
-        if len(op_stack) == 0:
-            return value_stack.pop() if len(value_stack) > 0 else predicate
-        left = value_stack.pop(0)
-        right = value_stack.pop(0)
-        root = self.BiOperation(op_stack.pop(0), left, right)
-        while len(op_stack) > 0:
-            root = self.BiOperation(op_stack.pop(0), root, value_stack.pop(0))
-        return root
+        return self._handle_value(root)
 
     def _parse_error(self, predicate):
         self.log.error("invalid predicate: %s", predicate)
-        return None
+        return lambda x: True
 
-    def _handle(self, expr):
-
-        def always_true(content):
-            return True
-
-        return always_true if expr is None else self._handle_str(expr) \
-            if isinstance(expr, str) else self._handle_bi_op(expr)
+    def _handle_value(self, value):
+        return value if callable(value) else self._handle_str(value)
 
     def _handle_str(self, value):
 
@@ -710,15 +694,27 @@ class ContentFilter(object):
 
         return is_in
 
-    def _handle_bi_op(self, bi_op):
+    def _handle_and_or(self, op, left, right):
+        if left is None or right is None:
+            return None
+
+        left_fun = self._handle_value(left)
+        right_fun = self._handle_value(right)
 
         def and_op(content):
-            return self._handle(bi_op.left)(content) and self._handle(bi_op.right)(content)
+            return left_fun(content) and right_fun(content)
 
         def or_op(content):
-            return self._handle(bi_op.left)(content) or self._handle(bi_op.right)(content)
+            return left_fun(content) or right_fun(content)
 
-        return and_op if bi_op.op == '&' else or_op
+        return and_op if op == '&' else or_op
+
+    def _handle_not(self, right):
+
+        def not_op(content):
+            return not self._handle_value(right)(content)
+
+        return not_op
 
 
 class PandasStorage(ExtractedInformationStorage):
