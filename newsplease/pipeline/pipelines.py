@@ -136,19 +136,19 @@ class MySQLStorage(object):
     # initialize necessary DB queries for this pipe
     compare_versions = ("SELECT * FROM CurrentVersions WHERE url=%s")
     insert_current = ("INSERT INTO CurrentVersions(local_path,\
-                          modified_date,download_date,source_domain,url,\
+                          modified_date,download_date,publish_date,source_domain,url,\
                           html_title, ancestor, descendant, version,\
                           rss_title) VALUES (%(local_path)s,\
-                          %(modified_date)s, %(download_date)s,\
+                          %(modified_date)s, %(download_date)s, %(publish_date)s,\
                           %(source_domain)s, %(url)s, %(html_title)s,\
                           %(ancestor)s, %(descendant)s, %(version)s,\
                           %(rss_title)s)")
 
     insert_archive = ("INSERT INTO ArchiveVersions(id, local_path,\
-                          modified_date,download_date,source_domain,url,\
+                          modified_date,download_date,publish_date,source_domain,url,\
                           html_title, ancestor, descendant, version,\
                           rss_title) VALUES (%(db_id)s, %(local_path)s,\
-                          %(modified_date)s, %(download_date)s,\
+                          %(modified_date)s, %(download_date)s, %(publish_date)s,\
                           %(source_domain)s, %(url)s, %(html_title)s,\
                           %(ancestor)s, %(descendant)s, %(version)s,\
                           %(rss_title)s)")
@@ -199,16 +199,17 @@ class MySQLStorage(object):
                 'local_path': old_version[1],
                 'modified_date': old_version[2],
                 'download_date': old_version[3],
-                'source_domain': old_version[4],
-                'url': old_version[5],
-                'html_title': old_version[6],
-                'ancestor': old_version[7],
-                'descendant': old_version[8],
-                'version': old_version[9],
-                'rss_title': old_version[10], }
+                'publish_date': old_version[4],
+                'source_domain': old_version[5],
+                'url': old_version[6],
+                'html_title': old_version[7],
+                'ancestor': old_version[8],
+                'descendant': old_version[9],
+                'version': old_version[10],
+                'rss_title': old_version[11], }
 
             # Update the version number and the ancestor variable for later references
-            version = (old_version[9] + 1)
+            version = (old_version[10] + 1)
             ancestor = old_version[0]
 
         # Add the new version of the article to the CurrentVersion table
@@ -216,6 +217,7 @@ class MySQLStorage(object):
             'local_path': item['local_path'],
             'modified_date': item['modified_date'],
             'download_date': item['download_date'],
+            'publish_date': item['article_publish_date'],
             'source_domain': item['source_domain'],
             'url': item['url'],
             'html_title': item['html_title'],
