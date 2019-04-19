@@ -593,7 +593,7 @@ class ContentFilter(object):
         condition = self.pass_condition
         for name, predicate in self.filter_predicates.items():
             fun = self._get_or_parse(predicate)
-            result = fun(item['article_%s' % name])
+            result = fun(item[name])
             condition = re.sub(r"\b%s\b" % name, str(result), condition)
         self.log.debug("Condition (evaluated): %s", condition)
         if eval(condition):
