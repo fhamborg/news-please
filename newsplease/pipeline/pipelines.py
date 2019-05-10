@@ -23,7 +23,7 @@ if sys.version_info[0] < 3:
 try:
     import numpy as np
     import pandas as pd
-except ModuleNotFoundError:
+except ImportError:
     np = None
     pd = None
 
