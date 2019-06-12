@@ -3,7 +3,7 @@
 ## Announcement
 If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
 
-If you like news-please and would like to contribute to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course, we are always looking forward to pull requests containing bug fixes, improvements, or your own ideas.
+If you like news-please and would like to contribute to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course, we are always looking forward to [pull requests](#contribution-and-custom-features) containing bug fixes, improvements, or your own ideas.
  
 [![PyPI version](https://img.shields.io/pypi/v/news-please.svg)](https://pypi.org/project/news-please/)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
@@ -169,7 +169,11 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contribution and custom features
-Do you want to contribute? Great, we are always happy for any support on this project! Just send a pull request. By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
+Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull request that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)), but welcome also pull request that contribute your own ideas. 
+
+If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
+
+By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). 
 
 ### Help wanted
 We are looking for contributors who are interested in maintaining news-please and fixing issues. Any help is welcome, but we are also particularly looking for support on issues shown [here](https://github.com/fhamborg/news-please/labels/help%20wanted). If you're interested, please send us an [email](felix.hamborg@uni-konstanz.de).
