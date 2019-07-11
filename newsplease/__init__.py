@@ -28,11 +28,22 @@ class NewsPlease:
         :return:
         """
         raw_stream = warc_record.raw_stream.read()
-        encoding = EncodingDetector.find_declared_encoding(raw_stream, is_html=True)
+        encoding = None
+        try:
+            encoding = warc_record.http_headers.get_header('Content-Type').split(';')[1].split('=')[1]
+        except:
+            pass
+        if not encoding:
+            encoding = EncodingDetector.find_declared_encoding(raw_stream, is_html=True)
+        if not encoding:
+            # assume utf-8
+            encoding = 'utf-8'
+
         html = raw_stream.decode(encoding)
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
         article = NewsPlease.from_html(html, url=url, download_date=download_date)
+        print(article.text)
         return article
 
     @staticmethod
