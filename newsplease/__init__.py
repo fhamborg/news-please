@@ -3,6 +3,7 @@ import os
 import sys
 import urllib
 
+from bs4.dammit import EncodingDetector
 from six.moves import urllib
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
@@ -26,7 +27,9 @@ class NewsPlease:
         extractor.
         :return:
         """
-        html = str(warc_record.raw_stream.read())
+        raw_stream = warc_record.raw_stream.read()
+        encoding = EncodingDetector.find_declared_encoding(raw_stream, is_html=True)
+        html = raw_stream.decode(encoding)
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
         article = NewsPlease.from_html(html, url=url, download_date=download_date)
