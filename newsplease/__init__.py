@@ -43,7 +43,6 @@ class NewsPlease:
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
         article = NewsPlease.from_html(html, url=url, download_date=download_date)
-        print(article.text)
         return article
 
     @staticmethod
