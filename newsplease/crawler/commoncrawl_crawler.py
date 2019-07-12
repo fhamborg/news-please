@@ -30,11 +30,14 @@ __log_pathname_fully_extracted_warcs = './fullyextractedwarcs.list'
 logging.basicConfig(level=logging.INFO)
 __logger = logging.getLogger(__name__)
 
+__number_of_warc_files_on_cc = 0
+
 __extern_callback_on_warc_completed = None
 __counter_article_passed = 0
 __counter_article_discarded = 0
 __counter_article_error = 0
 __counter_article_total = 0
+__counter_warc_skipped = 0
 __counter_warc_processed = 0
 __start_time = time.time()
 
@@ -134,6 +137,7 @@ def __callback_on_warc_completed(warc_path, counter_article_passed, counter_arti
     global __counter_article_error
     global __counter_article_total
     global __counter_warc_processed
+    # global __counter_warc_skipped
 
     elapsed_secs = time.time() - __start_time
 
@@ -145,10 +149,14 @@ def __callback_on_warc_completed(warc_path, counter_article_passed, counter_arti
 
     sec_per_article = elapsed_secs / counter_article_total
     h_per_warc = elapsed_secs / __counter_warc_processed / 3600
+    remaining_warcs = __number_of_warc_files_on_cc - (__counter_warc_processed + __counter_warc_skipped)
 
     __logger.info("warc processing statistics")
+    __logger.info("warc files skipped = %i, processed = %i, remaining = %i, total = %i", __counter_warc_skipped,
+                  __counter_warc_processed, remaining_warcs, __number_of_warc_files_on_cc)
     __logger.info("global [s/article] = %f", sec_per_article)
     __logger.info("global [h/warc] = %.3f", h_per_warc)
+    __logger.info("estimated remaining time [h] = %f", remaining_warcs / h_per_warc)
 
     # invoke the external callback
     __extern_callback_on_warc_completed(warc_path, __counter_article_passed, __counter_article_discarded,
@@ -226,7 +234,9 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
     __extern_callback_on_warc_completed = callback_on_warc_completed
 
     cc_news_crawl_names = __get_remote_index()
-    __logger.info('found %i files at commoncrawl.org', len(cc_news_crawl_names))
+    global __number_of_warc_files_on_cc
+    __number_of_warc_files_on_cc = len(cc_news_crawl_names)
+    __logger.info('found %i files at commoncrawl.org', __number_of_warc_files_on_cc)
 
     # multiprocessing (iterate the list of crawl_names, and for each: download and process it)
     __logger.info('creating extraction process pool with %i processes', number_of_extraction_processes)
@@ -239,6 +249,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
             # been changed!)
             if warc_download_url in fully_extracted_warc_urls:
                 __logger.info('skipping WARC because fully extracted: %s' % warc_download_url)
+                global __counter_warc_skipped
+                __counter_warc_skipped += 1
                 pass
             else:
                 warc_download_urls.append(warc_download_url)

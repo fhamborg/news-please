@@ -254,7 +254,7 @@ class CommonCrawlExtractor:
                                 self.__logger.info('article discard (%s)',
                                                    record.rec_headers.get_header('WARC-Target-URI'))
 
-                        if counter_article_total % 100 == 0:
+                        if counter_article_total % 10 == 0:
                             elapsed_secs = time.time() - start_time
                             secs_per_article = elapsed_secs / counter_article_total
                             self.__logger.info('statistics')
