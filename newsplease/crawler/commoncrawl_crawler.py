@@ -24,7 +24,7 @@ __credits__ = ["Sebastian Nagel"]
 __cc_base_url = 'https://commoncrawl.s3.amazonaws.com/'
 
 # log file of fully extracted WARC files
-__log_pathname_fully_extracted_warcs = './fullyextractedwarcs.list'
+__log_pathname_fully_extracted_warcs = None
 
 # logging
 logging.basicConfig(level=logging.INFO)
@@ -50,6 +50,9 @@ def __setup(local_download_dir_warc, log_level):
     if not os.path.exists(local_download_dir_warc):
         os.makedirs(local_download_dir_warc)
 
+    global __log_pathname_fully_extracted_warcs
+    __log_pathname_fully_extracted_warcs = os.path.join(local_download_dir_warc, 'fullyextractedwarcs.list')
+
     # make loggers quite
     configure_logging({"LOG_LEVEL": "ERROR"})
     logging.getLogger('requests').setLevel(logging.CRITICAL)
@@ -58,6 +61,7 @@ def __setup(local_download_dir_warc, log_level):
     logging.getLogger('newspaper').setLevel(logging.CRITICAL)
     logging.getLogger('newsplease').setLevel(logging.CRITICAL)
     logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+    logging.getLogger('jieba').setLevel(logging.CRITICAL)
 
     # set own logger
     logging.basicConfig(level=log_level)

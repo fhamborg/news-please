@@ -23,6 +23,7 @@ import hashlib
 import json
 import logging
 import os
+import sys
 
 from ..crawler import commoncrawl_crawler as commoncrawl_crawler
 
@@ -87,10 +88,10 @@ def __get_pretty_filepath(path, article):
     """
     short_filename = hashlib.sha256(article.filename.encode()).hexdigest()
     sub_dir = article.source_domain
-    final_path = path + sub_dir + '/'
+    final_path = os.path.join(path, sub_dir)
     if not os.path.exists(final_path):
         os.makedirs(final_path)
-    return final_path + short_filename + '.json'
+    return os.path.join(final_path, short_filename + '.json')
 
 
 def on_valid_article_extracted(article):
@@ -126,6 +127,12 @@ def callback_on_warc_completed(warc_path, counter_article_passed, counter_articl
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        my_local_download_dir_warc = sys.argv[1]
+    elif len(sys.argv) == 3:
+        my_local_download_dir_warc = sys.argv[1]
+        my_local_download_dir_article = sys.argv[2]
+
     __setup__()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
                                                callback_on_warc_completed=callback_on_warc_completed,
