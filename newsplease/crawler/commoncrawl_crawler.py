@@ -7,6 +7,7 @@ not otherwise specified.
 import logging
 import os
 import subprocess
+import time
 from functools import partial
 from multiprocessing import Pool
 
@@ -28,6 +29,14 @@ __log_pathname_fully_extracted_warcs = './fullyextractedwarcs.list'
 # logging
 logging.basicConfig(level=logging.INFO)
 __logger = logging.getLogger(__name__)
+
+__extern_callback_on_warc_completed = None
+__counter_article_passed = 0
+__counter_article_discarded = 0
+__counter_article_error = 0
+__counter_article_total = 0
+__counter_warc_processed = 0
+__start_time = time.time()
 
 
 def __setup(local_download_dir_warc, log_level):
@@ -108,7 +117,46 @@ def __get_list_of_fully_extracted_warc_urls():
     return list_warcs
 
 
-def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extracted=None, valid_hosts=None,
+def __callback_on_warc_completed(warc_path, counter_article_passed, counter_article_discarded, counter_article_error,
+                                 counter_article_total):
+    """
+    Internal callback on completion of one WARC file. Calculating some statistics on processing speed.
+    :param warc_path:
+    :param counter_article_passed:
+    :param counter_article_discarded:
+    :param counter_article_error:
+    :param counter_article_total:
+    :return:
+    """
+    # have to use the global keyword in order to assign a value to a global variable (see https://stackoverflow.com/a/9936482)
+    global __counter_article_passed
+    global __counter_article_discarded
+    global __counter_article_error
+    global __counter_article_total
+    global __counter_warc_processed
+
+    elapsed_secs = time.time() - __start_time
+
+    __counter_article_discarded += counter_article_discarded
+    __counter_article_error += counter_article_error
+    __counter_article_passed += counter_article_passed
+    __counter_article_total += counter_article_total
+    __counter_warc_processed += 1
+
+    sec_per_article = elapsed_secs / counter_article_total
+    h_per_warc = elapsed_secs / __counter_warc_processed / 3600
+
+    __logger.info("warc processing statistics")
+    __logger.info("global [s/article] = %f", sec_per_article)
+    __logger.info("global [h/warc] = %.3f", h_per_warc)
+
+    # invoke the external callback
+    __extern_callback_on_warc_completed(warc_path, __counter_article_passed, __counter_article_discarded,
+                                        __counter_article_error, __counter_article_total, __counter_warc_processed)
+
+
+def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extracted=None,
+                                  callback_on_warc_completed=None, valid_hosts=None,
                                   start_date=None, end_date=None,
                                   strict_date=True, reuse_previously_downloaded_files=True,
                                   local_download_dir_warc=None,
@@ -121,6 +169,7 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
     Starts a single CommonCrawlExtractor
     :param warc_download_url:
     :param callback_on_article_extracted:
+    :param callback_on_warc_completed:
     :param valid_hosts:
     :param start_date:
     :param end_date:
@@ -134,6 +183,7 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
     """
     commoncrawl_extractor = CommonCrawlExtractor()
     commoncrawl_extractor.extract_from_commoncrawl(warc_download_url, callback_on_article_extracted,
+                                                   callback_on_warc_completed=callback_on_warc_completed,
                                                    valid_hosts=valid_hosts,
                                                    start_date=start_date, end_date=end_date,
                                                    strict_date=strict_date,
@@ -146,9 +196,9 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
                                                    log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs)
 
 
-def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, start_date=None, end_date=None,
-                           strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
-                           continue_after_error=True, show_download_progress=False,
+def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_completed=None, valid_hosts=None,
+                           start_date=None, end_date=None, strict_date=True, reuse_previously_downloaded_files=True,
+                           local_download_dir_warc=None, continue_after_error=True, show_download_progress=False,
                            number_of_extraction_processes=4, log_level=logging.ERROR,
                            delete_warc_after_extraction=True, continue_process=True):
     """
@@ -171,6 +221,9 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
     :return:
     """
     __setup(local_download_dir_warc, log_level)
+
+    global __extern_callback_on_warc_completed
+    __extern_callback_on_warc_completed = callback_on_warc_completed
 
     cc_news_crawl_names = __get_remote_index()
     __logger.info('found %i files at commoncrawl.org', len(cc_news_crawl_names))
@@ -199,6 +252,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
         with Pool(number_of_extraction_processes) as extraction_process_pool:
             extraction_process_pool.map(partial(__start_commoncrawl_extractor,
                                                 callback_on_article_extracted=callback_on_article_extracted,
+                                                callback_on_warc_completed=__callback_on_warc_completed,
                                                 valid_hosts=valid_hosts,
                                                 start_date=start_date, end_date=end_date,
                                                 strict_date=strict_date,
@@ -214,6 +268,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, valid_hosts=None, star
         for warc_download_url in warc_download_urls:
             __start_commoncrawl_extractor(warc_download_url,
                                           callback_on_article_extracted=callback_on_article_extracted,
+                                          callback_on_warc_completed=__callback_on_warc_completed,
                                           valid_hosts=valid_hosts,
                                           start_date=start_date, end_date=end_date,
                                           strict_date=strict_date,

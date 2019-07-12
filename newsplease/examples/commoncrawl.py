@@ -30,7 +30,6 @@ __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
 
-
 ############ YOUR CONFIG ############
 # download dir for warc files
 my_local_download_dir_warc = './cc_download_warc/'
@@ -63,6 +62,11 @@ my_delete_warc_after_extraction = True
 # crawling new WARC files. This assumes that the filter criteria have not been changed since the previous run!
 my_continue_process = True
 ############ END YOUR CONFIG #########
+
+
+# logging
+logging.basicConfig(level=logging.INFO)
+__logger = logging.getLogger(__name__)
 
 
 def __setup__():
@@ -105,9 +109,26 @@ def on_valid_article_extracted(article):
         # ...
 
 
+def callback_on_warc_completed(warc_path, counter_article_passed, counter_article_discarded,
+                               counter_article_error, counter_article_total, counter_warc_processed):
+    """
+    This function will be invoked for each WARC file that was processed completely. Parameters represent total values,
+    i.e., cumulated over all all previously processed WARC files.
+    :param warc_path:
+    :param counter_article_passed:
+    :param counter_article_discarded:
+    :param counter_article_error:
+    :param counter_article_total:
+    :param counter_warc_processed:
+    :return:
+    """
+    pass
+
+
 if __name__ == '__main__':
     __setup__()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
+                                               callback_on_warc_completed=callback_on_warc_completed,
                                                valid_hosts=my_filter_valid_hosts,
                                                start_date=my_filter_start_date,
                                                end_date=my_filter_end_date,

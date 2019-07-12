@@ -45,7 +45,7 @@ class CommonCrawlExtractor:
     # log level
     __log_level = logging.INFO
     __delete_warc_after_extraction = True
-    ____log_pathname_fully_extracted_warcs = None
+    __log_pathname_fully_extracted_warcs = None
 
     # commoncrawl.org
     __cc_base_url = 'https://commoncrawl.s3.amazonaws.com/'
@@ -53,6 +53,8 @@ class CommonCrawlExtractor:
 
     # event handler called when an article was extracted successfully and passed all filter criteria
     __callback_on_article_extracted = None
+    # event handler called when a warc file is fully processed
+    __callback_on_warc_completed = None
     # if the download progress is shown
     __show_download_progress = False
 
@@ -222,56 +224,60 @@ class CommonCrawlExtractor:
         counter_article_total = 0
         counter_article_passed = 0
         counter_article_discarded = 0
+        counter_article_error = 0
         start_time = time.time()
 
         with open(path_name, 'rb') as stream:
             for record in ArchiveIterator(stream):
-                # try:
-                if record.rec_type == 'response':
-                    counter_article_total += 1
+                try:
+                    if record.rec_type == 'response':
+                        counter_article_total += 1
 
-                    # if the article passes filter tests, we notify the user
-                    filter_pass, article = self.__filter_record(record)
-                    if filter_pass:
-                        counter_article_passed += 1
+                        # if the article passes filter tests, we notify the user
+                        filter_pass, article = self.__filter_record(record)
+                        if filter_pass:
+                            if not article:
+                                article = NewsPlease.from_warc(record)
+                            counter_article_passed += 1
 
-                        if not article:
-                            article = NewsPlease.from_warc(record)
-
-                        self.__logger.info('article pass (%s; %s; %s)', article.source_domain, article.date_publish,
-                                           article.title)
-                        self.__callback_on_article_extracted(article)
-                    else:
-                        counter_article_discarded += 1
-
-                        if article:
-                            self.__logger.info('article discard (%s; %s; %s)', article.source_domain,
-                                               article.date_publish,
+                            self.__logger.info('article pass (%s; %s; %s)', article.source_domain, article.date_publish,
                                                article.title)
+                            self.__callback_on_article_extracted(article)
                         else:
-                            self.__logger.info('article discard (%s)',
-                                               record.rec_headers.get_header('WARC-Target-URI'))
+                            counter_article_discarded += 1
 
-                    if counter_article_total % 10 == 0:
-                        elapsed_secs = time.time() - start_time
-                        secs_per_article = elapsed_secs / counter_article_total
-                        self.__logger.info('statistics')
-                        self.__logger.info('pass = %i, discard = %i, total = %i', counter_article_passed,
-                                           counter_article_discarded, counter_article_total)
-                        self.__logger.info('extraction from current WARC file started %s; %f s/article',
-                                           human(start_time), secs_per_article)
-                        # except:
-                        #    if self.__continue_after_error:
-                        #        self.__logger.error('Unexpected error: %s', sys.exc_info()[0])
-                        #        pass
-                        #    else:
-                        #        raise
+                            if article:
+                                self.__logger.info('article discard (%s; %s; %s)', article.source_domain,
+                                                   article.date_publish,
+                                                   article.title)
+                            else:
+                                self.__logger.info('article discard (%s)',
+                                                   record.rec_headers.get_header('WARC-Target-URI'))
+
+                        if counter_article_total % 100 == 0:
+                            elapsed_secs = time.time() - start_time
+                            secs_per_article = elapsed_secs / counter_article_total
+                            self.__logger.info('statistics')
+                            self.__logger.info('pass = %i, discard = %i, error = %i, total = %i',
+                                               counter_article_passed,
+                                               counter_article_discarded, counter_article_error, counter_article_total)
+                            self.__logger.info('extraction from current WARC file started %s; %f s/article',
+                                               human(start_time), secs_per_article)
+                except:
+                    if self.__continue_after_error:
+                        self.__logger.error('Unexpected error: %s', sys.exc_info()[0])
+                        counter_article_error += 1
+                        pass
+                    else:
+                        raise
 
         # cleanup
         if self.__delete_warc_after_extraction:
             os.remove(path_name)
 
         self.__register_fully_extracted_warc_file(self.__warc_download_url)
+        self.__callback_on_warc_completed(self.__warc_download_url, counter_article_passed, counter_article_discarded,
+                                          counter_article_error, counter_article_total)
 
     def __run(self):
         """
@@ -285,7 +291,9 @@ class CommonCrawlExtractor:
         local_path_name = self.__download(self.__warc_download_url)
         self.__process_warc_gz_file(local_path_name)
 
-    def extract_from_commoncrawl(self, warc_download_url, callback_on_article_extracted, valid_hosts=None,
+    def extract_from_commoncrawl(self, warc_download_url, callback_on_article_extracted,
+                                 callback_on_warc_completed=None,
+                                 valid_hosts=None,
                                  start_date=None, end_date=None,
                                  strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
                                  continue_after_error=True, show_download_progress=False,
@@ -299,6 +307,7 @@ class CommonCrawlExtractor:
         :param delete_warc_after_extraction:
         :param warc_download_url:
         :param callback_on_article_extracted:
+        :param callback_on_warc_completed:
         :param valid_hosts:
         :param start_date:
         :param end_date:
@@ -320,6 +329,7 @@ class CommonCrawlExtractor:
         self.__reuse_previously_downloaded_files = reuse_previously_downloaded_files
         self.__continue_after_error = continue_after_error
         self.__callback_on_article_extracted = callback_on_article_extracted
+        self.__callback_on_warc_completed = callback_on_warc_completed
         self.__show_download_progress = show_download_progress
         self.__log_level = log_level
         self.__delete_warc_after_extraction = delete_warc_after_extraction
