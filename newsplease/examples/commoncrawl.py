@@ -131,6 +131,7 @@ def main():
     global my_local_download_dir_warc
     global my_local_download_dir_article
     delete_warc_after_extraction = False
+    global my_number_of_extraction_processes
 
     if len(sys.argv) >= 2:
         my_local_download_dir_warc = sys.argv[1]
@@ -138,10 +139,13 @@ def main():
         my_local_download_dir_article = sys.argv[2]
     if len(sys.argv) >= 4:
         delete_warc_after_extraction = sys.argv[3] == "delete"
+    if len(sys.argv) >= 5:
+        my_number_of_extraction_processes = int(sys.argv[4])
 
     print("my_local_download_dir_warc=" + my_local_download_dir_warc)
     print("my_local_download_dir_article=" + my_local_download_dir_article)
     print("delete_warc_after_extraction=" + str(delete_warc_after_extraction))
+    print("my_number_of_extraction_processes=" + str(my_number_of_extraction_processes))
 
     __setup__()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
