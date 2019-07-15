@@ -1,2 +1,2 @@
 #!/bin/sh
-news-please-cc ~/down/warcs ~/down/articles keep
+news-please-cc /npdata/warcs /npdata/articles keep &> /npdata/all.log

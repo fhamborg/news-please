@@ -31,6 +31,7 @@ __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
 
+
 ############ YOUR CONFIG ############
 # download dir for warc files
 my_local_download_dir_warc = './cc_download_warc/'
@@ -50,7 +51,7 @@ my_reuse_previously_downloaded_files = True
 # continue after error
 my_continue_after_error = True
 # show the progress of downloading the WARC files
-my_show_download_progress = True
+my_show_download_progress = False
 # log_level
 my_log_level = logging.INFO
 # json export style
@@ -66,7 +67,7 @@ my_continue_process = True
 
 
 # logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=my_log_level)
 __logger = logging.getLogger(__name__)
 
 
@@ -138,9 +139,9 @@ def main():
     if len(sys.argv) >= 4:
         delete_warc_after_extraction = sys.argv[3] == "delete"
 
-    print(my_local_download_dir_warc)
-    print(my_local_download_dir_article)
-    print(delete_warc_after_extraction)
+    print("my_local_download_dir_warc=" + my_local_download_dir_warc)
+    print("my_local_download_dir_article=" + my_local_download_dir_article)
+    print("delete_warc_after_extraction=" + str(delete_warc_after_extraction))
 
     __setup__()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
