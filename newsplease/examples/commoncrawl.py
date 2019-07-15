@@ -126,12 +126,21 @@ def callback_on_warc_completed(warc_path, counter_article_passed, counter_articl
     pass
 
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
+def main():
+    global my_local_download_dir_warc
+    global my_local_download_dir_article
+    delete_warc_after_extraction = False
+
+    if len(sys.argv) >= 2:
         my_local_download_dir_warc = sys.argv[1]
-    elif len(sys.argv) == 3:
-        my_local_download_dir_warc = sys.argv[1]
+    if len(sys.argv) >= 3:
         my_local_download_dir_article = sys.argv[2]
+    if len(sys.argv) >= 4:
+        delete_warc_after_extraction = sys.argv[3] == "delete"
+
+    print(my_local_download_dir_warc)
+    print(my_local_download_dir_article)
+    print(delete_warc_after_extraction)
 
     __setup__()
     commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
@@ -148,3 +157,7 @@ if __name__ == '__main__':
                                                log_level=my_log_level,
                                                delete_warc_after_extraction=True,
                                                continue_process=True)
+
+
+if __name__ == "__main__":
+    main()
