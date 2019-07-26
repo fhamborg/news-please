@@ -30,18 +30,22 @@ class NewsPlease:
         raw_stream = warc_record.raw_stream.read()
         encoding = None
         try:
-            encoding = warc_record.http_headers.get_header('Content-Type').split(';')[1].split('=')[1]
+            encoding = (
+                warc_record.http_headers.get_header("Content-Type")
+                .split(";")[1]
+                .split("=")[1]
+            )
         except:
             pass
         if not encoding:
             encoding = EncodingDetector.find_declared_encoding(raw_stream, is_html=True)
         if not encoding:
             # assume utf-8
-            encoding = 'utf-8'
+            encoding = "utf-8"
 
         html = raw_stream.decode(encoding)
-        url = warc_record.rec_headers.get_header('WARC-Target-URI')
-        download_date = warc_record.rec_headers.get_header('WARC-Date')
+        url = warc_record.rec_headers.get_header("WARC-Target-URI")
+        download_date = warc_record.rec_headers.get_header("WARC-Date")
         article = NewsPlease.from_html(html, url=url, download_date=download_date)
         return article
 
@@ -56,26 +60,34 @@ class NewsPlease:
         :return:
         """
         extractor = article_extractor.Extractor(
-            ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
+            [
+                "newspaper_extractor",
+                "readability_extractor",
+                "date_extractor",
+                "lang_detect_extractor",
+            ]
+        )
 
-        title_encoded = ''.encode()
+        title_encoded = "".encode()
         if not url:
-            url = ''
+            url = ""
 
         # if an url was given, we can use that as the filename
-        filename = urllib.parse.quote_plus(url) + '.json'
+        filename = urllib.parse.quote_plus(url) + ".json"
 
         item = NewscrawlerItem()
-        item['spider_response'] = DotMap()
-        item['spider_response'].body = html
-        item['url'] = url
-        item['source_domain'] = urllib.parse.urlparse(url).hostname.encode() if url != '' else ''.encode()
-        item['html_title'] = title_encoded
-        item['rss_title'] = title_encoded
-        item['local_path'] = None
-        item['filename'] = filename
-        item['download_date'] = download_date
-        item['modified_date'] = None
+        item["spider_response"] = DotMap()
+        item["spider_response"].body = html
+        item["url"] = url
+        item["source_domain"] = (
+            urllib.parse.urlparse(url).hostname.encode() if url != "" else "".encode()
+        )
+        item["html_title"] = title_encoded
+        item["rss_title"] = title_encoded
+        item["local_path"] = None
+        item["filename"] = filename
+        item["download_date"] = download_date
+        item["modified_date"] = None
         item = extractor.extract(item)
 
         tmp_article = ExtractedInformationStorage.extract_relevant_info(item)
@@ -105,7 +117,7 @@ class NewsPlease:
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
         results = {}
-        download_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        download_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if len(urls) == 0:
             # Nested blocks of code should not be left empty.

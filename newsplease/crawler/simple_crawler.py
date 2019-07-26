@@ -26,7 +26,7 @@ class SimpleCrawler(object):
         :param timeout: in seconds, if None, the urllib default is used
         :return: html of the url
         """
-        headers = {'User-Agent': 'Mozilla/5.0'}
+        headers = {"User-Agent": "Mozilla/5.0"}
         req = urllib.request.Request(url, None, headers)
         html = urllib.request.urlopen(req, data=None, timeout=timeout).read()
 
@@ -43,7 +43,10 @@ class SimpleCrawler(object):
         :param timeout: in seconds, if None, the urllib default is used
         :return:
         """
-        threads = [threading.Thread(target=SimpleCrawler._fetch_url, args=(url, True, timeout)) for url in urls]
+        threads = [
+            threading.Thread(target=SimpleCrawler._fetch_url, args=(url, True, timeout))
+            for url in urls
+        ]
         for thread in threads:
             thread.start()
         for thread in threads:

@@ -34,13 +34,18 @@ class ComparerLanguage:
         languages_extracted_number = []
 
         for language in languages_extracted_set:
-            languages_extracted_number.append((languages_extracted.count(language), language))
+            languages_extracted_number.append(
+                (languages_extracted.count(language), language)
+            )
 
         if not (languages_extracted_number):
             return None
 
         # If there is no favorite language, return the language extracted by newspaper
-        if max(languages_extracted_number)[0] == min(languages_extracted_number)[0] and language_newspaper is not None:
+        if (
+            max(languages_extracted_number)[0] == min(languages_extracted_number)[0]
+            and language_newspaper is not None
+        ):
             return language_newspaper
 
         if languages_extracted_number:

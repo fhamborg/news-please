@@ -1,4 +1,4 @@
-class ComparerDate():
+class ComparerDate:
     """This class compares the dates of the list of ArticleCandidates and sends the result back to the Comparer."""
 
     def extract(self, item, list_article_candidate):
@@ -12,7 +12,9 @@ class ComparerDate():
 
         for article_candidate in list_article_candidate:
             if article_candidate.publish_date != None:
-                list_publish_date.append((article_candidate.publish_date, article_candidate.extractor))
+                list_publish_date.append(
+                    (article_candidate.publish_date, article_candidate.extractor)
+                )
 
         # If there is no value in the list, return None.
         if len(list_publish_date) == 0:

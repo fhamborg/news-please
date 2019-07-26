@@ -1,4 +1,4 @@
-class ComparerDescription():
+class ComparerDescription:
     """This class compares the descriptions of the list of ArticleCandidates and sends the result
     back to the Comparer.
     """
@@ -17,7 +17,9 @@ class ComparerDescription():
         """
         for article_candidate in list_article_candidate:
             if article_candidate.description != None:
-                list_description.append((article_candidate.description, article_candidate.extractor))
+                list_description.append(
+                    (article_candidate.description, article_candidate.extractor)
+                )
 
         # If there is no value in the list, return None.
         if len(list_description) == 0:

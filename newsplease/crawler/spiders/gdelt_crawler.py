@@ -13,7 +13,7 @@ import scrapy
 import zipfile
 
 # to improve performance, regex statements are compiled only once per module
-re_export = re.compile(r'.*?(http.*?export\.CSV\.zip)')
+re_export = re.compile(r".*?(http.*?export\.CSV\.zip)")
 
 
 class GdeltCrawler(scrapy.Spider):
@@ -35,8 +35,7 @@ class GdeltCrawler(scrapy.Spider):
 
         self.original_url = url
 
-        self.ignored_allowed_domain = self.helper.url_extractor \
-            .get_allowed_domain(url)
+        self.ignored_allowed_domain = self.helper.url_extractor.get_allowed_domain(url)
         self.start_urls = [url]  # [self.helper.url_extractor.get_start_url(url)]
 
         super(GdeltCrawler, self).__init__(*args, **kwargs)
@@ -64,19 +63,20 @@ class GdeltCrawler(scrapy.Spider):
             # unzip
             z = zipfile.ZipFile(io.BytesIO(r.content))
             extracted = z.namelist()
-            z.extractall('/tmp')
-            csv_file_path = '/tmp/%s' % extracted[0]
+            z.extractall("/tmp")
+            csv_file_path = "/tmp/%s" % extracted[0]
             # read csv to get all urls
             urls = set()  # set to remove duplicates
             with open(csv_file_path) as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter='\t')
+                csv_reader = csv.reader(csv_file, delimiter="\t")
                 for row in csv_reader:
                     urls.add(row[-1])
             # rm the file
             os.remove(csv_file_path)
             for url in urls:
-                yield scrapy.Request(url, lambda resp: self.article_parse(
-                    resp, 'gdelt'))
+                yield scrapy.Request(
+                    url, lambda resp: self.article_parse(resp, "gdelt")
+                )
 
     def article_parse(self, response, rss_title=None):
         """
@@ -90,8 +90,8 @@ class GdeltCrawler(scrapy.Spider):
             return
 
         yield self.helper.parse_crawler.pass_to_pipeline_if_article(
-            response, self.ignored_allowed_domain, self.original_url,
-            rss_title)
+            response, self.ignored_allowed_domain, self.original_url, rss_title
+        )
 
     @staticmethod
     def only_extracts_articles():

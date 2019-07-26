@@ -35,8 +35,7 @@ class Download(scrapy.Spider):
             return
 
         yield self.helper.parse_crawler.pass_to_pipeline(
-            response,
-            self.helper.url_extractor.get_allowed_domain(response.url)
+            response, self.helper.url_extractor.get_allowed_domain(response.url)
         )
 
     @staticmethod

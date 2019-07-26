@@ -23,11 +23,16 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
         self.helper = helper
         self.original_url = url
 
-        self.allowed_domains = [self.helper.url_extractor
-                                    .get_allowed_domain(url, config.section(
-            'Crawler')['sitemap_allow_subdomains'])]
-        self.sitemap_urls = [self.helper.url_extractor.get_sitemap_url(
-            url, config.section('Crawler')['sitemap_allow_subdomains'])]
+        self.allowed_domains = [
+            self.helper.url_extractor.get_allowed_domain(
+                url, config.section("Crawler")["sitemap_allow_subdomains"]
+            )
+        ]
+        self.sitemap_urls = [
+            self.helper.url_extractor.get_sitemap_url(
+                url, config.section("Crawler")["sitemap_allow_subdomains"]
+            )
+        ]
 
         self.log.debug(self.sitemap_urls)
 
@@ -44,7 +49,8 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
             return
 
         yield self.helper.parse_crawler.pass_to_pipeline_if_article(
-            response, self.allowed_domains[0], self.original_url)
+            response, self.allowed_domains[0], self.original_url
+        )
 
     @staticmethod
     def only_extracts_articles():

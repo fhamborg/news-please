@@ -8,10 +8,10 @@ import json
 
 from newsplease import NewsPlease
 
-url = 'https://www.rt.com/news/203203-ukraine-russia-troops-border/'
-basepath = '/Users/felix/Downloads/'
+url = "https://www.rt.com/news/203203-ukraine-russia-troops-border/"
+basepath = "/Users/felix/Downloads/"
 
 article = NewsPlease.from_url(url)
 
-with open(basepath + article['filename'] + '.json', 'w') as outfile:
+with open(basepath + article["filename"] + ".json", "w") as outfile:
     json.dump(article, outfile, indent=4, sort_keys=True)

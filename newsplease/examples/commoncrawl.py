@@ -34,9 +34,9 @@ __credits__ = ["Sebastian Nagel"]
 
 ############ YOUR CONFIG ############
 # download dir for warc files
-my_local_download_dir_warc = './cc_download_warc/'
+my_local_download_dir_warc = "./cc_download_warc/"
 # download dir for articles
-my_local_download_dir_article = './cc_download_articles/'
+my_local_download_dir_article = "./cc_download_articles/"
 # hosts (if None or empty list, any host is OK)
 my_filter_valid_hosts = []  # example: ['elrancaguino.cl']
 # start date (if None, any date is OK as start date), as datetime
@@ -92,7 +92,7 @@ def __get_pretty_filepath(path, article):
     final_path = os.path.join(path, sub_dir)
     if not os.path.exists(final_path):
         os.makedirs(final_path)
-    return os.path.join(final_path, short_filename + '.json')
+    return os.path.join(final_path, short_filename + ".json")
 
 
 def on_valid_article_extracted(article):
@@ -103,16 +103,39 @@ def on_valid_article_extracted(article):
     :return:
     """
     # do whatever you need to do with the article (e.g., save it to disk, store it in ElasticSearch, etc.)
-    with open(__get_pretty_filepath(my_local_download_dir_article, article), 'w', encoding='utf-8') as outfile:
+    with open(
+        __get_pretty_filepath(my_local_download_dir_article, article),
+        "w",
+        encoding="utf-8",
+    ) as outfile:
         if my_json_export_style == 0:
-            json.dump(article.__dict__, outfile, default=str, separators=(',', ':'), ensure_ascii=False)
+            json.dump(
+                article.__dict__,
+                outfile,
+                default=str,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            )
         elif my_json_export_style == 1:
-            json.dump(article.__dict__, outfile, default=str, indent=4, sort_keys=True, ensure_ascii=False)
+            json.dump(
+                article.__dict__,
+                outfile,
+                default=str,
+                indent=4,
+                sort_keys=True,
+                ensure_ascii=False,
+            )
         # ...
 
 
-def callback_on_warc_completed(warc_path, counter_article_passed, counter_article_discarded,
-                               counter_article_error, counter_article_total, counter_warc_processed):
+def callback_on_warc_completed(
+    warc_path,
+    counter_article_passed,
+    counter_article_discarded,
+    counter_article_error,
+    counter_article_total,
+    counter_warc_processed,
+):
     """
     This function will be invoked for each WARC file that was processed completely. Parameters represent total values,
     i.e., cumulated over all all previously processed WARC files.
@@ -148,20 +171,22 @@ def main():
     print("my_number_of_extraction_processes=" + str(my_number_of_extraction_processes))
 
     __setup__()
-    commoncrawl_crawler.crawl_from_commoncrawl(on_valid_article_extracted,
-                                               callback_on_warc_completed=callback_on_warc_completed,
-                                               valid_hosts=my_filter_valid_hosts,
-                                               start_date=my_filter_start_date,
-                                               end_date=my_filter_end_date,
-                                               strict_date=my_filter_strict_date,
-                                               reuse_previously_downloaded_files=my_reuse_previously_downloaded_files,
-                                               local_download_dir_warc=my_local_download_dir_warc,
-                                               continue_after_error=my_continue_after_error,
-                                               show_download_progress=my_show_download_progress,
-                                               number_of_extraction_processes=my_number_of_extraction_processes,
-                                               log_level=my_log_level,
-                                               delete_warc_after_extraction=True,
-                                               continue_process=True)
+    commoncrawl_crawler.crawl_from_commoncrawl(
+        on_valid_article_extracted,
+        callback_on_warc_completed=callback_on_warc_completed,
+        valid_hosts=my_filter_valid_hosts,
+        start_date=my_filter_start_date,
+        end_date=my_filter_end_date,
+        strict_date=my_filter_strict_date,
+        reuse_previously_downloaded_files=my_reuse_previously_downloaded_files,
+        local_download_dir_warc=my_local_download_dir_warc,
+        continue_after_error=my_continue_after_error,
+        show_download_progress=my_show_download_progress,
+        number_of_extraction_processes=my_number_of_extraction_processes,
+        log_level=my_log_level,
+        delete_warc_after_extraction=True,
+        continue_process=True,
+    )
 
 
 if __name__ == "__main__":

@@ -9,8 +9,8 @@ import scrapy
 
 # to improve performance, regex statements are compiled only once per module
 re_rss = re.compile(
-    r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|' +
-    r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
+    r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|'
+    + r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
 )
 
 
@@ -33,8 +33,7 @@ class RssCrawler(scrapy.Spider):
 
         self.original_url = url
 
-        self.ignored_allowed_domain = self.helper.url_extractor \
-            .get_allowed_domain(url)
+        self.ignored_allowed_domain = self.helper.url_extractor.get_allowed_domain(url)
         self.start_urls = [self.helper.url_extractor.get_start_url(url)]
 
         super(RssCrawler, self).__init__(*args, **kwargs)
@@ -45,8 +44,9 @@ class RssCrawler(scrapy.Spider):
 
         :param obj response: The scrapy response
         """
-        yield scrapy.Request(self.helper.url_extractor.get_rss_url(response),
-                             callback=self.rss_parse)
+        yield scrapy.Request(
+            self.helper.url_extractor.get_rss_url(response), callback=self.rss_parse
+        )
 
     def rss_parse(self, response):
         """
@@ -54,10 +54,14 @@ class RssCrawler(scrapy.Spider):
 
         :param obj response: The scrapy response
         """
-        for item in response.xpath('//item'):
-            for url in item.xpath('link/text()').extract():
-                yield scrapy.Request(url, lambda resp: self.article_parse(
-                    resp, item.xpath('title/text()').extract()[0]))
+        for item in response.xpath("//item"):
+            for url in item.xpath("link/text()").extract():
+                yield scrapy.Request(
+                    url,
+                    lambda resp: self.article_parse(
+                        resp, item.xpath("title/text()").extract()[0]
+                    ),
+                )
 
     def article_parse(self, response, rss_title=None):
         """
@@ -71,8 +75,8 @@ class RssCrawler(scrapy.Spider):
             return
 
         yield self.helper.parse_crawler.pass_to_pipeline_if_article(
-            response, self.ignored_allowed_domain, self.original_url,
-            rss_title)
+            response, self.ignored_allowed_domain, self.original_url, rss_title
+        )
 
     @staticmethod
     def only_extracts_articles():
@@ -99,4 +103,4 @@ class RssCrawler(scrapy.Spider):
         response = urllib2.urlopen(redirect).read()
 
         # Check if a standard rss feed exists
-        return re.search(re_rss, response.decode('utf-8')) is not None
+        return re.search(re_rss, response.decode("utf-8")) is not None
