@@ -36,25 +36,9 @@ news-please is an open source, easy-to-use news crawler that extracts structured
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        "Scrapy>=1.1.0",
-        "PyMySQL>=0.7.9",
-        "hjson>=1.5.8",
-        "elasticsearch>=2.4",
-        "beautifulsoup4>=4.3.2",
-        "readability-lxml>=0.6.2",
-        "langdetect>=1.0.7",
-        "python-dateutil>=2.4.0",
-        "plac>=0.9.6",
-        "dotmap>=1.2.17",
-        "readability-lxml>=0.6.2",
-        "PyDispatcher>=2.0.5",
-        "warcio>=1.3.3",
-        "ago>=0.0.9",
-        "six>=1.10.0",
-        "lxml>=3.3.5",
-        "awscli>=1.11.117",
-        "hurry.filesize>=0.9",
-        "bs4",
+        line.strip()
+        for line in open("requirements.txt").readlines()
+        if not line.startswith("#")
     ],
     extras_require={
         ':python_version == "2.7"': [

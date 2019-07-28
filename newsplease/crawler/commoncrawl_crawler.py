@@ -56,14 +56,14 @@ def __setup(local_download_dir_warc, log_level):
     )
 
     # make loggers quite
-    configure_logging({"LOG_LEVEL": "ERROR"})
-    logging.getLogger("requests").setLevel(logging.CRITICAL)
-    logging.getLogger("readability").setLevel(logging.CRITICAL)
-    logging.getLogger("PIL").setLevel(logging.CRITICAL)
-    logging.getLogger("newspaper").setLevel(logging.CRITICAL)
-    logging.getLogger("newsplease").setLevel(logging.CRITICAL)
-    logging.getLogger("urllib3").setLevel(logging.CRITICAL)
-    logging.getLogger("jieba").setLevel(logging.CRITICAL)
+    configure_logging({"LOG_LEVEL": "INFO"})
+    # logging.getLogger("requests").setLevel(logging.CRITICAL)
+    # logging.getLogger("readability").setLevel(logging.CRITICAL)
+    # logging.getLogger("PIL").setLevel(logging.CRITICAL)
+    # logging.getLogger("newspaper").setLevel(logging.CRITICAL)
+    # logging.getLogger("newsplease").setLevel(logging.CRITICAL)
+    # logging.getLogger("urllib3").setLevel(logging.CRITICAL)
+    # logging.getLogger("jieba").setLevel(logging.CRITICAL)
 
     # set own logger
     logging.basicConfig(level=log_level)
