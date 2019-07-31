@@ -5,6 +5,8 @@ from newspaper import Article
 from .abstract_extractor import AbstractExtractor
 from ..article_candidate import ArticleCandidate
 
+logger = logging.getLogger(__name__)
+
 
 class NewspaperExtractor(AbstractExtractor):
     """This class implements Newspaper as an article extractor. Newspaper is
@@ -12,7 +14,6 @@ class NewspaperExtractor(AbstractExtractor):
     """
 
     def __init__(self):
-        self.log = logging.getLogger(__name__)
         self.name = "newspaper"
 
     def extract(self, item):
@@ -39,7 +40,7 @@ class NewspaperExtractor(AbstractExtractor):
                     "%Y-%m-%d %H:%M:%S"
                 )
             except ValueError as exception:
-                self.log.debug(
+                logger.debug(
                     "%s: Newspaper failed to extract the date in the supported format,"
                     "Publishing date set to None" % item["url"]
                 )

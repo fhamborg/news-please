@@ -26,6 +26,7 @@ try:
 except ImportError:
     np = None
     pd = None
+logger = logging.getLogger(__name__)
 
 
 class HTMLCodeHandling(object):
@@ -51,7 +52,6 @@ class ArticleMasterExtractor(object):
     """
 
     def __init__(self):
-        self.log = logging.getLogger(__name__)
         self.cfg = CrawlerConfig.get_instance()
         self.extractor_list = self.cfg.section("ArticleMasterExtractor")["extractors"]
 
@@ -67,7 +67,6 @@ class RSSCrawlCompare(object):
     If the difference is greater than delta_time, then save the newer version.
     """
 
-    log = None
     cfg = None
     delta_time = None
     database = None
@@ -78,7 +77,6 @@ class RSSCrawlCompare(object):
     compare_versions = "SELECT * FROM CurrentVersions WHERE url=%s"
 
     def __init__(self):
-        self.log = logging.getLogger(__name__)
 
         self.cfg = CrawlerConfig.get_instance()
         self.delta_time = self.cfg.section("Crawler")[
@@ -109,7 +107,7 @@ class RSSCrawlCompare(object):
                 pymysql.IntegrityError,
                 TypeError,
             ) as error:
-                self.log.error("Something went wrong in rss query: %s", error)
+                logger.error("Something went wrong in rss query: %s", error)
 
             # Save the result of the query. Must be done before the add,
             #   otherwise the result will be overwritten in the buffer
@@ -135,7 +133,6 @@ class MySQLStorage(object):
     Handles remote storage of the meta data in the DB
     """
 
-    log = None
     cfg = None
     database = None
     conn = None
@@ -164,7 +161,6 @@ class MySQLStorage(object):
 
     # init database connection
     def __init__(self):
-        self.log = logging.getLogger(__name__)
 
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("MySQL")
@@ -201,7 +197,7 @@ class MySQLStorage(object):
             pymysql.IntegrityError,
             TypeError,
         ) as error:
-            self.log.error("Something went wrong in query: %s", error)
+            logger.error("Something went wrong in query: %s", error)
 
         # Save the result of the query. Must be done before the add,
         # otherwise the result will be overwritten in the buffer
@@ -243,7 +239,7 @@ class MySQLStorage(object):
         try:
             self.cursor.execute(self.insert_current, current_version_list)
             self.conn.commit()
-            self.log.info("Article inserted into the database.")
+            logger.info("Article inserted into the database.")
         except (
             pymysql.err.OperationalError,
             pymysql.ProgrammingError,
@@ -251,7 +247,7 @@ class MySQLStorage(object):
             pymysql.IntegrityError,
             TypeError,
         ) as error:
-            self.log.error("Something went wrong in commit: %s", error)
+            logger.error("Something went wrong in commit: %s", error)
 
         # Move the old version from the CurrentVersion table to the ArchiveVersions table
         if old_version is not None:
@@ -265,7 +261,7 @@ class MySQLStorage(object):
                 pymysql.IntegrityError,
                 TypeError,
             ) as error:
-                self.log.error("Something went wrong in id query: %s", error)
+                logger.error("Something went wrong in id query: %s", error)
 
             # Delete the old version of the article from the CurrentVersion table
             try:
@@ -278,13 +274,13 @@ class MySQLStorage(object):
                 pymysql.IntegrityError,
                 TypeError,
             ) as error:
-                self.log.error("Something went wrong in delete: %s", error)
+                logger.error("Something went wrong in delete: %s", error)
 
             # Add the old version to the ArchiveVersion table
             try:
                 self.cursor.execute(self.insert_archive, old_version_list)
                 self.conn.commit()
-                self.log.info("Moved old version of an article to the archive.")
+                logger.info("Moved old version of an article to the archive.")
             except (
                 pymysql.err.OperationalError,
                 pymysql.ProgrammingError,
@@ -292,7 +288,7 @@ class MySQLStorage(object):
                 pymysql.IntegrityError,
                 TypeError,
             ) as error:
-                self.log.error("Something went wrong in archive: %s", error)
+                logger.error("Something went wrong in archive: %s", error)
 
         return item
 
@@ -306,11 +302,7 @@ class ExtractedInformationStorage(object):
     Provides basic functionality for Storages
     """
 
-    log = None
-
     def __init__(self):
-        self.log = logging.getLogger(__name__)
-        self.log.addHandler(logging.NullHandler())
         self.cfg = CrawlerConfig.get_instance()
 
     @staticmethod
@@ -421,7 +413,7 @@ class HtmlFileStorage(ExtractedInformationStorage):
     # Save the html and filename to the local storage folder
     def process_item(self, item, spider):
         # Add a log entry confirming the save
-        self.log.info("Saving HTML to %s", item["abs_local_path"])
+        logger.info("Saving HTML to %s", item["abs_local_path"])
 
         # Ensure path exists
         dir_ = os.path.dirname(item["abs_local_path"])
@@ -440,14 +432,13 @@ class JsonFileStorage(ExtractedInformationStorage):
     Handles remote storage of the data in Json files
     """
 
-    log = None
     cfg = None
 
     def process_item(self, item, spider):
         file_path = item["abs_local_path"] + ".json"
 
         # Add a log entry confirming the save
-        self.log.info("Saving JSON to %s", file_path)
+        logger.info("Saving JSON to %s", file_path)
 
         # Ensure path exists
         dir_ = os.path.dirname(item["abs_local_path"])
@@ -470,7 +461,6 @@ class ElasticsearchStorage(ExtractedInformationStorage):
     Handles remote storage of the meta data in Elasticsearch
     """
 
-    log = None
     cfg = None
     es = None
     index_current = None
@@ -479,8 +469,6 @@ class ElasticsearchStorage(ExtractedInformationStorage):
     running = False
 
     def __init__(self):
-        self.log = logging.getLogger("elasticsearch.trace")
-        self.log.addHandler(logging.NullHandler())
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("Elasticsearch")
 
@@ -505,9 +493,6 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             self.es.ping()
 
             # raise logging level due to indices.exists() habit of logging a warning if an index doesn't exist.
-            es_log = logging.getLogger("elasticsearch")
-            es_level = es_log.getEffectiveLevel()
-            es_log.setLevel("ERROR")
 
             # check if the necessary indices exist and create them if needed
             if not self.es.indices.exists(self.index_current):
@@ -523,11 +508,10 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             self.running = True
 
             # restore previous logging level
-            es_log.setLevel(es_level)
 
         except ConnectionError as error:
             self.running = False
-            self.log.error(
+            logger.error(
                 "Failed to connect to Elasticsearch, this module will be deactivated. "
                 "Please check if the database is running and the config is correct: %s"
                 % error
@@ -558,7 +542,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                     ancestor = old_version["_id"]
 
                 # save new version into old id of index_current
-                self.log.info("Saving to Elasticsearch: %s" % item["url"])
+                logger.info("Saving to Elasticsearch: %s" % item["url"])
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info["ancestor"] = ancestor
                 extracted_info["version"] = version
@@ -571,7 +555,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
 
             except ConnectionError as error:
                 self.running = False
-                self.log.error(
+                logger.error(
                     "Lost connection to Elasticsearch, this module will be deactivated: %s"
                     % error
                 )
@@ -584,14 +568,12 @@ class DateFilter(object):
     This module should be placed after the KM4 article extractor.
     """
 
-    log = None
     cfg = None
     strict_mode = False
     start_date = None
     end_date = None
 
     def __init__(self):
-        self.log = logging.getLogger(__name__ + ".DateFilter")
         self.cfg = CrawlerConfig.get_instance()
         self.config = self.cfg.section("DateFilter")
         self.strict_mode = self.config["strict_mode"]
@@ -599,7 +581,7 @@ class DateFilter(object):
         self.end_date = self.config["end_date"]
 
         if self.start_date is None and self.end_date is None:
-            self.log.error(
+            logger.error(
                 "DateFilter: No dates are defined, please check the configuration of this module."
             )
         else:
@@ -616,7 +598,7 @@ class DateFilter(object):
             except ValueError as error:
                 self.start_date = None
                 self.end_date = None
-                self.log.error(
+                logger.error(
                     "DateFilter: Couldn't read start or end date of the specified interval. "
                     "The Filter is now deactivated."
                     "Please check the configuration of this module and be sure follow the format "
@@ -640,7 +622,7 @@ class DateFilter(object):
                     str(item["article_publish_date"]), "%Y-%m-%d %H:%M:%S"
                 )
             except ValueError as error:
-                self.log.warning(
+                logger.warning(
                     "DateFilter: Extracted date has the wrong format: %s - %s"
                     % (item["article_publishing_date"], item["url"])
                 )
@@ -671,7 +653,6 @@ class PandasStorage(ExtractedInformationStorage):
     Store meta data a Pandas data frame
     """
 
-    log = None
     cfg = None
     es = None
     index_current = None
@@ -682,7 +663,6 @@ class PandasStorage(ExtractedInformationStorage):
     def __init__(self):
         if np is None:
             raise ModuleNotFoundError("Using PandasStorage requires numpy and pandas")
-        self.log = logging.getLogger(__name__)
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("Pandas")
 
@@ -711,7 +691,7 @@ class PandasStorage(ExtractedInformationStorage):
 
         try:
             self.df = pd.read_pickle(self.full_path)
-            self.log.info(
+            logger.info(
                 "Found existing Pandas file with %i rows at %s",
                 len(self.df),
                 self.full_path,
@@ -721,10 +701,10 @@ class PandasStorage(ExtractedInformationStorage):
                     raise KeyError(col)
         except FileNotFoundError:
             self.df = pd.DataFrame(columns=columns.keys())
-            self.log.info("Created new Pandas file at '%s'", self.full_path)
+            logger.info("Created new Pandas file at '%s'", self.full_path)
             self.df.set_index(df_index, inplace=True, drop=False)
         except KeyError as e:
-            self.log.error("%s is missing a column.", self.full_path)
+            logger.error("%s is missing a column.", self.full_path)
             raise e
 
     def process_item(self, item, _spider):
@@ -764,4 +744,4 @@ class PandasStorage(ExtractedInformationStorage):
             self.df["date_publish"], errors="coerce", infer_datetime_format=True
         )
         self.df.to_pickle(self.full_path)
-        self.log.info("Wrote to Pandas to %s", self.full_path)
+        logger.info("Wrote to Pandas to %s", self.full_path)

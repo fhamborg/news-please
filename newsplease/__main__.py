@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import shutil
@@ -8,10 +9,8 @@ import time
 from distutils.dir_util import copy_tree
 from subprocess import Popen
 
-import plac
 import pymysql
 from elasticsearch import Elasticsearch
-from scrapy.utils.log import configure_logging
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 par_path = os.path.dirname(cur_path)
@@ -27,6 +26,7 @@ except ImportError:
     from future import builtins
 if sys.version_info[0] < 3:
     ConnectionError = OSError
+logger = logging.getLogger(__name__)
 
 
 class NewsPleaseLauncher(object):
@@ -35,10 +35,8 @@ class NewsPleaseLauncher(object):
     sets up and manages all crawlers.
     """
 
-    python_command = None
     crawlers = []
     cfg = None
-    log = None
     cfg_directory_path = None
     cfg_file_path = None
     json_file_path = None
@@ -78,8 +76,6 @@ class NewsPleaseLauncher(object):
         :param is_reset_mysql:
         :param is_no_confirm:
         """
-        configure_logging({"LOG_LEVEL": "ERROR"})
-        self.log = logging.getLogger(__name__)
 
         # other parameters
         self.shall_resume = is_resume
@@ -265,7 +261,7 @@ class NewsPleaseLauncher(object):
             "%s" % daemonize,
         ]
 
-        self.log.debug("Calling Process: %s", call_process)
+        logger.debug("Calling Process: %s", call_process)
 
         crawler = Popen(call_process, stderr=None, stdout=None)
         crawler.communicate()
@@ -277,9 +273,9 @@ class NewsPleaseLauncher(object):
         """
         stop_msg = "Hard" if self.shutdown else "Graceful"
         if signal_number is None:
-            self.log.info("%s stop called manually. " "Shutting down.", stop_msg)
+            logger.info("%s stop called manually. " "Shutting down.", stop_msg)
         else:
-            self.log.info(
+            logger.info(
                 "%s stop called by signal #%s. Shutting down." "Stack Frame: %s",
                 stop_msg,
                 signal_number,
@@ -372,7 +368,7 @@ class NewsPleaseLauncher(object):
         abs_file_path = os.path.abspath(os.path.join(script_dir, rel_file_path))
 
         if not os.path.exists(abs_file_path):
-            self.log.error(abs_file_path + " does not exist.")
+            logger.error(abs_file_path + " does not exist.")
             if quit_on_error is True:
                 raise RuntimeError("Imported file not found. Quit.")
 
@@ -427,7 +423,7 @@ Cleanup MySQL database:
             pymysql.IntegrityError,
             TypeError,
         ) as error:
-            self.log.error("Database reset error: %s", error)
+            logger.error("Database reset error: %s", error)
 
     def reset_elasticsearch(self):
         """
@@ -479,7 +475,7 @@ Do you really want to do this? Write 'yes' to confirm: {yes}""".format(
                 index=self.elasticsearch["index_archive"], ignore=[400, 404]
             )
         except ConnectionError as error:
-            self.log.error(
+            logger.error(
                 "Failed to connect to Elasticsearch. "
                 "Please check if the database is running and the config is correct: %s"
                 % error
@@ -525,8 +521,8 @@ Cleanup files:
             shutil.rmtree(path)
         except OSError as error:
             if not os.path.exists(path):
-                self.log.error("%s does not exist.", path)
-            self.log.error(error)
+                logger.error("%s does not exist.", path)
+            logger.error(error)
 
     class CrawlerList(object):
         """
@@ -678,15 +674,6 @@ Cleanup files:
             self.graceful_stop = True
 
 
-@plac.annotations(
-    cfg_file_path=plac.Annotation("path to the config file", "option", "c"),
-    resume=plac.Annotation("resume crawling from last process", "flag"),
-    reset_elasticsearch=plac.Annotation("reset Elasticsearch indexes", "flag"),
-    reset_json=plac.Annotation("reset JSON files", "flag"),
-    reset_mysql=plac.Annotation("reset MySQL database", "flag"),
-    reset_all=plac.Annotation("combines all reset options", "flag"),
-    no_confirm=plac.Annotation("skip confirm dialogs", "flag"),
-)
 def cli(
     cfg_file_path,
     resume,
@@ -696,8 +683,6 @@ def cli(
     reset_all,
     no_confirm,
 ):
-    "A generic news crawler and extractor."
-
     if reset_all:
         reset_elasticsearch = True
         reset_json = True
@@ -712,7 +697,37 @@ def cli(
 
 
 def main():
-    plac.call(cli)
+    logging.basicConfig(level=logging.INFO)
+    parser = argparse.ArgumentParser(
+        description="A generic news crawler and extractor."
+    )
+    parser.add_argument("--cfg_file_path", help="path to the config file")
+    parser.add_argument(
+        "--resume", help="resume crawling from last process", action="store_true"
+    )
+    parser.add_argument(
+        "--reset_elasticsearch", help="reset Elasticsearch indexes", action="store_true"
+    )
+    parser.add_argument("--reset_json", help="reset JSON files", action="store_true")
+    parser.add_argument(
+        "--reset_mysql", help="reset MySQL database", action="store_true"
+    )
+    parser.add_argument(
+        "--reset_all", help="combines all reset options", action="store_true"
+    )
+    parser.add_argument(
+        "--no_confirm", help="skip confirm dialogs", action="store_true"
+    )
+    args = parser.parse_args()
+    cli(
+        args.cfg_file_path,
+        args.resume,
+        args.reset_elasticsearch,
+        args.reset_mysql,
+        args.reset_json,
+        args.reset_all,
+        args.no_confirm,
+    )
 
 
 if __name__ == "__main__":

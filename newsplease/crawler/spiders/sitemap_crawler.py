@@ -4,6 +4,8 @@ import scrapy
 
 from ...helper_classes.url_extractor import UrlExtractor
 
+logger = logging.getLogger(__name__)
+
 
 class SitemapCrawler(scrapy.spiders.SitemapSpider):
     name = "SitemapCrawler"
@@ -11,13 +13,10 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
     sitemap_urls = None
     original_url = None
 
-    log = None
-
     config = None
     helper = None
 
     def __init__(self, helper, url, config, ignore_regex, *args, **kwargs):
-        self.log = logging.getLogger(__name__)
 
         self.config = config
         self.helper = helper
@@ -34,7 +33,7 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
             )
         ]
 
-        self.log.debug(self.sitemap_urls)
+        logger.debug(self.sitemap_urls)
 
         super(SitemapCrawler, self).__init__(*args, **kwargs)
 

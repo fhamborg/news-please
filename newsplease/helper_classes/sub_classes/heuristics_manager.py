@@ -5,6 +5,7 @@ try:
     basestring = basestring
 except NameError:
     basestring = (str, bytes)
+logger = logging.getLogger(__name__)
 
 
 class HeuristicsManager(object):
@@ -16,11 +17,10 @@ class HeuristicsManager(object):
     The heuristics file must inherit this class.
 
     The config is provided in self.cfg_heuristics,
-    and logging is provided in self.log.
+    and logging is provided in logger.
     """
 
     cfg_heuristics = None
-    log = None
 
     __sites_object = {}
     __sites_heuristics = {}
@@ -31,7 +31,6 @@ class HeuristicsManager(object):
         self.cfg_heuristics = cfg_heuristics
         for site in sites_object:
             self.__sites_object[site["url"]] = site
-        self.log = logging.getLogger(__name__)
         self.crawler_class = crawler_class
 
     def is_article(self, response, url):
@@ -47,10 +46,10 @@ class HeuristicsManager(object):
         site = self.__sites_object[url]
         heuristics = self.__get_enabled_heuristics(url)
 
-        self.log.info("Checking site: %s", response.url)
+        logger.info("Checking site: %s", response.url)
 
         statement = self.__get_condition(url)
-        self.log.debug("Condition (original): %s", statement)
+        logger.debug("Condition (original): %s", statement)
 
         for heuristic, condition in heuristics.items():
             heuristic_func = getattr(self, heuristic)
@@ -58,7 +57,7 @@ class HeuristicsManager(object):
             check = self.__evaluate_result(result, condition)
             statement = re.sub(r"\b%s\b" % heuristic, str(check), statement)
 
-            self.log.debug(
+            logger.debug(
                 "Checking heuristic (%s)" " result (%s) on condition (%s): %s",
                 heuristic,
                 result,
@@ -66,9 +65,9 @@ class HeuristicsManager(object):
                 check,
             )
 
-        self.log.debug("Condition (evaluated): %s", statement)
+        logger.debug("Condition (evaluated): %s", statement)
         is_article = eval(statement)
-        self.log.debug("Article accepted: %s", is_article)
+        logger.debug("Article accepted: %s", is_article)
         return is_article
 
     def __get_condition(self, url):
@@ -102,7 +101,7 @@ class HeuristicsManager(object):
         disalloweds = disalloweds.split(" ")
         for disallowed in disalloweds:
             if disallowed != "":
-                self.log.error(
+                logger.error(
                     "Misconfiguration: In the condition,"
                     " an unknown heuristic was found and"
                     " will be ignored: %s",
@@ -142,7 +141,7 @@ class HeuristicsManager(object):
                 condition.startswith('"') and condition.endswith('"')
             ):
                 if isinstance(result, basestring):
-                    self.log.debug("Condition %s recognized as string.", condition)
+                    logger.debug("Condition %s recognized as string.", condition)
                     return result == condition[1:-1]
                 return self.__evaluation_error(result, condition, "Result not string")
 
@@ -211,7 +210,7 @@ class HeuristicsManager(object):
 
     def __evaluation_error(self, result, condition, throw):
         """Helper-method for easy error-logging"""
-        self.log.error(
+        logger.error(
             "Result does not match condition, dropping item. "
             "Result %s; Condition: %s; Throw: %s",
             result,
@@ -252,6 +251,6 @@ class HeuristicsManager(object):
                     heuristics[heuristic] = value
         self.__sites_heuristics[site["url"]] = heuristics
 
-        self.log.debug("Enabled heuristics for %s: %s", site["url"], heuristics)
+        logger.debug("Enabled heuristics for %s: %s", site["url"], heuristics)
 
         return heuristics

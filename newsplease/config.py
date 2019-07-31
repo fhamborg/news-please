@@ -2,25 +2,23 @@
 """
 This is the config-loading and json-loading module which loads and parses the
 config file as well as the json file.
-
 It handles the [General]-Section of the config.
-
 All object-getters create deepcopies.
 """
 
 import logging
+import os
 from copy import deepcopy
 
 import hjson
+from ast import literal_eval
 
 try:
     import ConfigParser
 except ImportError:
     import configparser as ConfigParser
 
-from ast import literal_eval
-from scrapy.utils.log import configure_logging
-import os
+logger = logging.getLogger(__name__)
 
 
 class CrawlerConfig(object):
@@ -52,8 +50,6 @@ class CrawlerConfig(object):
     instance = None
 
     # Here starts the actual class
-    log = None
-    log_output = []
     sections = None
     parser = None
     __current_section = None
@@ -68,9 +64,7 @@ class CrawlerConfig(object):
         """
 
         if CrawlerConfig.instance is not None:
-            self.log_output.append(
-                {"level": "error", "msg": "Multiple instances of singleton-class"}
-            )
+            logger.error("Multiple instances of singleton-class")
             raise RuntimeError("Multiple instances of singleton-class")
 
     def setup(self, filepath):
@@ -79,19 +73,12 @@ class CrawlerConfig(object):
 
         :param str filepath: path to the config-file (including file-name)
         """
-        if self.log is not None:
-            self.log.warning("Disallowed multiple setup of config.")
-            return
 
-        self.log = logging.getLogger(__name__)
         self.parser = ConfigParser.RawConfigParser()
         self.parser.read(filepath)
         self.sections = self.parser.sections()
-        self.log_output.append(
-            {"level": "info", "msg": "Loading config-file (%s)" % filepath}
-        )
+        logger.info("Loading config-file (%s)" % filepath)
         self.load_config()
-        self.handle_logging()
 
     def load_config(self):
         """
@@ -114,28 +101,15 @@ class CrawlerConfig(object):
                         self.__config[section][option] = literal_eval(opt)
                     except (SyntaxError, ValueError):
                         self.__config[section][option] = opt
-                        self.log_output.append(
-                            {
-                                "level": "debug",
-                                "msg": "Option not literal_eval-parsable"
-                                " (maybe string): [{0}] {1}".format(section, option),
-                            }
+                        logger.info(
+                            "Option not literal_eval-parsable"
+                            " (maybe string): [{0}] {1}".format(section, option)
                         )
 
                     if self.__config[section][option] == -1:
-                        self.log_output.append(
-                            {
-                                "level": "debug",
-                                "msg": "Skipping: [%s] %s" % (section, option),
-                            }
-                        )
+                        logger.info("Skipping: [%s] %s" % (section, option))
                 except ConfigParser.NoOptionError as exc:
-                    self.log_output.append(
-                        {
-                            "level": "error",
-                            "msg": "Exception on [%s] %s: %s" % (section, option, exc),
-                        }
-                    )
+                    logger.error("Exception on [%s] %s: %s" % (section, option, exc))
                     self.__config[section][option] = None
 
     def get_scrapy_options(self):
@@ -149,26 +123,6 @@ class CrawlerConfig(object):
             for key, value in options.items():
                 self.__scrapy_options[key.upper()] = value
         return self.__scrapy_options
-
-    def handle_logging(self):
-        """
-        To allow devs to log as early as possible, logging will already be
-        handled here
-        """
-
-        configure_logging(self.get_scrapy_options())
-
-        # Disable duplicates
-        self.__scrapy_options["LOG_ENABLED"] = False
-
-        # Now, after log-level is correctly set, lets log them.
-        for msg in self.log_output:
-            if msg["level"] is "error":
-                self.log.error(msg["msg"])
-            elif msg["level"] is "info":
-                self.log.info(msg["msg"])
-            elif msg["level"] is "debug":
-                self.log.debug(msg["msg"])
 
     def config(self):
         """
@@ -248,7 +202,6 @@ class JsonConfig(object):
     instance = None
 
     # Here starts the actual class!
-    log = None
     __json_object = None
 
     def __init__(self):
@@ -257,9 +210,8 @@ class JsonConfig(object):
 
         (keep in mind: this is a singleton, so just called once)
         """
-        self.log = logging.getLogger(__name__)
         if JsonConfig.instance is not None:
-            self.log.error("Multiple instances of singleton-class")
+            logger.error("Multiple instances of singleton-class")
             raise RuntimeError("Multiple instances of singleton-class")
 
     def setup(self, filepath):
@@ -268,7 +220,7 @@ class JsonConfig(object):
 
         :param str filepath: path to the config-file (including file-name)
         """
-        self.log.debug("Loading JSON-file (%s)", filepath)
+        logger.debug("Loading JSON-file (%s)", filepath)
         self.load_json(filepath)
 
     def load_json(self, filepath):

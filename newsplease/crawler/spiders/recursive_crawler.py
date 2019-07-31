@@ -1,5 +1,3 @@
-import logging
-
 import scrapy
 
 
@@ -9,8 +7,6 @@ class RecursiveCrawler(scrapy.Spider):
     start_urls = None
     original_url = None
 
-    log = None
-
     config = None
     helper = None
 
@@ -18,7 +14,6 @@ class RecursiveCrawler(scrapy.Spider):
     ignore_file_extensions = None
 
     def __init__(self, helper, url, config, ignore_regex, *args, **kwargs):
-        self.log = logging.getLogger(__name__)
 
         self.config = config
         self.helper = helper

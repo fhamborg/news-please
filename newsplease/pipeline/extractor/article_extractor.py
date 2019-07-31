@@ -6,6 +6,8 @@ from .cleaner import Cleaner
 from .comparer.comparer import Comparer
 from .extractors.abstract_extractor import AbstractExtractor
 
+logger = logging.getLogger(__name__)
+
 
 class Extractor:
     """This class initializes all extractors and saves the results of them. When adding a new extractor, it needs to
@@ -18,7 +20,6 @@ class Extractor:
 
         :param extractor_list: List of strings containing all extractors to be initialized.
         """
-        self.log = logging.getLogger(__name__)
         self.extractor_list = []
         for extractor in extractor_list:
 
@@ -34,10 +35,10 @@ class Extractor:
                     # instantiate extractor
                     instance = getattr(module, member[0], None)()
                     if instance is not None:
-                        self.log.info("Extractor initialized: %s", extractor)
+                        logger.info("Extractor initialized: %s", extractor)
                         self.extractor_list.append(instance)
                     else:
-                        self.log.error(
+                        logger.error(
                             "Misconfiguration: An unknown Extractor was found and"
                             " will be ignored: %s",
                             extractor,

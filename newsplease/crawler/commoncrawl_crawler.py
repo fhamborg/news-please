@@ -12,7 +12,6 @@ from functools import partial
 from multiprocessing import Pool
 
 from dateutil import parser
-from scrapy.utils.log import configure_logging
 
 from ..crawler.commoncrawl_extractor import CommonCrawlExtractor
 
@@ -54,21 +53,9 @@ def __setup(local_download_dir_warc, log_level):
     __log_pathname_fully_extracted_warcs = os.path.join(
         local_download_dir_warc, "fullyextractedwarcs.list"
     )
-
-    # make loggers quite
-    configure_logging({"LOG_LEVEL": "INFO"})
-    # logging.getLogger("requests").setLevel(logging.CRITICAL)
-    # logging.getLogger("readability").setLevel(logging.CRITICAL)
-    # logging.getLogger("PIL").setLevel(logging.CRITICAL)
-    # logging.getLogger("newspaper").setLevel(logging.CRITICAL)
-    # logging.getLogger("newsplease").setLevel(logging.CRITICAL)
-    # logging.getLogger("urllib3").setLevel(logging.CRITICAL)
-    # logging.getLogger("jieba").setLevel(logging.CRITICAL)
-
     # set own logger
     logging.basicConfig(level=log_level)
     __logger = logging.getLogger(__name__)
-    __logger.setLevel(log_level)
 
 
 def __get_publishing_date(warc_record, article):

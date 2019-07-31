@@ -14,7 +14,6 @@ import os
 from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 from scrapy.spiderloader import SpiderLoader
-from scrapy.utils.log import configure_logging
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 par_path = os.path.dirname(cur_path)
@@ -30,6 +29,8 @@ except ImportError:
     from thread import start_new_thread
 from twisted.internet.error import ReactorAlreadyRunning
 
+logger = logging.getLogger(__name__)
+
 
 class SingleCrawler(object):
     """
@@ -40,7 +41,6 @@ class SingleCrawler(object):
 
     cfg = None
     json = None
-    log = None
     crawler_name = None
     process = None
     helper = None
@@ -82,8 +82,6 @@ class SingleCrawler(object):
         # set up logging before it's defined via the config file,
         # this will be overwritten and all other levels will be put out
         # as well, if it will be changed.
-        configure_logging({"LOG_LEVEL": "CRITICAL"})
-        self.log = logging.getLogger(__name__)
 
         self.cfg_file_path = cfg_file_path
         self.json_file_path = json_file_path
@@ -100,7 +98,7 @@ class SingleCrawler(object):
         # set up the config file
         self.cfg = CrawlerConfig.get_instance()
         self.cfg.setup(self.cfg_file_path)
-        self.log.debug("Config initialized - Further initialisation.")
+        logger.debug("Config initialized - Further initialisation.")
 
         self.cfg_crawler = self.cfg.section("Crawler")
 
@@ -202,29 +200,29 @@ class SingleCrawler(object):
                 supports_site = getattr(current, "supports_site")
                 if callable(supports_site):
                     if supports_site(url):
-                        self.log.debug("Using crawler %s for %s.", crawler, url)
+                        logger.debug("Using crawler %s for %s.", crawler, url)
                         return current
                     elif (
                         crawler in self.cfg_crawler["fallbacks"]
                         and self.cfg_crawler["fallbacks"][crawler] is not None
                     ):
-                        self.log.warn(
+                        logger.warn(
                             "Crawler %s not supported by %s. " "Trying to fall back.",
                             crawler,
                             url,
                         )
                         crawler = self.cfg_crawler["fallbacks"][crawler]
                     else:
-                        self.log.error(
+                        logger.error(
                             "No crawlers (incl. fallbacks) " "found for url %s.", url
                         )
                         raise RuntimeError("No crawler found. Quit.")
             else:
-                self.log.warning(
+                logger.warning(
                     "The crawler %s has no " "supports_site-method defined", crawler
                 )
                 return current
-        self.log.error(
+        logger.error(
             "Could not fall back since you created a fall back "
             "loop for %s in the config file.",
             crawler,
@@ -269,7 +267,7 @@ class SingleCrawler(object):
         if (not self.shall_resume or self.daemonize) and os.path.exists(jobdir):
             shutil.rmtree(jobdir)
 
-            self.log.info(
+            logger.info(
                 "Removed " + jobdir + " since '--resume' was not passed to"
                 " initial.py or this crawler was daemonized."
             )

@@ -1,6 +1,7 @@
 """
 Helper class for testing heuristics
 """
+import logging
 import re
 
 from .sub_classes.heuristics_manager import HeuristicsManager
@@ -8,6 +9,7 @@ from .url_extractor import UrlExtractor
 
 # to improve performance, regex statements are compiled only once per module
 re_url_root = re.compile(r"https?://[a-z]+.")
+logger = logging.getLogger(__name__)
 
 
 class Heuristics(HeuristicsManager):
@@ -99,13 +101,13 @@ class Heuristics(HeuristicsManager):
                 ):
                     h_linked += 1
 
-        self.log.debug(
+        logger.debug(
             "Linked headlines test: headlines = %s, linked = %s", h_all, h_linked
         )
 
         min_headlines = self.cfg_heuristics["min_headlines_for_linked_test"]
         if min_headlines > h_all:
-            self.log.debug(
+            logger.debug(
                 "Linked headlines test: Not enough headlines " "(%s < %s): Passing!",
                 h_all,
                 min_headlines,

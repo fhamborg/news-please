@@ -3,7 +3,6 @@ try:
 except ImportError:
     import urllib.request as urllib2
 import csv
-import logging
 import os
 import re
 
@@ -22,13 +21,10 @@ class GdeltCrawler(scrapy.Spider):
     start_urls = None
     original_url = None
 
-    log = None
-
     config = None
     helper = None
 
     def __init__(self, helper, url, config, ignore_regex, *args, **kwargs):
-        self.log = logging.getLogger(__name__)
 
         self.config = config
         self.helper = helper

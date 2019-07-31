@@ -13,7 +13,6 @@ import time
 from ago import human
 from dateutil import parser
 from hurry.filesize import size
-from scrapy.utils.log import configure_logging
 from six.moves import urllib
 from warcio.archiveiterator import ArchiveIterator
 
@@ -70,19 +69,9 @@ class CommonCrawlExtractor:
         if not os.path.exists(self.__local_download_dir_warc):
             os.makedirs(self.__local_download_dir_warc)
 
-        # make loggers quite
-        configure_logging({"LOG_LEVEL": "ERROR"})
-        logging.getLogger("requests").setLevel(logging.CRITICAL)
-        logging.getLogger("readability").setLevel(logging.CRITICAL)
-        logging.getLogger("PIL").setLevel(logging.CRITICAL)
-        logging.getLogger("newspaper").setLevel(logging.CRITICAL)
-        logging.getLogger("newsplease").setLevel(logging.CRITICAL)
-        logging.getLogger("urllib3").setLevel(logging.CRITICAL)
-
         # set own logger
         logging.basicConfig(level=self.__log_level)
         self.__logger = logging.getLogger(__name__)
-        self.__logger.setLevel(self.__log_level)
 
     def __register_fully_extracted_warc_file(self, warc_url):
         """

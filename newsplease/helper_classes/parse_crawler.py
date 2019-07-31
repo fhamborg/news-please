@@ -11,6 +11,7 @@ from ..crawler.items import NewscrawlerItem
 
 # to improve performance, regex statements are compiled only once per module
 re_html = re.compile("text/html")
+logger = logging.getLogger(__name__)
 
 
 class ParseCrawler(object):
@@ -19,11 +20,9 @@ class ParseCrawler(object):
     """
 
     helper = None
-    log = None
 
     def __init__(self, helper):
         self.helper = helper
-        self.log = logging.getLogger(__name__)
 
     def pass_to_pipeline_if_article(
         self, response, source_domain, original_url, rss_title=None
@@ -117,7 +116,7 @@ class ParseCrawler(object):
         :return bool: Determines wether the response is of the correct type
         """
         if not re_html.match(response.headers.get("Content-Type").decode("utf-8")):
-            self.log.warn(
+            logger.warn(
                 "Dropped: %s's content is not of type " "text/html but %s",
                 response.url,
                 response.headers.get("Content-Type"),
