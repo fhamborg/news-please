@@ -138,7 +138,7 @@ class CommonCrawlExtractor:
         :return:
         """
         if hasattr(article, 'date_publish'):
-            return parser.parse(article.date_publish)
+            return parser.parse(article.date_publish) if isinstance(article.date_publish, str) else article.date_publish
         else:
             return None
 
