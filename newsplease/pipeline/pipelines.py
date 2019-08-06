@@ -482,7 +482,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
 
                 # search for previous version
                 request = self.es.search(index=self.index_current, body={'query': {'match': {'url.keyword': item['url']}}})
-                if request['hits']['total'] > 0:
+                if request['hits']['total']['value'] > 0:
                     # save old version into index_archive
                     old_version = request['hits']['hits'][0]
                     old_version['_source']['descendent'] = True
