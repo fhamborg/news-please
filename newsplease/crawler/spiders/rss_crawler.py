@@ -9,8 +9,8 @@ import scrapy
 
 # to improve performance, regex statements are compiled only once per module
 re_rss = re.compile(
-    r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|' +
-    r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
+    r'(<*link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|' +
+    r'<*link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
 )
 
 
