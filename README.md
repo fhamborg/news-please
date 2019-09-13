@@ -1,7 +1,9 @@
 # **news-please** #
 
-## Announcement
-If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
+## Announcements
+09/13/2019: We have seen more and more scientific projects relying on the commoncrawl news crawl (CCNC), e.g., [XLNet](https://arxiv.org/pdf/1906.08237.pdf) and [RoBERTa](https://arxiv.org/pdf/1907.11692.pdf). To support researchers reproduce these papers' results or on their own projects, we decided to prepare a dataset containing all articles from the CCNC extracted by news-please. The dataset consists of 251M json files (see an [example file](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json)). The contained articles date from 10/2016 until 09/2019. The dataset will be available here soon. Please [cite](How-to-cite) news-please, if you are using the dataset.
+
+06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
 
 If you like news-please and would like to contribute to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course, we are always looking forward to [pull requests](#contribution-and-custom-features) containing bug fixes, improvements, or your own ideas.
  
