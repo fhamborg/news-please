@@ -1,9 +1,4 @@
 # **news-please** #
-
-## Announcements
-09/13/2019: We have seen more and more scientific projects relying on the commoncrawl news crawl (CCNC), e.g., [XLNet](https://arxiv.org/pdf/1906.08237.pdf) and [RoBERTa](https://arxiv.org/pdf/1907.11692.pdf). To support researchers reproduce these papers' results or on their own projects, we decided to prepare a dataset containing all articles from the CCNC extracted by news-please. The dataset consists of 251M json files (see an [example file](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json)), which date from 10/2016 until 09/2019. To get access to the dataset, please send us an [email](mailto:felix.hamborg@uni-konstanz.de).
-
-06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
  
 [![PyPI version](https://img.shields.io/pypi/v/news-please.svg)](https://pypi.org/project/news-please/)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
@@ -13,6 +8,11 @@
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from commoncrawl.org. 
 
 If you like news-please and would like to [contribute](#Contribution-and-custom-features) to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course, we are always looking forward to [pull requests](#contribution-and-custom-features) containing bug fixes, improvements, or your own ideas.
+
+## Announcements
+09/13/2019: We have seen more and more scientific projects relying on the commoncrawl news crawl (CCNC), e.g., [XLNet](https://arxiv.org/pdf/1906.08237.pdf) and [RoBERTa](https://arxiv.org/pdf/1907.11692.pdf). To support researchers reproduce these papers' results or on their own projects, we decided to prepare a dataset containing all articles from the CCNC extracted by news-please. The dataset consists of 251M json files (see an [example file](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json)), which date from 10/2016 until 09/2019. To get access to the dataset, please send us an [email](mailto:felix.hamborg@uni-konstanz.de).
+
+06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
 
 ## Extracted information
 * headline
