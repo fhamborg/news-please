@@ -17,9 +17,9 @@ If you like news-please and would like to [contribute](#Contribution-and-custom-
 ## Extracted information
 * headline
 * lead paragraph
-* main content (textual)
+* main text
 * main image
-* author's name
+* name(s) of author(s)
 * publication date
 * language
 
