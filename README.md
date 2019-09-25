@@ -15,6 +15,7 @@ If you like news-please and would like to [contribute](#Contribution-and-custom-
 06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
 
 ## Extracted information
+news-please extracts the following attributes from news articles. Also, have a look at an [examplary json file](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json) extracted by news-please.
 * headline
 * lead paragraph
 * main text
