@@ -151,7 +151,7 @@ This project would not have been possible without the contributions of the follo
 * Claudio Spener
 * Moritz Steinmaier
 
-We also thank all other contributors, which you can find on the [contributors' page](https://github.com/fhamborg/news-please/graphs/contributors)!
+We also thank all other contributors, which you can find on the [contributors page](https://github.com/fhamborg/news-please/graphs/contributors)!
 
 ## How to cite
 If you are using news-please, please cite our [paper](http://www.gipp.com/wp-content/papercite-data/pdf/hamborg2017.pdf) ([ResearchGate](https://www.researchgate.net/publication/314072045_news-please_A_Generic_News_Crawler_and_Extractor), [Mendeley](https://www.mendeley.com/research-papers/newsplease-generic-news-crawler-extractor/)):
