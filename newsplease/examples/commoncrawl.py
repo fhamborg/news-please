@@ -160,7 +160,7 @@ def main():
                                                show_download_progress=my_show_download_progress,
                                                number_of_extraction_processes=my_number_of_extraction_processes,
                                                log_level=my_log_level,
-                                               delete_warc_after_extraction=True,
+                                               delete_warc_after_extraction=delete_warc_after_extraction,
                                                continue_process=True)
 
 
