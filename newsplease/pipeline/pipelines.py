@@ -433,14 +433,16 @@ class ElasticsearchStorage(ExtractedInformationStorage):
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("Elasticsearch")
 
-        self.es = Elasticsearch([self.database["host"]],
-                                http_auth=(str(self.database["username"]), str(self.database["secret"])),
-                                port=self.database["port"],
-                                use_ssl=self.database["use_ca_certificates"],
-                                verify_certs=self.database["use_ca_certificates"],
-                                ca_certs=self.database["ca_cert_path"],
-                                client_cert=self.database["client_cert_path"],
-                                client_key=self.database["client_key_path"])
+        self.es = Elasticsearch(
+            [self.database["host"]],
+            http_auth=(str(self.database["username"]), str(self.database["secret"])),
+            port=self.database["port"],
+            use_ssl=self.database["use_ca_certificates"],
+            verify_certs=self.database["use_ca_certificates"],
+            ca_certs=self.database["ca_cert_path"],
+            client_cert=self.database["client_cert_path"],
+            client_key=self.database["client_key_path"]
+        )
         self.index_current = self.database["index_current"]
         self.index_archive = self.database["index_archive"]
         self.mapping = self.database["mapping"]
@@ -459,10 +461,10 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             # check if the necessary indices exist and create them if needed
             if not self.es.indices.exists(self.index_current):
                 self.es.indices.create(index=self.index_current, ignore=[400, 404])
-                self.es.indices.put_mapping(index=self.index_current, doc_type='_doc', body=self.mapping)
+                self.es.indices.put_mapping(index=self.index_current, body=self.mapping)
             if not self.es.indices.exists(self.index_archive):
                 self.es.indices.create(index=self.index_archive, ignore=[400, 404])
-                self.es.indices.put_mapping(index=self.index_archive, doc_type='_doc', body=self.mapping)
+                self.es.indices.put_mapping(index=self.index_archive, body=self.mapping)
             self.running = True
 
             # restore previous logging level
