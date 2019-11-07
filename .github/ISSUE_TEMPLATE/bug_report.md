@@ -21,7 +21,7 @@ Add a log to help explain your problem.
  - Python Version [e.g. 3.6]
  - news-please Version [e.g. 1.2]
 
-**Intent (optional, but we'd highly appreciate to find out, who and how people are using news-please)**
+**Intent (optional, but we'd highly appreciate to find out, who uses news-please in order to prioritize our next tasks to work on)**
 * [ ] personal
 * [ ] academic
 * [ ] business
