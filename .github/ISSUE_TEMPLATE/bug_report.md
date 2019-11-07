@@ -20,3 +20,9 @@ Add a log to help explain your problem.
  - OS: [e.g. MacOS 10.2]
  - Python Version [e.g. 3.6]
  - news-please Version [e.g. 1.2]
+
+**Intent (optional, but we'd highly appreciate to find out, who and how people are using news-please)**
+* [ ] personal
+* [ ] academic
+* [ ] business
+* [ ] other
