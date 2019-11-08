@@ -24,8 +24,9 @@ news-please extracts the following attributes from news articles. Also, have a l
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
-* run news-please conveniently with the [**CLI**](#run-the-crawler-via-the-cli) or use it as a [**library**](#use-within-your-own-code-as-a-library) within your own software or to extract articles from [**the news archive of commoncrawl.org**](#news-archive-from-commoncrawlorg)
-* runs on your favorite Python version (2.7 and 3+)
+* run news-please conveniently with the [**CLI**](#run-the-crawler-via-the-cli)
+* use it as a [**library**](#use-within-your-own-code-as-a-library) within your own software
+* extract articles from [**the news archive of commoncrawl.org**](#news-archive-from-commoncrawlorg)
 
 ### Modes and use cases
 news-please supports three use cases, which are explained in more detail in the following.
@@ -49,10 +50,11 @@ news-please supports three use cases, which are explained in more detail in the 
 It's super easy, we promise!
 
 ### Installation
-We prefer Python 3, but Python 2.7 is supported, too!
+news-please runs on Python 3.5+. 
 ```
 $ pip3 install news-please 
 ```
+If you must use Python 2.7 check out earlier versions of news-please, which used to run on Python 2.7. There's no support for these, though.
 
 ### Use within your own code (as a library)
 You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction (given only the root URL) or continuous crawling mode (using RSS), you'll need to use the CLI mode.
