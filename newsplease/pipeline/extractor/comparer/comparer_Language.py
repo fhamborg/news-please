@@ -18,7 +18,7 @@ class ComparerLanguage:
 
         for article_candidate in list_article_candidate:
 
-            if article_candidate.language is not None:
+            if article_candidate.language:
                 languages_extracted.append(article_candidate.language)
 
                 if article_candidate.extractor == "newspaper":
@@ -34,7 +34,8 @@ class ComparerLanguage:
         languages_extracted_number = []
 
         for language in languages_extracted_set:
-            languages_extracted_number.append((languages_extracted.count(language), language))
+            if language:
+                languages_extracted_number.append((languages_extracted.count(language), language))
 
         if not (languages_extracted_number):
             return None

@@ -50,7 +50,8 @@ class Extractor:
         article_candidates = []
 
         for extractor in self.extractor_list:
-            article_candidates.append(extractor.extract(item))
+            article_candidate = extractor.extract(item)
+            article_candidates.append(article_candidate)
 
         article_candidates = self.cleaner.clean(article_candidates)
         article = self.comparer.compare(item, article_candidates)
