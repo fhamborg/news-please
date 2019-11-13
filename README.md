@@ -179,7 +179,7 @@ If you have questions or issues while working on the code, e.g., when implementi
 By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). 
 
 ### Help wanted
-We are looking for contributors who are interested in maintaining news-please and fixing issues. Any help is welcome, but we are also particularly looking for support on issues shown [here](https://github.com/fhamborg/news-please/labels/help%20wanted). If you're interested, please send us an [email](felix.hamborg@uni-konstanz.de).
+We are looking for contributors who are interested in maintaining news-please and fixing issues. Any help is welcome, but we are also particularly looking for support on issues shown [here](https://github.com/fhamborg/news-please/labels/help%20wanted). If you're interested, please send us an [email](mailto:felix.hamborg@uni-konstanz.de) or let's discuss it in the corresponding issue on GitHub.
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
