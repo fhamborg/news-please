@@ -171,15 +171,12 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 ```
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
-## Contribution and custom features
-Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull request that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)), but welcome also pull request that contribute your own ideas. 
+## Contributions and custom features
+Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull request that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)), but welcome also pull requests that contribute your own ideas. If you plan to submit a pull request adding new functionality, we suggest to open an issue first in order to briefly discuss with us how it should be implemented to best fit into news-please's architecture.
 
-If you have questions or issues while working on the code, e.g., when implementing a new feature that you would like to have added to news-please, open an issue on GitHub and we'll be happy to help you. Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
+Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
 
 By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). 
-
-### Help wanted
-We are looking for contributors who are interested in maintaining news-please and fixing issues. Any help is welcome, but we are also particularly looking for support on issues shown [here](https://github.com/fhamborg/news-please/labels/help%20wanted). If you're interested, please send us an [email](mailto:felix.hamborg@uni-konstanz.de) or discuss it in the corresponding issue on GitHub.
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
