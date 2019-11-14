@@ -54,7 +54,7 @@ news-please runs on Python 3.5+.
 ```
 $ pip3 install news-please 
 ```
-If you must use Python 2.7 check out earlier versions of news-please, which used to run on Python 2.7. There's no support for these, though. Some folks from the great conda-forge community are working on [including news-please in conda-forge](https://github.com/conda-forge/staged-recipes/issues/3994); we'll update here once news-please can be installed using conda.
+Some folks from the great conda-forge community are working on [including news-please in conda-forge](https://github.com/conda-forge/staged-recipes/issues/3994); we'll update here once news-please can be installed using conda.
 
 ### Use within your own code (as a library)
 You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction (given only the root URL) or continuous crawling mode (using RSS), you'll need to use the CLI mode.
