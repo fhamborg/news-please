@@ -136,7 +136,10 @@ You can find more information on usage and development in our [wiki](https://git
 For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
 
 ### Donation
-If news-please is useful to you, please consider [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url). Your donation will directly support the work on news-please (coffee!).
+Your donations are greatly appreciated! They will free me up to work on this project more, to take on tasks such as adding new features, bug-fix support, and addressing further concerns with the library. 
+
+* [GitHub Sponsors](https://github.com/sponsors/fhamborg)
+* [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
@@ -183,4 +186,4 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/). 
 
-Copyright 2016-2019 The news-please team
+Copyright 2016-2020 The news-please team
