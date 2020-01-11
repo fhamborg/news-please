@@ -5,7 +5,7 @@ about: Create a report to help us improve news-please. Please use this issue tem
 ---
 
 **Mandatory**
-* [ ] I read the documentation.
+* [ ] I read the documentation ([readme](https://github.com/fhamborg/news-please/blob/master/README.md) and [wiki](https://github.com/fhamborg/news-please/wiki)).
 * [ ] I searched other issues (including closed issues) and could not find any to be related. If you find related issues post them below or directly add your issue to the most related one.
 
 Related issues:
