@@ -3,6 +3,7 @@ Helper class for url extraction.
 """
 import os
 import re
+from newsplease.config import CrawlerConfig
 
 try:
     from urlparse import urlparse
@@ -61,6 +62,7 @@ class UrlExtractor(object):
         :param str url: the url to work on
         :return str: actual address of url
         """
+        url = UrlExtractor.url_to_request_with_agent(url)
         opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
         return opener.open(url).url
 
@@ -96,9 +98,9 @@ class UrlExtractor(object):
 
         robots = '{url.scheme}://{url_netloc}/robots.txt'.format(
             url=parsed, url_netloc=url_netloc)
-
+        robots_req = UrlExtractor.url_to_request_with_agent(robots)
         try:
-            urllib2.urlopen(robots)
+            urllib2.urlopen(robots_req)
             return robots
         except:
             if allow_subdomains:
@@ -115,7 +117,9 @@ class UrlExtractor(object):
         :param str url: the url to work on
         :return bool: Determines if Sitemap is set in the site's robots.txt
         """
-        response = urllib2.urlopen(UrlExtractor.get_sitemap_url(url, True))
+        url = UrlExtractor.get_sitemap_url(url, True)
+        url = UrlExtractor.url_to_request_with_agent(url)
+        response = urllib2.urlopen(url)
 
         # Check if "Sitemap" is set
         return "Sitemap:" in response.read().decode('utf-8')
@@ -185,3 +189,9 @@ class UrlExtractor(object):
             return os.path.split(url_root_ext[0])[1]
         else:
             return os.path.split(url)[1]
+
+    @staticmethod
+    def url_to_request_with_agent(url):
+        options = CrawlerConfig.get_instance().get_scrapy_options()
+        user_agent = options['USER_AGENT']
+        return urllib2.Request(url, headers={'user-agent': user_agent})
