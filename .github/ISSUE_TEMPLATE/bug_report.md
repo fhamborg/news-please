@@ -4,6 +4,13 @@ about: Create a report to help us improve news-please. Please use this issue tem
 
 ---
 
+**Mandatory**
+* [ ] I read the documentation.
+* [ ] I searched other issues (including closed issues) and could not find any to be related. If you find related issues post them below or directly add your issue to the most related one.
+
+Related issues:
+* add them here
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
@@ -21,8 +28,9 @@ Add a log to help explain your problem.
  - Python Version [e.g. 3.6]
  - news-please Version [e.g. 1.2]
 
-**Intent (optional, but we'd highly appreciate to find out, who uses news-please in order to prioritize our next tasks to work on)**
+**Intent (optional; we'll use this info to prioritize upcoming tasks to work on)**
 * [ ] personal
 * [ ] academic
 * [ ] business
 * [ ] other
+* Some information on your project: 
