@@ -1,3 +1,5 @@
+from newsplease.helper_classes.url_extractor import UrlExtractor
+
 try:
     import urllib2
 except ImportError:
@@ -95,7 +97,9 @@ class RssCrawler(scrapy.Spider):
 
         # Follow redirects
         opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
+        url = UrlExtractor.url_to_request_with_agent(url)
         redirect = opener.open(url).url
+        redirect = UrlExtractor.url_to_request_with_agent(redirect)
         response = urllib2.urlopen(redirect).read()
 
         # Check if a standard rss feed exists

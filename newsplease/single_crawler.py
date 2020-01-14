@@ -187,7 +187,14 @@ class SingleCrawler(object):
             if hasattr(current, "supports_site"):
                 supports_site = getattr(current, "supports_site")
                 if callable(supports_site):
-                    if supports_site(url):
+                    try:
+                        crawler_supports_site = supports_site(url)
+                    except Exception as e:
+                        self.log.info(f'Crawler not supported due to: {str(e)}',
+                                      exc_info=True)
+                        crawler_supports_site = False
+
+                    if crawler_supports_site:
                         self.log.debug("Using crawler %s for %s.",
                                        crawler, url)
                         return current
