@@ -45,7 +45,7 @@ class NewsArticle(object):
             'image_url': self.image_url,
             'language': self.language,
             'localpath': self.localpath,
-            'maintext': self.text,
+            'maintext': self.maintext,
             'source_domain': self.source_domain,
             'text': self.text,
             'title': self.title,
