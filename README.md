@@ -1,11 +1,11 @@
 # **news-please** #
- 
+
 [![PyPI version](https://img.shields.io/pypi/v/news-please.svg)](https://pypi.org/project/news-please/)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
 
-<img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" /> 
+<img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" />
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from commoncrawl.org. 
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from commoncrawl.org.
 
 If you like news-please and would like to [contribute](#Contribution-and-custom-features) to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course, we are always looking forward to [pull requests](#contribution-and-custom-features) containing bug fixes, improvements, or your own ideas.
 
@@ -50,9 +50,9 @@ news-please supports three use cases, which are explained in more detail in the 
 It's super easy, we promise!
 
 ### Installation
-news-please runs on Python 3.5+. 
+news-please runs on Python 3.5+.
 ```
-$ pip3 install news-please 
+$ pip3 install news-please
 ```
 Some folks from the great conda-forge community are working on [including news-please in conda-forge](https://github.com/conda-forge/staged-recipes/issues/3994); we'll update here once news-please can be installed using conda.
 
@@ -75,7 +75,7 @@ NewsPlease.from_file(path)
 ```
 or if you have raw HTML data (you can also provide the original URL to increase the accuracy of extracting the publishing date)
 ```python
-NewsPlease.from_html(html, url=None) 
+NewsPlease.from_html(html, url=None)
 ```
 or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [commoncrawl workflow](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter commoncrawl's archive for specific news outlets and dates)
 ```
@@ -102,7 +102,7 @@ Most likely, you will not want to crawl from the websites provided in our exampl
 news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can also be changed with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
     [Scrapy]
-    
+
     ITEM_PIPELINES = {
                        'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
                        'newsplease.pipeline.pipelines.ElasticsearchStorage':350
@@ -118,25 +118,46 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
     ...
 
     # Credentials used  for authentication (supports CA-certificates):
-    
-    use_ca_certificates = False           # True if authentification needs to be performed 
+
+    use_ca_certificates = False           # True if authentification needs to be performed
     ca_cert_path = '/path/to/cacert.pem'  
     client_cert_path = '/path/to/client_cert.pem'  
     client_key_path = '/path/to/client_key.pem'  
     username = 'root'  
-    secret = 'password' 
+    secret = 'password'
+
+### Postgresql
+
+news-please allows for storing of articles to a Postgresql database, including the versioning feature. In the [`config.cfg`] file add the PostgresqlStorage pipeline and adjust database credentials:
+
+    [Scrapy]
+
+    ITEM_PIPELINES = {
+                   'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+                   'newsplease.pipeline.pipelines.PostgresqlStorage':350
+                 }
+
+    [Postgresql]
+
+    # Postgresql-Connection required for saving meta-informations
+    host = localhost
+    port = 5432
+    database = 'news-please'
+    user = 'user'
+    password = 'password'
+
 
 ### What's next?
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
 ## Wiki and support (also, how to open an issue)
-You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. Please understand that we are not able to provide individual support via email. We think that help is more valuable if it is shared publicly so that more people can benefit from it. 
+You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. Please understand that we are not able to provide individual support via email. We think that help is more valuable if it is shared publicly so that more people can benefit from it.
 
 ### Issues
 For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
 
 ### Donation
-Your donations are greatly appreciated! They will free me up to work on this project more, to take on tasks such as adding new features, bug-fix support, and addressing further concerns with the library. 
+Your donations are greatly appreciated! They will free me up to work on this project more, to take on tasks such as adding new features, bug-fix support, and addressing further concerns with the library.
 
 * [GitHub Sponsors](https://github.com/sponsors/fhamborg)
 * [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
@@ -179,11 +200,11 @@ Do you want to contribute? Great, we are always happy for any support on this pr
 
 Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
 
-By contributing to this project, you agree that your contributions will be licensed under the project's license (see below). 
+By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/). 
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/).
 
 Copyright 2016-2020 The news-please team
