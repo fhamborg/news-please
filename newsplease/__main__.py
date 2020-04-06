@@ -10,6 +10,7 @@ from subprocess import Popen
 
 import plac
 import pymysql
+import psycopg2
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
 
@@ -50,6 +51,7 @@ class NewsPleaseLauncher(object):
     shutdown = False
     thread_event = None
     mysql = None
+    postgresql = None
     elasticsearch = None
     number_of_active_crawlers = 0
     config_directory_default_path = "~/news-please-repo/config/"
@@ -58,8 +60,8 @@ class NewsPleaseLauncher(object):
 
     __single_crawler = False
 
-    def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch, is_reset_json, is_reset_mysql,
-                 is_no_confirm, library_mode=False):
+    def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch,
+        is_reset_json, is_reset_mysql, is_reset_postgresql, is_no_confirm, library_mode=False):
         """
         The constructor of the main class, thus the real entry point to the tool.
         :param cfg_file_path:
@@ -67,6 +69,7 @@ class NewsPleaseLauncher(object):
         :param is_reset_elasticsearch:
         :param is_reset_json:
         :param is_reset_mysql:
+        :param is_reset_postgresql:
         :param is_no_confirm:
         """
         configure_logging({"LOG_LEVEL": "ERROR"})
@@ -104,17 +107,20 @@ class NewsPleaseLauncher(object):
         self.cfg = CrawlerConfig.get_instance()
         self.cfg.setup(self.cfg_file_path)
         self.mysql = self.cfg.section("MySQL")
+        self.postgresql = self.cfg.section("Postgresql")
         self.elasticsearch = self.cfg.section("Elasticsearch")
 
         # perform reset if given as parameter
         if is_reset_mysql:
             self.reset_mysql()
+        if is_reset_postgresql:
+            self.reset_postgresql()
         if is_reset_json:
             self.reset_files()
         if is_reset_elasticsearch:
             self.reset_elasticsearch()
         # close the process
-        if is_reset_elasticsearch or is_reset_json or is_reset_mysql:
+        if is_reset_elasticsearch or is_reset_json or is_reset_mysql or is_reset_postgresql:
             sys.exit(0)
 
         self.json_file_path = self.cfg_directory_path + self.cfg.section('Files')['url_input_file_name']
@@ -398,6 +404,50 @@ Cleanup MySQL database:
                 pymysql.IntegrityError, TypeError) as error:
             self.log.error("Database reset error: %s", error)
 
+    def reset_postgresql(self):
+        """
+        Resets the Postgresql database.
+        """
+
+        confirm = self.no_confirm
+
+        print("""
+Cleanup Postgresql database:
+    This will truncate all tables and reset the whole database.
+""")
+
+        if not confirm:
+            confirm = 'yes' in builtins.input(
+                """
+    Do you really want to do this? Write 'yes' to confirm: {yes}"""
+                    .format(yes='yes' if confirm else ''))
+
+        if not confirm:
+            print("Did not type yes. Thus aborting.")
+            return
+
+        print("Resetting database...")
+
+        try:
+            # initialize DB connection
+            self.conn = psycopg2.connect(host=self.postgresql["host"],
+                                        port=self.postgresql["port"],
+                                        database=self.postgresql["database"],
+                                        user=self.postgresql["user"],
+                                        password=self.postgresql["password"])
+            self.cursor = self.conn.cursor()
+
+            self.cursor.execute("TRUNCATE TABLE CurrentVersions RESTART IDENTITY")
+            self.cursor.execute("TRUNCATE TABLE ArchiveVersions RESTART IDENTITY")
+            self.conn.commit()
+            self.cursor.close()
+
+        except psycopg2.DatabaseError as error:
+            self.log.error("Database reset error: %s", error)
+        finally:
+            if self.conn is not None:
+                self.conn.close()
+
     def reset_elasticsearch(self):
         """
         Resets the Elasticsearch Database.
@@ -628,21 +678,23 @@ Cleanup files:
     reset_elasticsearch=plac.Annotation('reset Elasticsearch indexes', 'flag'),
     reset_json=plac.Annotation('reset JSON files', 'flag'),
     reset_mysql=plac.Annotation('reset MySQL database', 'flag'),
+    reset_postgresql=plac.Annotation('reset Postgresql database', 'flag'),
     reset_all=plac.Annotation('combines all reset options', 'flag'),
     no_confirm=plac.Annotation('skip confirm dialogs', 'flag')
 )
-def cli(cfg_file_path, resume, reset_elasticsearch, reset_mysql, reset_json, reset_all, no_confirm):
+def cli(cfg_file_path, resume, reset_elasticsearch, reset_mysql, reset_postgresql, reset_json, reset_all, no_confirm):
     "A generic news crawler and extractor."
 
     if reset_all:
         reset_elasticsearch = True
         reset_json = True
         reset_mysql = True
+        reset_postgresql = True
 
     if cfg_file_path and not cfg_file_path.endswith(os.path.sep):
         cfg_file_path += os.path.sep
 
-    NewsPleaseLauncher(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, no_confirm)
+    NewsPleaseLauncher(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, reset_postgresql, no_confirm)
 
 
 def main():
