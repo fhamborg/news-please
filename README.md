@@ -126,8 +126,7 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
     username = 'root'  
     secret = 'password'
 
-### Postgresql
-
+### PostgreSQL
 news-please allows for storing of articles to a Postgresql database, including the versioning feature. In the [`config.cfg`] file add the PostgresqlStorage pipeline and adjust database credentials:
 
     [Scrapy]
