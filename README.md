@@ -127,17 +127,15 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
     secret = 'password'
 
 ### PostgreSQL
-news-please allows for storing of articles to a Postgresql database, including the versioning feature. In the [`config.cfg`] file add the PostgresqlStorage pipeline and adjust database credentials:
+news-please allows for storing of articles to a PostgreSQL database, including the versioning feature. To export to PostgreSQL, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the PostgresqlStorage module to the pipeline and adjust the database credentials:
 
     [Scrapy]
-
     ITEM_PIPELINES = {
                    'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
                    'newsplease.pipeline.pipelines.PostgresqlStorage':350
                  }
 
     [Postgresql]
-
     # Postgresql-Connection required for saving meta-informations
     host = localhost
     port = 5432
