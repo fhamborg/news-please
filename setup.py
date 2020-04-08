@@ -32,7 +32,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
       install_requires=[
           'Scrapy>=1.1.0',
           'PyMySQL>=0.7.9',
-          'psycopg2>=2.8.4',
+          'psycopg2-binary>=2.8.4',
           'hjson>=1.5.8',
           'elasticsearch>=2.4',
           'beautifulsoup4>=4.3.2',
