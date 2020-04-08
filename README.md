@@ -24,16 +24,16 @@ news-please extracts the following attributes from news articles. Also, have a l
 
 ## Features
 * **works out of the box**: install with pip, add URLs of your pages, run :-)
-* run news-please conveniently with the [**CLI**](#run-the-crawler-via-the-cli)
+* run news-please conveniently using its [**CLI**](#run-the-crawler-via-the-cli) mode
 * use it as a [**library**](#use-within-your-own-code-as-a-library) within your own software
-* extract articles from [**the news archive of commoncrawl.org**](#news-archive-from-commoncrawlorg)
+* extract articles from [**commoncrawl.org's news archive**](#news-archive-from-commoncrawlorg)
 
 ### Modes and use cases
-news-please supports three use cases, which are explained in more detail in the following.
+news-please supports three main use cases, which are explained in more detail in the following.
 
 #### CLI mode
-* stores extracted results in **JSON files or ElasticSearch** (you can implement other storages easily)
-* **simple but extensive configuration** (if you want to tweak the results)
+* stores extracted results in JSON files, PostgreSQL, ElasticSearch, or your own storage
+* simple but extensive configuration (if you want to tweak the results)
 * revisions: crawl articles multiple times and track changes
 
 #### Library mode
@@ -54,7 +54,6 @@ news-please runs on Python 3.5+.
 ```
 $ pip3 install news-please
 ```
-Some folks from the great conda-forge community are working on [including news-please in conda-forge](https://github.com/conda-forge/staged-recipes/issues/3994); we'll update here once news-please can be installed using conda.
 
 ### Use within your own code (as a library)
 You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction (given only the root URL) or continuous crawling mode (using RSS), you'll need to use the CLI mode.
