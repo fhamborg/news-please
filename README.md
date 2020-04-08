@@ -143,6 +143,8 @@ news-please allows for storing of articles to a PostgreSQL database, including t
     user = 'user'
     password = 'password'
 
+If you plan to use news-please and its export to PostgreSQL in a production environment, we recommend to uninstall the `psycopg2-binary` package and install `psycopg2`. We use the former since it does not require a C compiler in order to be installed. See [here](https://pypi.org/project/psycopg2-binary/), for more information on differences between `psycopg2` and `psycopg2-binary` and how to setup a production environment.
+
 
 ### What's next?
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
