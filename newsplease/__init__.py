@@ -88,7 +88,8 @@ class NewsPlease:
         Crawls the article from the url and extracts relevant information.
         :param url:
         :param timeout: in seconds, if None, the urllib default is used
-        :return: A dict containing all the information of the article. Else, None.
+        :return: A NewsArticle object containing all the information of the article. Else, None.
+        :rtype: NewsArticle, None
         """
         articles = NewsPlease.from_urls([url], timeout=timeout)
         if url in articles.keys():
