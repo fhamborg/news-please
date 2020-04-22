@@ -7,8 +7,6 @@ import time
 
 import scrapy
 
-from ..crawler.items import NewscrawlerItem
-
 # to improve performance, regex statements are compiled only once per module
 re_html = re.compile('text/html')
 
@@ -57,7 +55,8 @@ class ParseCrawler(object):
         relative_local_path = self.helper.savepath_parser \
             .get_savepath(response.url)
 
-        article = NewscrawlerItem()
+        # Instantiate the crawler item class defined in the configuration
+        article = self.helper.crawler_item_class()
         article['local_path'] = self.helper.savepath_parser \
             .get_formatted_relative_path(relative_local_path)
         article['filename'] = self.helper.savepath_parser.get_filename(article['local_path'])
