@@ -153,9 +153,6 @@ class CrawlerConfig(object):
 
         configure_logging(self.get_scrapy_options())
 
-        # Disable duplicates
-        self.__scrapy_options["LOG_ENABLED"] = False
-
         # Now, after log-level is correctly set, lets log them.
         for msg in self.log_output:
             if msg["level"] is "error":
