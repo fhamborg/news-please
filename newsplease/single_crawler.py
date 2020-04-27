@@ -53,14 +53,14 @@ class SingleCrawler(object):
     daemonize = False
 
     @classmethod
-    def create_as_library(cls, url):
+    def create_as_library(cls, url, crawler_name="Download"):
         """
         Creates a single crawler as in library mode. Crawling will start immediately.
         :param url:
         :return:
         """
         site = {
-            "crawler": "Download",
+            "crawler": crawler_name,
             "url": url
         }
         cfg_file_path = os.path.dirname(__file__) + os.path.sep + 'config' + os.path.sep + 'config_lib.cfg'
