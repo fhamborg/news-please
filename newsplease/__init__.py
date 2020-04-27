@@ -11,8 +11,10 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from newsplease.pipeline.extractor import article_extractor
 from newsplease.crawler.items import NewscrawlerItem
 from dotmap import DotMap
-from newsplease.pipeline.pipelines import ExtractedInformationStorage
+from newsplease.pipeline.pipelines import ExtractedInformationStorage, InMemoryStorage
 from newsplease.crawler.simple_crawler import SimpleCrawler
+from newsplease.single_crawler import SingleCrawler
+import time
 
 
 class NewsPlease:
@@ -136,3 +138,25 @@ class NewsPlease:
         urls = list(filter(None, content))
 
         return NewsPlease.from_urls(urls)
+
+    @staticmethod
+    def from_domain_url(domain_url, crawler_name = "SitemapCrawler", verbose = False):
+        """
+        Crawls multiple articles from the given domain url and self defined crawler
+        :param path: path to file containing urls (each line contains one URL)
+        :return: A dict containing given URLs as keys, and extracted information as corresponding values.
+        """
+        crawler = SingleCrawler.create_as_library(domain_url, crawler_name)
+        news_piping_in = True
+        articles = []
+        total_news = 0
+        while news_piping_in:
+            time.sleep(5)
+            articles = InMemoryStorage.get_results()
+            if total_news != len(articles):
+                total_news = len(articles)
+                if verbose:
+                    print("Scraped {} articles".format(total_news))
+            else:
+                news_piping_in = False
+        return articles
