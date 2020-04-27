@@ -117,7 +117,11 @@ def __get_remote_index(warc_files_start_date):
             month = date.strftime('%m')
             cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> .tmpaws.txt && " %(year, month)
 
-    cmd += "awk '{ print $4 }' .tmpaws.txt && " \
+        cmd += "awk '{ print $4 }' .tmpaws.txt && " \
+              "rm .tmpaws.txt"
+    else:
+        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > .tmpaws.txt && " \
+          "awk '{ print $4 }' .tmpaws.txt && " \
           "rm .tmpaws.txt"
     __logger.info('executing: %s', cmd)
     stdout_data = subprocess.getoutput(cmd)
