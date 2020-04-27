@@ -143,7 +143,8 @@ class NewsPlease:
     def from_domain_url(domain_url, crawler_name = "SitemapCrawler", verbose = False):
         """
         Crawls multiple articles from the given domain url and self defined crawler
-        :param path: path to file containing urls (each line contains one URL)
+        :param domain_url: domain url.
+        :param crawler_name: domain_url: intended crawler for scraping.
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
         crawler = SingleCrawler.create_as_library(domain_url, crawler_name)
@@ -159,4 +160,5 @@ class NewsPlease:
                     print("Scraped {} articles".format(total_news))
             else:
                 news_piping_in = False
+
         return articles
