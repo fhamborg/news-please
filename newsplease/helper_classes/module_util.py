@@ -14,7 +14,7 @@ class ClassLoader:
 			loaded_module = importlib.import_module(module_name)
 			loaded_class = getattr(loaded_module, class_name)
 		except Exception as e:
-			raise ImportError("Module {0} does not exist or does not define a class named {1}".format(loaded_module,
+			raise ImportError("Module {0} does not exist or does not define a class named {1}".format(module_name,
 			                                                                                          class_name)) from e
 
 		return loaded_class
