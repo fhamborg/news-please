@@ -1,0 +1,25 @@
+Metadata-Version: 1.1
+Name: news-please
+Version: 1.5.2
+Summary: news-please is an open source easy-to-use news extractor that just works.
+Home-page: https://github.com/fhamborg/news-please
+Author: Felix Hamborg
+Author-email: felix.hamborg@uni-konstanz.de
+License: Apache License 2.0
+Download-URL: https://github.com/fhamborg/news-please
+Description: news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. Furthermore, its API allows developers to access the exctraction functionality within their software. news-please also implements a workflow optimized for the news archive provided by commoncrawl.org, allowing users to efficiently crawl and extract news articles including various filter options.
+Keywords: news crawler news scraper news extractor crawler extractor scraper information retrieval
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Internet
+Classifier: Topic :: Scientific/Engineering :: Information Analysis

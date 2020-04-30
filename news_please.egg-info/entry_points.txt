@@ -1,0 +1,4 @@
+[console_scripts]
+news-please = newsplease.__main__:main
+news-please-cc = newsplease.examples.commoncrawl:main
+
