@@ -80,7 +80,7 @@ class DateExtractor(AbstractExtractor):
             if script is None:
                 return None
 
-            data = json.loads(script.text)
+            data = json.loads(script.string)
 
             try:
                 date = self.parse_date_str(data['datePublished'])

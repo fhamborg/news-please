@@ -24,6 +24,8 @@ import json
 import logging
 import os
 import sys
+import datetime
+from datetime import date
 
 from ..crawler import commoncrawl_crawler as commoncrawl_crawler
 
@@ -44,6 +46,7 @@ my_filter_start_date = None  # datetime.datetime(2016, 1, 1)
 # end date (if None, any date is OK as end date), as datetime
 my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
 # if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
+my_warc_files_start_date = None # example: datetime.datetime(2020, 3, 1)
 my_filter_strict_date = True
 # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
@@ -153,6 +156,7 @@ def main():
                                                valid_hosts=my_filter_valid_hosts,
                                                start_date=my_filter_start_date,
                                                end_date=my_filter_end_date,
+                                               warc_files_start_date=my_warc_files_start_date,
                                                strict_date=my_filter_strict_date,
                                                reuse_previously_downloaded_files=my_reuse_previously_downloaded_files,
                                                local_download_dir_warc=my_local_download_dir_warc,
