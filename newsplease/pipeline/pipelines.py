@@ -672,16 +672,22 @@ class DateFilter(object):
         self.strict_mode = self.config['strict_mode']
         self.start_date = self.config['start_date']
         self.end_date = self.config['end_date']
+        self.from_now = self.config['timedelta_from_now']
 
         if self.start_date is None and self.end_date is None:
             self.log.error("DateFilter: No dates are defined, please check the configuration of this module.")
         else:
             # create datetime objects from given dates
             try:
-                if self.start_date is not None:
-                    self.start_date = datetime.datetime.strptime(str(self.start_date), '%Y-%m-%d %H:%M:%S')
-                if self.end_date is not None:
-                    self.end_date = datetime.datetime.strptime(str(self.end_date), '%Y-%m-%d %H:%M:%S')
+                if not self.from_now:
+                    if self.start_date is not None:
+                        self.start_date = datetime.datetime.strptime(str(self.start_date), '%Y-%m-%d %H:%M:%S')
+                    if self.end_date is not None:
+                        self.end_date = datetime.datetime.strptime(str(self.end_date), '%Y-%m-%d %H:%M:%S')
+                else:
+                    time_delta_from_now = datetime.timedelta(**self.from_now)
+                    self.end_date = datetime.datetime.utcnow()
+                    self.start_date = self.end_date - time_delta_from_now
             except ValueError as error:
                 self.start_date = None
                 self.end_date = None
