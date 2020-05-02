@@ -138,27 +138,3 @@ class NewsPlease:
         urls = list(filter(None, content))
 
         return NewsPlease.from_urls(urls)
-
-    @staticmethod
-    def from_domain_url(domain_url, crawler_name = "SitemapCrawler", verbose = False):
-        """
-        Crawls multiple articles from the given domain url and self defined crawler
-        :param domain_url: domain url.
-        :param crawler_name: domain_url: intended crawler for scraping.
-        :return: A dict containing given URLs as keys, and extracted information as corresponding values.
-        """
-        crawler = SingleCrawler.create_as_library(domain_url, crawler_name)
-        news_piping_in = True
-        articles = []
-        total_news = 0
-        while news_piping_in:
-            time.sleep(5)
-            articles = InMemoryStorage.get_results()
-            if total_news != len(articles):
-                total_news = len(articles)
-                if verbose:
-                    print("Scraped {} articles".format(total_news))
-            else:
-                news_piping_in = False
-
-        return articles
