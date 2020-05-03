@@ -18,3 +18,5 @@ ago>=0.0.9
 six>=1.10.0
 awscli>=1.11.117
 bs4
+textblob==0.15.3
+nltk==3.4.5
