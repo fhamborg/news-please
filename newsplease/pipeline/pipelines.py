@@ -693,7 +693,7 @@ class DateFilter(object):
                             self.end_date = now_utc
                     else:
                         self.end_date = now_utc
-                    self.start_date = self.end_date - time_delta_from_now
+                    self.start_date = now_utc - time_delta_from_now
             except ValueError as error:
                 self.start_date = None
                 self.end_date = None
