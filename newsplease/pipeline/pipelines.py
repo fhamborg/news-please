@@ -680,16 +680,18 @@ class DateFilter(object):
         else:
             # create datetime objects from given dates
             try:
-                if not self.from_now:
-                    if self.start_date is not None:
-                        self.start_date = datetime.datetime.strptime(str(self.start_date), '%Y-%m-%d %H:%M:%S')
-                    if self.end_date is not None:
-                        self.end_date = datetime.datetime.strptime(str(self.end_date), '%Y-%m-%d %H:%M:%S')
-                else:
+                if self.start_date is not None:
+                    self.start_date = datetime.datetime.strptime(str(self.start_date), '%Y-%m-%d %H:%M:%S')
+                if self.end_date is not None:
+                    self.end_date = datetime.datetime.strptime(str(self.end_date), '%Y-%m-%d %H:%M:%S')
+                if self.from_now:
                     time_delta_from_now = datetime.timedelta(**self.from_now)
                     now_utc = datetime.datetime.utcnow()
                     # if the end date in config is later than now, it will use the config end date
-                    if self.end_date < now_utc:
+                    if isinstance(self.end_date,datetime.datetime):
+                        if self.end_date < now_utc:
+                            self.end_date = now_utc
+                    else:
                         self.end_date = now_utc
                     self.start_date = self.end_date - time_delta_from_now
             except ValueError as error:
@@ -813,6 +815,7 @@ class PandasStorage(ExtractedInformationStorage):
         )
         self.df.to_pickle(self.full_path)
         self.log.info("Wrote to Pandas to %s", self.full_path)
+
 
 class ArticleMasterAnalyzer(object):
 
