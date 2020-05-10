@@ -814,3 +814,15 @@ class PandasStorage(ExtractedInformationStorage):
         self.df.to_pickle(self.full_path)
         self.log.info("Wrote to Pandas to %s", self.full_path)
 
+class ArticleMasterAnalyzer(object):
+
+    def __init__(self):
+        self.log = logging.getLogger(__name__)
+        self.cfg = CrawlerConfig.get_instance()
+        self.analyzer_list = self.cfg.section("ArticleMasterAnalyzer")[
+            "analyzers"]
+        self.analyzer = article_analyzer.Analyzer(self.analyzer_list)
+
+    def process_item(self, item, _spider):
+        item['insight'] = self.analyzer.analyze(item)
+        return item
