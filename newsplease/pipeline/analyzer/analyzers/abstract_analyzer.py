@@ -22,7 +22,6 @@ class AbstractAnalyzer:
     def analyze(self, item):
         """Executes all implemented functions on the given item and returns an
         object conainting the analysis informatiion
-
         :param item: A NewscrawlerItem to parse.
         :return: insight:.
         """

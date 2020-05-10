@@ -827,5 +827,5 @@ class ArticleMasterAnalyzer(object):
         self.analyzer = article_analyzer.Analyzer(self.analyzer_list)
 
     def process_item(self, item, _spider):
-        item['insight'] = self.analyzer.analyze(item)
+        item['article_insight'] = self.analyzer.analyze(item)
         return item
