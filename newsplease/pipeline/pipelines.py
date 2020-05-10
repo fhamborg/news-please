@@ -16,6 +16,7 @@ from scrapy.exceptions import DropItem
 
 from NewsArticle import NewsArticle
 from .extractor import article_extractor
+from .analyzer import article_analyzer
 from ..config import CrawlerConfig
 
 if sys.version_info[0] < 3:
@@ -686,7 +687,10 @@ class DateFilter(object):
                         self.end_date = datetime.datetime.strptime(str(self.end_date), '%Y-%m-%d %H:%M:%S')
                 else:
                     time_delta_from_now = datetime.timedelta(**self.from_now)
-                    self.end_date = datetime.datetime.utcnow()
+                    now_utc = datetime.datetime.utcnow()
+                    # if the end date in config is later than now, it will use the config end date
+                    if self.end_date < now_utc:
+                        self.end_date = now_utc
                     self.start_date = self.end_date - time_delta_from_now
             except ValueError as error:
                 self.start_date = None
@@ -809,3 +813,4 @@ class PandasStorage(ExtractedInformationStorage):
         )
         self.df.to_pickle(self.full_path)
         self.log.info("Wrote to Pandas to %s", self.full_path)
+
