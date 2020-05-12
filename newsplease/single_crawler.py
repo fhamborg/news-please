@@ -23,7 +23,7 @@ sys.path.append(par_path)
 from newsplease.config import CrawlerConfig
 from newsplease.config import JsonConfig
 from newsplease.helper import Helper
-from newsplease.helper_classes.module_util import ClassLoader
+from newsplease.helper_classes.class_loader import ClassLoader
 from newsplease.crawler.items import NewscrawlerItem
 
 try:
