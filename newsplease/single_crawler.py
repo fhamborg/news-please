@@ -23,6 +23,8 @@ sys.path.append(par_path)
 from newsplease.config import CrawlerConfig
 from newsplease.config import JsonConfig
 from newsplease.helper import Helper
+from newsplease.helper_classes.class_loader import ClassLoader
+from newsplease.crawler.items import NewscrawlerItem
 
 try:
     from _thread import start_new_thread
@@ -122,12 +124,21 @@ class SingleCrawler(object):
             # absolute dir this script is in
             relative_to_path = os.path.dirname(__file__)
 
+        news_item_class_name = self.cfg.section("Scrapy").get("item_class", None)
+        if not news_item_class_name:
+            news_item_class = NewscrawlerItem
+        else:
+            news_item_class = ClassLoader.from_string(news_item_class_name)
+            if not issubclass(news_item_class, NewscrawlerItem):
+                raise ImportError("ITEM_CLASS must be a subclass of NewscrawlerItem")
+
         self.helper = Helper(self.cfg.section('Heuristics'),
                              self.cfg.section("Files")["local_data_directory"],
                              relative_to_path,
                              self.cfg.section('Files')['format_relative_path'],
                              sites,
                              crawler_class,
+                             news_item_class,
                              self.cfg.get_working_path())
 
         self.__scrapy_options = self.cfg.get_scrapy_options()
