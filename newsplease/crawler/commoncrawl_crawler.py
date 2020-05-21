@@ -124,7 +124,10 @@ def __get_remote_index(warc_files_start_date):
           "awk '{ print $4 }' .tmpaws.txt && " \
           "rm .tmpaws.txt"
     __logger.info('executing: %s', cmd)
-    stdout_data = subprocess.getoutput(cmd)
+    exitcode, stdout_data = subprocess.getstatusoutput(cmd)
+
+    if exitcode > 0:
+        raise Exception(stdout_data)
 
     lines = stdout_data.splitlines()
     return lines
