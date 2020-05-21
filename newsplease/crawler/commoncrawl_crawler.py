@@ -106,7 +106,14 @@ def __get_remote_index(warc_files_start_date):
     :return:
     """
     # cleanup
-    subprocess.getoutput("rm tmpaws.txt")
+    temp_filename = '.tmpaws.txt'
+    if os.name == 'nt':
+        delete_command = 'del'
+        awk_command = 'awk "{print $4 }" '
+    else:
+        delete_command = 'rm'
+        awk_command = "awk '{print $4 }' "
+    subprocess.getoutput("%s %s" % (delete_command, temp_filename))
     # get the remote info
 
     cmd = ''
@@ -115,14 +122,14 @@ def __get_remote_index(warc_files_start_date):
         for date in warc_dates:
             year = date.strftime('%Y')
             month = date.strftime('%m')
-            cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> .tmpaws.txt && " %(year, month)
+            cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> %s && " %(year, month, temp_filename)
 
-        cmd += "awk '{ print $4 }' .tmpaws.txt && " \
-              "rm .tmpaws.txt"
+        cmd += "%s %s && " % (awk_command, temp_filename)
+        cmd += "%s %s" % (temp_filename, delete_command, temp_filename)
     else:
-        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > .tmpaws.txt && " \
-          "awk '{ print $4 }' .tmpaws.txt && " \
-          "rm .tmpaws.txt"
+        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " % temp_filename
+        cmd += "%s %s && " % (awk_command, temp_filename)
+        cmd += "%s %s" % (delete_command, temp_filename)
     __logger.info('executing: %s', cmd)
     exitcode, stdout_data = subprocess.getstatusoutput(cmd)
 
