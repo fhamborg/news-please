@@ -105,29 +105,44 @@ def __get_remote_index(warc_files_start_date):
     Gets the index of news crawl files from commoncrawl.org and returns an array of names
     :return:
     """
-    # cleanup
-    subprocess.getoutput("rm tmpaws.txt")
+    temp_filename = ".tmpaws.txt"
+
+    if os.name == 'nt':
+        awk_parameter = '"{ print $4 }"'
+    else:
+        awk_parameter = "'{ print $4 }'"
+
     # get the remote info
 
     cmd = ''
     if warc_files_start_date:
+        # cleanup
+        try:
+            os.remove(temp_filename)
+        except OSError:
+            pass
+
         warc_dates = __iterate_by_month(warc_files_start_date, datetime.datetime.today())
         for date in warc_dates:
             year = date.strftime('%Y')
             month = date.strftime('%m')
-            cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> .tmpaws.txt && " %(year, month)
+            cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> %s && " % (year, month, temp_filename)
 
-        cmd += "awk '{ print $4 }' .tmpaws.txt && " \
-              "rm .tmpaws.txt"
     else:
-        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > .tmpaws.txt && " \
-          "awk '{ print $4 }' .tmpaws.txt && " \
-          "rm .tmpaws.txt"
+        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " % temp_filename
+
+    cmd += "awk %s %s " % (awk_parameter, temp_filename)
+
     __logger.info('executing: %s', cmd)
     exitcode, stdout_data = subprocess.getstatusoutput(cmd)
 
     if exitcode > 0:
         raise Exception(stdout_data)
+
+    try:
+        os.remove(temp_filename)
+    except OSError:
+        pass
 
     lines = stdout_data.splitlines()
     return lines

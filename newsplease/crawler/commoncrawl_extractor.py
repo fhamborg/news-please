@@ -155,12 +155,17 @@ class CommonCrawlExtractor:
         Gets the index of news crawl files from commoncrawl.org and returns an array of names
         :return:
         """
-        # cleanup
-        subprocess.getoutput("rm tmpaws.txt")
+        temp_filename = "tmpaws.txt"
+
+        if os.name == 'nt':
+            awk_parameter = '"{ print $4 }"'
+        else:
+            awk_parameter = "'{ print $4 }'"
+
         # get the remote info
-        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > tmpaws.txt && " \
-              "awk '{ print $4 }' tmpaws.txt && " \
-              "rm tmpaws.txt"
+        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " \
+              "awk %s %s " % (temp_filename, awk_parameter, temp_filename)
+
         self.__logger.info('executing: %s', cmd)
         exitcode, stdout_data = subprocess.getstatusoutput(cmd)
 
@@ -168,6 +173,11 @@ class CommonCrawlExtractor:
             raise Exception(stdout_data)
 
         print(stdout_data)
+
+        try:
+            os.remove(temp_filename)
+        except OSError:
+            pass
 
         lines = stdout_data.splitlines()
         return lines
