@@ -162,7 +162,11 @@ class CommonCrawlExtractor:
               "awk '{ print $4 }' tmpaws.txt && " \
               "rm tmpaws.txt"
         self.__logger.info('executing: %s', cmd)
-        stdout_data = subprocess.getoutput(cmd)
+        exitcode, stdout_data = subprocess.getstatusoutput(cmd)
+
+        if exitcode > 0:
+            raise Exception(stdout_data)
+
         print(stdout_data)
 
         lines = stdout_data.splitlines()
