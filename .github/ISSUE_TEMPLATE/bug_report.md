@@ -21,7 +21,7 @@ Steps to reproduce the behavior, i.e., provide a minimalist example how to repro
 A clear and concise description of what you expected to happen.
 
 **Log**
-Add a log to help explain your problem.
+Add a log to help explain your problem, e.g., the full output of the tool that results from running the minimal working example you provided in `To Reproduce`.
 
 **Versions (please complete the following information):**
  - OS: [e.g. MacOS 10.2]
