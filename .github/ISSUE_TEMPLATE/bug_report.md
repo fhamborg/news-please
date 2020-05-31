@@ -12,10 +12,10 @@ Related issues:
 * add them here
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug is. This must include a full stack-trace (if applicable).
 
 **To Reproduce**
-Steps to reproduce the behavior, i.e., provide a minimalist example how to reproduce the error. Include a minimalist code example.
+Steps to reproduce the behavior, i.e., provide a minimalist example how to reproduce the error. You must include a minimalist code example.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
