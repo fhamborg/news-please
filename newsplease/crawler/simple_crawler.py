@@ -1,74 +1,24 @@
-# Based on https://github.com/adbar/trafilatura/blob/master/trafilatura/utils.py
-import logging
 import socket
 import copy
 import threading
-
-try:
-    # this module is faster
-    import cchardet
-except ImportError:
-    cchardet = None
-# https://charset-normalizer.readthedocs.io/en/latest/
-# https://ftfy.readthedocs.io/en/latest/
+import logging
 
 import requests
 import urllib3
 
+from .response_decoder import decode_response
+
 MAX_FILE_SIZE = 20000000
 MIN_FILE_SIZE = 10
 
-LOGGER = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # customize headers
 HEADERS = {
-    'Connection': 'close',  # another way to cover tracks
+    'Connection': 'close',
     'User-Agent': 'Mozilla/5.0'
 }
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-def isutf8(data):
-    """Simple heuristic to determine if a bytestring uses standard unicode encoding"""
-    try:
-        data.decode('UTF-8')
-    except UnicodeDecodeError:
-        return False
-    else:
-        return True
-
-
-def detect_encoding(bytesobject):
-    """Read the first chunk of input and return its encoding"""
-    # unicode-test
-    if isutf8(bytesobject):
-        return 'UTF-8'
-    # try one of the installed detectors
-    if cchardet is not None:
-        guess = cchardet.detect(bytesobject)
-        LOGGER.debug('guessed encoding: %s', guess['encoding'])
-        return guess['encoding']
-    # fallback on full response
-    # if guess is None or guess['encoding'] is None: # or guess['confidence'] < 0.99:
-    #    guessed_encoding = chardet.detect(bytesobject)['encoding']
-    # return
-    return None
-
-
-def decode_response(response):
-    """Read the first chunk of server response and decode it"""
-    guessed_encoding = detect_encoding(response.content)
-    LOGGER.debug('response/guessed encoding: %s / %s', response.encoding, guessed_encoding)
-    # process
-    if guessed_encoding is not None:
-        try:
-            htmltext = response.content.decode(guessed_encoding)
-        except UnicodeDecodeError:
-            LOGGER.warning('encoding error: %s / %s', response.encoding, guessed_encoding)
-            htmltext = response.text
-    else:
-        htmltext = response.text
-    return htmltext
 
 
 class SimpleCrawler(object):
@@ -100,24 +50,24 @@ class SimpleCrawler(object):
             # so we can stop downloading as soon as MAX_FILE_SIZE is reached
             response = requests.get(url, timeout=timeout, verify=False, allow_redirects=True, headers=HEADERS)
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
-            LOGGER.error('malformed URL: %s', url)
+            logger.error('malformed URL: %s', url)
         except requests.exceptions.TooManyRedirects:
-            LOGGER.error('redirects: %s', url)
+            logger.error('too many redirects: %s', url)
         except requests.exceptions.SSLError as err:
-            LOGGER.error('SSL: %s %s', url, err)
+            logger.error('SSL: %s %s', url, err)
         except (
             socket.timeout, requests.exceptions.ConnectionError,
             requests.exceptions.Timeout, socket.error, socket.gaierror
         ) as err:
-            LOGGER.error('connection: %s %s', url, err)
+            logger.error('connection/timeout error: %s %s', url, err)
         else:
             # safety checks
             if response.status_code != 200:
-                LOGGER.error('not a 200 response: %s', response.status_code)
+                logger.error('not a 200 response: %s', response.status_code)
             elif response.text is None or len(response.text) < MIN_FILE_SIZE:
-                LOGGER.error('too small/incorrect: %s %s', url, len(response.text))
+                logger.error('too small/incorrect: %s %s', url, len(response.text))
             elif len(response.text) > MAX_FILE_SIZE:
-                LOGGER.error('too large: %s %s', url, len(response.text))
+                logger.error('too large: %s %s', url, len(response.text))
             else:
                 html_str = decode_response(response)
         if is_threaded:
