@@ -11,7 +11,7 @@ from .response_decoder import decode_response
 MAX_FILE_SIZE = 20000000
 MIN_FILE_SIZE = 10
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 # customize headers
 HEADERS = {
@@ -50,24 +50,24 @@ class SimpleCrawler(object):
             # so we can stop downloading as soon as MAX_FILE_SIZE is reached
             response = requests.get(url, timeout=timeout, verify=False, allow_redirects=True, headers=HEADERS)
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
-            logger.error('malformed URL: %s', url)
+            LOGGER.error('malformed URL: %s', url)
         except requests.exceptions.TooManyRedirects:
-            logger.error('too many redirects: %s', url)
+            LOGGER.error('too many redirects: %s', url)
         except requests.exceptions.SSLError as err:
-            logger.error('SSL: %s %s', url, err)
+            LOGGER.error('SSL: %s %s', url, err)
         except (
             socket.timeout, requests.exceptions.ConnectionError,
             requests.exceptions.Timeout, socket.error, socket.gaierror
         ) as err:
-            logger.error('connection/timeout error: %s %s', url, err)
+            LOGGER.error('connection/timeout error: %s %s', url, err)
         else:
             # safety checks
             if response.status_code != 200:
-                logger.error('not a 200 response: %s', response.status_code)
+                LOGGER.error('not a 200 response: %s', response.status_code)
             elif response.text is None or len(response.text) < MIN_FILE_SIZE:
-                logger.error('too small/incorrect: %s %s', url, len(response.text))
+                LOGGER.error('too small/incorrect: %s %s', url, len(response.text))
             elif len(response.text) > MAX_FILE_SIZE:
-                logger.error('too large: %s %s', url, len(response.text))
+                LOGGER.error('too large: %s %s', url, len(response.text))
             else:
                 html_str = decode_response(response)
         if is_threaded:

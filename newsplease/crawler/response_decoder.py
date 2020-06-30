@@ -3,7 +3,7 @@ import logging
 
 import cchardet  # For unknown encoding, see https://charset-normalizer.readthedocs.io/en/latest/ for more info
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def isutf8(data):
@@ -23,7 +23,7 @@ def detect_encoding(bytesobject):
         return 'UTF-8'
     else:
         guess = cchardet.detect(bytesobject)
-        logger.debug('guessed encoding: %s', guess['encoding'])
+        LOGGER.debug('guessed encoding: %s', guess['encoding'])
         return guess['encoding']
     # fallback on full response
     # if guess is None or guess['encoding'] is None: # or guess['confidence'] < 0.99:
@@ -35,13 +35,13 @@ def detect_encoding(bytesobject):
 def decode_response(response):
     """Read the first chunk of server response and decode it"""
     guessed_encoding = detect_encoding(response.content)
-    logger.debug('response/guessed encoding: %s / %s', response.encoding, guessed_encoding)
+    LOGGER.debug('response/guessed encoding: %s / %s', response.encoding, guessed_encoding)
     # process
     if guessed_encoding is not None:
         try:
             htmltext = response.content.decode(guessed_encoding)
         except UnicodeDecodeError:
-            logger.warning('encoding error: %s / %s', response.encoding, guessed_encoding)
+            LOGGER.warning('encoding error: %s / %s', response.encoding, guessed_encoding)
             htmltext = response.text
     else:
         htmltext = response.text
