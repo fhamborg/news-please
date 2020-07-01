@@ -118,7 +118,7 @@ class CrawlerConfig(object):
                             {"level": "debug",
                              "msg": "Option not literal_eval-parsable"
                                     " (maybe string): [{0}] {1}"
-                                 .format(section, option)})
+                                    .format(section, option)})
 
                     if self.__config[section][option] == -1:
                         self.log_output.append(
@@ -155,11 +155,11 @@ class CrawlerConfig(object):
 
         # Now, after log-level is correctly set, lets log them.
         for msg in self.log_output:
-            if msg["level"] is "error":
+            if msg["level"] == "error":
                 self.log.error(msg["msg"])
-            elif msg["level"] is "info":
+            elif msg["level"] == "info":
                 self.log.info(msg["msg"])
-            elif msg["level"] is "debug":
+            elif msg["level"] == "debug":
                 self.log.debug(msg["msg"])
 
     def config(self):
