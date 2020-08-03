@@ -16,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 # customize headers
 HEADERS = {
     'Connection': 'close',
-    'User-Agent': 'Mozilla/5.0'
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
 }
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
