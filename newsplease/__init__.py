@@ -1,3 +1,4 @@
+import concurrent.futures as cf
 import datetime
 import os
 import sys
@@ -55,6 +56,9 @@ class NewsPlease:
         :param url:
         :return:
         """
+        if bool(html) is False:
+            return {}
+
         extractor = article_extractor.Extractor(
             ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
 
@@ -118,8 +122,22 @@ class NewsPlease:
             results[url] = NewsPlease.from_html(html, url, download_date)
         else:
             results = SimpleCrawler.fetch_urls(urls)
-            for url in results:
-                results[url] = NewsPlease.from_html(results[url], url, download_date)
+
+            futures = {}
+            with cf.ProcessPoolExecutor() as exec:
+                for url in results:
+                    future = exec.submit(
+                        NewsPlease.from_html, results[url], url, download_date
+                    )
+                    futures[future] = url
+
+
+            for future in cf.as_completed(futures):
+                url = futures[future]
+                try:
+                    results[url] = future.result(timeout=timeout)
+                except Exception as err:
+                    results[url] = {}
 
         return results
 
