@@ -52,8 +52,13 @@ class HeuristicsManager(object):
         self.log.debug("Condition (original): %s", statement)
 
         for heuristic, condition in heuristics.items():
+            if isinstance(condition, dict):
+                condition = condition['condition']
+                args = condition.get('args', ())
+            else:
+                args = ()
             heuristic_func = getattr(self, heuristic)
-            result = heuristic_func(response, site)
+            result = heuristic_func(response, site, args)
             check = self.__evaluate_result(result, condition)
             statement = re.sub(r"\b%s\b" % heuristic, str(check), statement)
 

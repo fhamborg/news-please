@@ -93,7 +93,7 @@ class Heuristics(HeuristicsManager):
             for headline in response.xpath('//h%s' % i).extract():
                 h_all += 1
                 if "href" in headline and (
-                            not check_self or re.search(site_regex, headline)
+                    not check_self or re.search(site_regex, headline)
                         is not None):
                     h_linked += 1
 
@@ -131,3 +131,6 @@ class Heuristics(HeuristicsManager):
 
         root_url = re.sub(re_url_root, '', site_dict["url"])
         return UrlExtractor.get_allowed_domain(response.url) == root_url
+
+    def has_class(self, response, site_dict, *_class):
+        return len(response.xpath(_class[0][0])) > 0
