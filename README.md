@@ -194,7 +194,9 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contributions and custom features
-Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)), but welcome also pull requests that contribute your own ideas. If you plan to submit a pull request adding new functionality, we suggest to open an issue first in order to briefly discuss with us how it should be implemented to best fit into news-please's architecture.
+Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)), but welcome also pull requests that contribute your own ideas. 
+
+If you plan to submit a pull request adding new functionality, we suggest to open an issue first in order to discuss whether we your idea could be added to news-please and if so, how you should implement it in order to best fit into the existing architecture.
 
 Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
 
