@@ -133,4 +133,4 @@ class Heuristics(HeuristicsManager):
         return UrlExtractor.get_allowed_domain(response.url) == root_url
 
     def has_class(self, response, site_dict, *_class):
-        return len(response.xpath(_class[0][0])) > 0
+        return len(response.xpath(_class[0])) > 0
