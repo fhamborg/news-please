@@ -99,7 +99,7 @@ class SavepathParser(object):
 
         if len(component) > size:
             if size > 32:
-                component_size = size - 32 - 1
+                component_size = int(size - 32 - 1)
                 return "%s_%s" % (component[:component_size],
                                   hashlib.md5(component.encode('utf-8')).hexdigest())
             else:
@@ -305,7 +305,7 @@ class SavepathParser(object):
         savepath_copy = savepath
         size_without_max_url_file_name = len(
             savepath_copy.replace('%max_url_file_name', '')
-                .replace('%appendmd5_max_url_file_name', '')
+            .replace('%appendmd5_max_url_file_name', '')
         )
 
         # Windows: max file path length is 260 characters including
