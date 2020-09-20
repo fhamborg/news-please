@@ -15,7 +15,7 @@ class Heuristics(HeuristicsManager):
     Helper class for testing heuristics
     """
 
-    def crawler_contains_only_article_alikes(self, response, site_dict):
+    def crawler_contains_only_article_alikes(self, response, site_dict, *args):
         """
         Some crawlers (rssCrawlers, sitemapCrawlers) only return sites, which
         are actually articles or article-collections.
@@ -33,7 +33,7 @@ class Heuristics(HeuristicsManager):
         except AttributeError:
             return False
 
-    def meta_contains_article_keyword(self, response, site_dict):
+    def meta_contains_article_keyword(self, response, site_dict, *args):
         """
         Determines wether the response's meta data contains the keyword
         'article'
@@ -52,7 +52,7 @@ class Heuristics(HeuristicsManager):
         return True
 
     @staticmethod
-    def og_type(response, site_dict):
+    def og_type(response, site_dict, *args):
         """
         Check if the site contains a meta-tag which contains
         property="og:type" and content="article"
@@ -70,7 +70,7 @@ class Heuristics(HeuristicsManager):
 
         return True
 
-    def linked_headlines(self, response, site_dict, check_self=False):
+    def linked_headlines(self, response, site_dict, check_self=False, *args):
         """
         Checks how many of the headlines on the site contain links.
 
@@ -108,7 +108,7 @@ class Heuristics(HeuristicsManager):
 
         return float(h_linked) / float(h_all)
 
-    def self_linked_headlines(self, response, site_dict):
+    def self_linked_headlines(self, response, site_dict, *args):
         """
         Checks how many of the headlines on the site contain links.
 
@@ -119,7 +119,7 @@ class Heuristics(HeuristicsManager):
         """
         return self.linked_headlines(response, site_dict, True)
 
-    def is_not_from_subdomain(self, response, site_dict):
+    def is_not_from_subdomain(self, response, site_dict, *args):
         """
         Ensures the response's url isn't from a subdomain.
 
@@ -133,4 +133,5 @@ class Heuristics(HeuristicsManager):
         return UrlExtractor.get_allowed_domain(response.url) == root_url
 
     def has_class(self, response, site_dict, *_class):
+
         return len(response.xpath(_class[0])) > 0
