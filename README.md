@@ -7,7 +7,7 @@
 
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from commoncrawl.org.
 
-If you like news-please and would like to [contribute](#contributions-and-custom-features) to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course, we are always looking forward to [pull requests](#contribution-and-custom-features) containing bug fixes, improvements, or your own ideas.
+If you like news-please and would like to [contribute](#contributions-and-custom-features) to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or have a look [here[(#contributions-and-custom-features).
 
 ## Announcements
 06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
@@ -194,13 +194,13 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contributions and custom features
-Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)), but welcome also pull requests that contribute your own ideas. 
+Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)). We also welcome pull requests that contribute your own ideas. 
 
-If you plan to submit a pull request adding new functionality, we suggest to open an issue first in order to discuss whether we your idea could be added to news-please and if so, how you should implement it in order to best fit into the existing architecture.
+If you plan to submit a pull request adding new functionality, please open an issue first so that we can discuss whether we your idea could be added to news-please and if so, how you should implement it in order to best fit into the existing architecture. In the issue, please state that you're planning to implement the issue yourself.
 
 Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
 
-By contributing to this project, you agree that your contributions will be licensed under the project's license (see below).
+By contributing to this project, you agree that your contributions will be licensed under the project's [license](#license).
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
