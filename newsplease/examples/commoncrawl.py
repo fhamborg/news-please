@@ -46,7 +46,7 @@ my_filter_start_date = None  # datetime.datetime(2016, 1, 1)
 # end date (if None, any date is OK as end date), as datetime
 my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
 # if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
-my_warc_files_start_date = None # example: datetime.datetime(2020, 3, 1)
+my_warc_files_start_date = None  # example: datetime.datetime(2020, 3, 1)
 my_filter_strict_date = True
 # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
@@ -66,6 +66,8 @@ my_delete_warc_after_extraction = True
 # if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
 # crawling new WARC files. This assumes that the filter criteria have not been changed since the previous run!
 my_continue_process = True
+# Languages, if None, all of them are accepted
+languages = ['en']
 ############ END YOUR CONFIG #########
 
 
@@ -165,7 +167,7 @@ def main():
                                                number_of_extraction_processes=my_number_of_extraction_processes,
                                                log_level=my_log_level,
                                                delete_warc_after_extraction=my_delete_warc_after_extraction,
-                                               continue_process=True)
+                                               continue_process=True, languages=languages)
 
 
 if __name__ == "__main__":

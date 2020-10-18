@@ -35,6 +35,8 @@ class CommonCrawlExtractor:
     __filter_start_date = None
     # end date (if None, any date is OK as end date)
     __filter_end_date = None
+    # language filter
+    __filter_languages = None
     # if date filtering is string, e.g., if we could not detect the date of an article, we will discard the article
     __filter_strict_date = True
     # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
@@ -128,6 +130,11 @@ class CommonCrawlExtractor:
                     return False, article
                 if self.__filter_end_date and publishing_date > self.__filter_end_date:
                     return False, article
+
+        # filter by language
+        if self.__filter_languages is not None:
+            if article.language not in self.__filter_languages:
+                return False, article
 
         return True, article
 
@@ -313,7 +320,8 @@ class CommonCrawlExtractor:
                                  strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
                                  continue_after_error=True, show_download_progress=False,
                                  log_level=logging.ERROR, delete_warc_after_extraction=True,
-                                 log_pathname_fully_extracted_warcs=None):
+                                 log_pathname_fully_extracted_warcs=None,
+                                 languages=None):
         """
         Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
         successfully the callback function callback_on_article_extracted is invoked where the first parameter is the
@@ -339,6 +347,7 @@ class CommonCrawlExtractor:
         self.__filter_start_date = start_date
         self.__filter_end_date = end_date
         self.__filter_strict_date = strict_date
+        self.__filter_languages = languages
         if local_download_dir_warc:
             self.__local_download_dir_warc = local_download_dir_warc
         self.__reuse_previously_downloaded_files = reuse_previously_downloaded_files
