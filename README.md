@@ -186,7 +186,7 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
   year       = {2017},
   booktitle  = {Proceedings of the 15th International Symposium of Information Science},
   location   = {Berlin},
-  editor     = {Gaede, Maria and Trkulja, Violeta and Petra, Vivien},
+  doi        = {10.5281/zenodo.4120316},
   pages      = {218--223},
   month      = {March}
 }
