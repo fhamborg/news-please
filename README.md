@@ -1,6 +1,7 @@
 # **news-please** #
 
 [![PyPI version](https://img.shields.io/pypi/v/news-please.svg)](https://pypi.org/project/news-please/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4120316.svg)](http://dx.doi.org/10.5281/zenodo.4120316)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
 
 <img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" />
