@@ -19,4 +19,4 @@ six>=1.10.0
 awscli>=1.11.117
 hurry.filesize>=0.9
 bs4
-cchardet
+cchardet>=2.1.7
