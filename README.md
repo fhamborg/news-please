@@ -194,14 +194,16 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 ```
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
-## Contributions and custom features
+## Contributions
 Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)). We also welcome pull requests that contribute your own ideas. 
 
-If you plan to submit a pull request adding new functionality, please open an issue first so that we can discuss whether we your idea could be added to news-please and if so, how you should implement it in order to best fit into the existing architecture. In the issue, please state that you're planning to implement the issue yourself.
-
-Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
+### Pull requests
+We love contributions by our users! If you plan to submit a pull request, please open an issue first and desribe the issue you want to fix or what you want to improve and how! This way, we can discuss whether we your idea could be added to news-please in the first place and if so, how it could best be implemented in order to fit into the existing architecture and coding style. In the issue, please state that you're planning to implement the issue yourself. 
 
 By contributing to this project, you agree that your contributions will be licensed under the project's [license](#license).
+
+### Custom features
+Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
