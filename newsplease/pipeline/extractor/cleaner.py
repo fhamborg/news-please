@@ -27,7 +27,10 @@ class Cleaner:
         """
 
         if len(arg) > 0:
-            raw = html.fromstring(arg)
+            try:
+                raw = html.fromstring(arg)
+            except ValueError:
+                raw = html.fromstring(arg.encode("utf-8"))
             return raw.text_content().strip()
 
         return arg
