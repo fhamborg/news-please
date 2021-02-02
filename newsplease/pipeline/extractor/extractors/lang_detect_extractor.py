@@ -23,7 +23,10 @@ class LangExtractor(AbstractExtractor):
         with langdetect"""
 
         response = item['spider_response'].body
-        root = html.fromstring(response)
+        try:
+            root = html.fromstring(response)
+        except ValueError:
+            root = html.fromstring(response.encode("utf-8"))
 
         # Check for lang-attributes
         lang = root.get('lang')
