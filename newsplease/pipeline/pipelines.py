@@ -524,8 +524,7 @@ class HtmlFileStorage(ExtractedInformationStorage):
 
         # Ensure path exists
         dir_ = os.path.dirname(item['abs_local_path'])
-        if not os.path.exists(dir_):
-            os.makedirs(dir_)
+        os.makedirs(dir_, exist_ok=True)
 
         # Write raw html to local file system
         with open(item['abs_local_path'], 'wb') as file_:
@@ -550,8 +549,7 @@ class JsonFileStorage(ExtractedInformationStorage):
 
         # Ensure path exists
         dir_ = os.path.dirname(item['abs_local_path'])
-        if not os.path.exists(dir_):
-            os.makedirs(dir_)
+        os.makedirs(dir_, exist_ok=True)
 
         # Write JSON to local file system
         with open(file_path, 'w') as file_:

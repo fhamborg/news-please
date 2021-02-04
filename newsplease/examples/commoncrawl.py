@@ -79,8 +79,7 @@ def __setup__():
     Setup
     :return:
     """
-    if not os.path.exists(my_local_download_dir_article):
-        os.makedirs(my_local_download_dir_article)
+    os.makedirs(my_local_download_dir_article, exist_ok=True)
 
 
 def __get_pretty_filepath(path, article):
@@ -93,8 +92,7 @@ def __get_pretty_filepath(path, article):
     short_filename = hashlib.sha256(article.filename.encode()).hexdigest()
     sub_dir = article.source_domain
     final_path = os.path.join(path, sub_dir)
-    if not os.path.exists(final_path):
-        os.makedirs(final_path)
+    os.makedirs(final_path, exist_ok=True)
     return os.path.join(final_path, short_filename + '.json')
 
 

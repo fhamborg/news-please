@@ -48,8 +48,7 @@ def __setup(local_download_dir_warc, log_level):
     Setup
     :return:
     """
-    if not os.path.exists(local_download_dir_warc):
-        os.makedirs(local_download_dir_warc)
+    os.makedirs(local_download_dir_warc, exist_ok=True)
 
     global __log_pathname_fully_extracted_warcs
     __log_pathname_fully_extracted_warcs = os.path.join(local_download_dir_warc, 'fullyextractedwarcs.list')
