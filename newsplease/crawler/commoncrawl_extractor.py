@@ -67,8 +67,7 @@ class CommonCrawlExtractor:
         Setup
         :return:
         """
-        if not os.path.exists(self.__local_download_dir_warc):
-            os.makedirs(self.__local_download_dir_warc)
+        os.makedirs(self.__local_download_dir_warc, exist_ok=True)
 
         # make loggers quite
         configure_logging({"LOG_LEVEL": "ERROR"})
