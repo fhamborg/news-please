@@ -92,7 +92,7 @@ class CommonCrawlExtractor:
         with open(self.__log_pathname_fully_extracted_warcs, 'a') as log_file:
             log_file.write(warc_url + '\n')
 
-    def __filter_record(self, warc_record, article=None):
+    def filter_record(self, warc_record, article=None):
         """
         Returns true if a record passes all tests: hosts, publishing date
         :param warc_record:
@@ -247,7 +247,7 @@ class CommonCrawlExtractor:
                         counter_article_total += 1
 
                         # if the article passes filter tests, we notify the user
-                        filter_pass, article = self.__filter_record(record)
+                        filter_pass, article = self.filter_record(record)
                         if filter_pass:
                             if not article:
                                 article = NewsPlease.from_warc(record)

@@ -233,7 +233,8 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
                                   log_level=logging.ERROR,
                                   delete_warc_after_extraction=True,
                                   continue_process=True,
-                                  log_pathname_fully_extracted_warcs=None):
+                                  log_pathname_fully_extracted_warcs=None,
+                                  extractor_cls=CommonCrawlExtractor):
     """
     Starts a single CommonCrawlExtractor
     :param warc_download_url:
@@ -248,9 +249,11 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
     :param continue_after_error:
     :param show_download_progress:
     :param log_level:
+    :param extractor_cls: A subclass of CommonCrawlExtractor, which can be used
+        to add custom filtering by overriding .filter_record(...)
     :return:
     """
-    commoncrawl_extractor = CommonCrawlExtractor()
+    commoncrawl_extractor = extractor_cls()
     commoncrawl_extractor.extract_from_commoncrawl(warc_download_url, callback_on_article_extracted,
                                                    callback_on_warc_completed=callback_on_warc_completed,
                                                    valid_hosts=valid_hosts,
@@ -270,7 +273,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                            reuse_previously_downloaded_files=True, local_download_dir_warc=None, 
                            continue_after_error=True, show_download_progress=False,
                            number_of_extraction_processes=4, log_level=logging.ERROR,
-                           delete_warc_after_extraction=True, continue_process=True):
+                           delete_warc_after_extraction=True, continue_process=True,
+                           extractor_cls=CommonCrawlExtractor):
     """
     Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
     successfully the callback function callback_on_article_extracted is invoked where the first parameter is the
@@ -288,6 +292,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
     :param continue_after_error:
     :param show_download_progress:
     :param log_level:
+    :param extractor_cls:
     :return:
     """
     __setup(local_download_dir_warc, log_level)
@@ -336,7 +341,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                                                 show_download_progress=show_download_progress,
                                                 log_level=log_level,
                                                 delete_warc_after_extraction=delete_warc_after_extraction,
-                                                log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs),
+                                                log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs,
+                                                extractor_cls=extractor_cls),
                                         warc_download_urls)
     else:
         for warc_download_url in warc_download_urls:
@@ -352,4 +358,5 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                                           show_download_progress=show_download_progress,
                                           log_level=log_level,
                                           delete_warc_after_extraction=delete_warc_after_extraction,
-                                          log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs)
+                                          log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs,
+                                          extractor_cls=extractor_cls)
