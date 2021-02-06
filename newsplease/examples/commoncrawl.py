@@ -6,8 +6,13 @@ script stores the extracted articles in JSON files, but this behaviour can be ad
 on_valid_article_extracted. To speed up the crawling and extraction process, the script supports multiprocessing. You can
 control the number of processes with the parameter my_number_of_extraction_processes.
 
-You can also crawl and extract articles programmatically, i.e., from within your own code, by using the class
-CommonCrawlCrawler provided in newsplease.crawler.commoncrawl_crawler.py
+You can also crawl and extract articles programmatically, i.e., from within
+your own code, by using the class CommonCrawlCrawler or the function
+commoncrawl_crawler.crawl_from_commoncrawl(...) provided in
+newsplease.crawler.commoncrawl_crawler.py. In this case there is also the
+possibility of passing in a your own subclass of CommonCrawlExtractor as
+extractor_cls=... . One use case here is that your subclass can customise
+filtering by overriding `.filter_record(...)`.
 
 In case the script crashes and contains a log message in the beginning that states that only 1 file on AWS storage
 was found, make sure that awscli was correctly installed. You can check that by running aws --version from a terminal.

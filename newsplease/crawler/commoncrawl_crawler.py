@@ -232,7 +232,8 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
     :param continue_after_error:
     :param show_download_progress:
     :param log_level:
-    :param extractor_cls:
+    :param extractor_cls: A subclass of CommonCrawlExtractor, which can be used
+        to add custom filtering by overriding .filter_record(...)
     :return:
     """
     commoncrawl_extractor = extractor_cls()
