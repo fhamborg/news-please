@@ -7,6 +7,7 @@ not otherwise specified.
 import logging
 import os
 import subprocess
+import tempfile
 import time
 from functools import partial
 from multiprocessing import Pool
@@ -115,45 +116,42 @@ def __get_remote_index(warc_files_start_date):
     their filename
     :return:
     """
-    temp_filename = ".tmpaws.txt"
 
-    if os.name == 'nt':
-        awk_parameter = '"{ print $4 }"'
-    else:
-        awk_parameter = "'{ print $4 }'"
+    with tempfile.NamedTemporaryFile() as temp:
+        temp_filename = temp.name
 
-    # get the remote info
+        if os.name == 'nt':
+            awk_parameter = '"{ print $4 }"'
+        else:
+            awk_parameter = "'{ print $4 }'"
 
-    cmd = ''
-    if warc_files_start_date:
-        # cleanup
-        try:
-            os.remove(temp_filename)
-        except OSError:
-            pass
+        # get the remote info
 
-        # The news files are grouped per year and month in separate folders
-        warc_dates = __iterate_by_month(warc_files_start_date, datetime.datetime.today())
-        for date in warc_dates:
-            year = date.strftime('%Y')
-            month = date.strftime('%m')
-            cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> %s && " % (year, month, temp_filename)
+        cmd = ''
+        if warc_files_start_date:
+            # cleanup
+            try:
+                os.remove(temp_filename)
+            except OSError:
+                pass
 
-    else:
-        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " % temp_filename
+            # The news files are grouped per year and month in separate folders
+            warc_dates = __iterate_by_month(warc_files_start_date, datetime.datetime.today())
+            for date in warc_dates:
+                year = date.strftime('%Y')
+                month = date.strftime('%m')
+                cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> %s && " % (year, month, temp_filename)
 
-    cmd += "awk %s %s " % (awk_parameter, temp_filename)
+        else:
+            cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " % temp_filename
 
-    __logger.info('executing: %s', cmd)
-    exitcode, stdout_data = subprocess.getstatusoutput(cmd)
+        cmd += "awk %s %s " % (awk_parameter, temp_filename)
 
-    if exitcode > 0:
-        raise Exception(stdout_data)
+        __logger.info('executing: %s', cmd)
+        exitcode, stdout_data = subprocess.getstatusoutput(cmd)
 
-    try:
-        os.remove(temp_filename)
-    except OSError:
-        pass
+        if exitcode > 0:
+            raise Exception(stdout_data)
 
     lines = stdout_data.splitlines()
 
