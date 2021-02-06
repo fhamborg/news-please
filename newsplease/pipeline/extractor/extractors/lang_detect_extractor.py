@@ -51,12 +51,14 @@ class LangExtractor(AbstractExtractor):
             article_list = []
             for article in root.xpath('//article'):
                 article_list.append(re.sub(r'\s+', ' ', article.text_content().strip()))
-                longest_article = None
-                for article in article_list:
-                    if longest_article is None or len(article) > len(longest_article):
-                        longest_article = article
-                if longest_article is not None:
-                    lang = detect(longest_article)
+                longest_articles = sorted(article_list, key=lambda article: len(article), reverse=True)
+                for article in longest_articles:
+                    try:
+                        lang = detect(article)
+                    except LangDetectException:
+                        continue
+                    else:
+                        break
 
         # Analyze the whole body with langdetect
         if lang is None:
