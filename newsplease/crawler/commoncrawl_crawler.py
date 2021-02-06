@@ -99,9 +99,20 @@ def __iterate_by_month(start_date, end_date, month_step=1):
                                             month=new_month)
 
 
+def __extract_date_from_warc_filename(path):
+    fn = os.path.basename(path)
+    # Assume the filename pattern is CC-NEWS-20160911145202-00018.warc.gz
+    fn = fn.replace('CC-NEWS-', '')
+    dt = fn.split('-')[0]
+
+    return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
+
+
 def __get_remote_index(warc_files_start_date):
     """
     Gets the index of news crawl files from commoncrawl.org and returns an array of names
+    :param warc_files_start_date: only list .warc files with greater or equal date in
+    their filename
     :return:
     """
     temp_filename = ".tmpaws.txt"
@@ -121,6 +132,7 @@ def __get_remote_index(warc_files_start_date):
         except OSError:
             pass
 
+        # The news files are grouped per year and month in separate folders
         warc_dates = __iterate_by_month(warc_files_start_date, datetime.datetime.today())
         for date in warc_dates:
             year = date.strftime('%Y')
@@ -144,6 +156,12 @@ def __get_remote_index(warc_files_start_date):
         pass
 
     lines = stdout_data.splitlines()
+
+    if warc_files_start_date:
+        # Now filter further on day of month, hour, minute
+        lines = [p for p in lines
+                 if __extract_date_from_warc_filename(p) >= warc_files_start_date]
+
     return lines
 
 
