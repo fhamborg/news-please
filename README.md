@@ -78,7 +78,7 @@ or if you have raw HTML data (you can also provide the original URL to increase 
 NewsPlease.from_html(html, url=None)
 ```
 or if you have a [WARC file](https://github.com/webrecorder/warcio) (also check out our [commoncrawl workflow](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/commoncrawl.py), which provides convenient methods to filter commoncrawl's archive for specific news outlets and dates)
-```
+```python
 NewsPlease.from_warc(warc_record)
 ```
 In library mode, news-please will attempt to download and extract information from each URL. The previously described functions are blocking, i.e., will return once news-please has attempted all URLs. The resulting list contains all successfully extracted articles.
