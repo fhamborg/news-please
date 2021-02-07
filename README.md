@@ -8,13 +8,13 @@
 
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can recursively follow internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from commoncrawl.org.
 
-If you like news-please and would like to [contribute](#contributions) to it, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or have a look [here](#contributions-and-custom-features).
+If you want to [contribute](#contributions) to news-please, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or have a look [here](#contributions-and-custom-features).
 
 ## Announcements
 06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
 
 ## Extracted information
-news-please extracts the following attributes from news articles. Also, have a look at an [examplary json file](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json) extracted by news-please.
+news-please extracts the following attributes from news articles. An examplary json file as extracted by news-please can be found [here](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json).
 * headline
 * lead paragraph
 * main text
@@ -156,7 +156,7 @@ You can find more information on usage and development in our [wiki](https://git
 For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. Unfortunately, we cannot give support for issues or questions sent by email.
 
 ### Donation
-Your donations are greatly appreciated! They will free me up to work on this project more, to take on tasks such as adding new features, bug-fix support, and addressing further concerns with the library.
+Your donations are greatly appreciated! They will free us up to work on this project more, to take on tasks such as adding new features, bug-fix support, and addressing further concerns with the library. 
 
 * [GitHub Sponsors](https://github.com/sponsors/fhamborg)
 * [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
@@ -197,13 +197,13 @@ You can find more information on this and other news projects on our [website](h
 ## Contributions
 Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)). We also welcome pull requests that contribute your own ideas. 
 
-### Pull requests
-We love contributions by our users! If you plan to submit a pull request, please open an issue first and desribe the issue you want to fix or what you want to improve and how! This way, we can discuss whether we your idea could be added to news-please in the first place and if so, how it could best be implemented in order to fit into the existing architecture and coding style. In the issue, please state that you're planning to implement the issue yourself. 
-
 By contributing to this project, you agree that your contributions will be licensed under the project's [license](#license).
 
+### Pull requests
+We love contributions by our users! If you plan to submit a pull request, please open an issue first and desribe the issue you want to fix or what you want to improve and how! This way, we can discuss whether your idea could be added to news-please in the first place and if so, how it could best be implemented in order to fit into the existing architecture and coding style. In the issue, please state that you're planning to implement the issue yourself. 
+
 ### Custom features
-Please note that we usually do not have enough resources to implement features requested by users - instead we recommend to implement them yourself, and send a pull request.
+Please note that unfortunately we do not have resources to implement features requested by users. Instead, we recommend to implement them yourself and appreciate if you send a pull request so that the community can benefit from your improvements, too.
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
