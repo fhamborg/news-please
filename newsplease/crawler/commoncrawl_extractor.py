@@ -42,6 +42,8 @@ class CommonCrawlExtractor:
     __reuse_previously_downloaded_files = True
     # continue after error
     __continue_after_error = False
+    # ignore unicode errors
+    __ignore_unicode_errors = False
     # log level
     __log_level = logging.INFO
     __delete_warc_after_extraction = True
@@ -116,7 +118,7 @@ class CommonCrawlExtractor:
         # filter by date
         if self.__filter_start_date or self.__filter_end_date:
             if not article:
-                article = NewsPlease.from_warc(warc_record)
+                article = self._from_warc(warc_record)
 
             publishing_date = self.__get_publishing_date(warc_record, article)
             if not publishing_date:
@@ -227,6 +229,9 @@ class CommonCrawlExtractor:
             self.__logger.info('download completed, local file: %s', local_filepath)
             return local_filepath
 
+    def _from_warc(self, record):
+        return NewsPlease.from_warc(record, decode_errors="replace" if self.__ignore_unicode_errors else "strict")
+
     def __process_warc_gz_file(self, path_name):
         """
         Iterates all transactions in one WARC file and for each transaction tries to extract an article object.
@@ -248,10 +253,17 @@ class CommonCrawlExtractor:
                         counter_article_total += 1
 
                         # if the article passes filter tests, we notify the user
-                        filter_pass, article = self.filter_record(record)
+                        try:
+                            filter_pass, article = self.filter_record(record)
+                        except UnicodeDecodeError:
+                            filter_pass = False
                         if filter_pass:
-                            if not article:
-                                article = NewsPlease.from_warc(record)
+                            try:
+                                if not article:
+                                    article = self._from_warc(record)
+                            except UnicodeDecodeError:
+                                filter_pass = False
+                        if filter_pass:
                             counter_article_passed += 1
 
                             self.__logger.info('article pass (%s; %s; %s)', article.source_domain, article.date_publish,
@@ -311,7 +323,7 @@ class CommonCrawlExtractor:
                                  valid_hosts=None,
                                  start_date=None, end_date=None,
                                  strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
-                                 continue_after_error=True, show_download_progress=False,
+                                 continue_after_error=True, ignore_unicode_errors=False, show_download_progress=False,
                                  log_level=logging.ERROR, delete_warc_after_extraction=True,
                                  log_pathname_fully_extracted_warcs=None):
         """
@@ -343,6 +355,7 @@ class CommonCrawlExtractor:
             self.__local_download_dir_warc = local_download_dir_warc
         self.__reuse_previously_downloaded_files = reuse_previously_downloaded_files
         self.__continue_after_error = continue_after_error
+        self.__ignore_unicode_errors = ignore_unicode_errors
         self.__callback_on_article_extracted = callback_on_article_extracted
         self.__callback_on_warc_completed = callback_on_warc_completed
         self.__show_download_progress = show_download_progress
