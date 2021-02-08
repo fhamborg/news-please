@@ -39,7 +39,11 @@ class NewsPlease:
             # assume utf-8
             encoding = 'utf-8'
 
-        html = raw_stream.decode(encoding, errors=decode_errors)
+        try:
+            html = raw_stream.decode(encoding, errors=decode_errors)
+        except LookupError:
+            # non-existent encoding: fallback to utf-9
+            html = raw_stream.decode('utf-8', errors=decode_errors)
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
         article = NewsPlease.from_html(html, url=url, download_date=download_date)
