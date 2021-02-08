@@ -15,6 +15,10 @@ from newsplease.pipeline.pipelines import ExtractedInformationStorage
 from newsplease.crawler.simple_crawler import SimpleCrawler
 
 
+class EmptyResponseError(ValueError):
+    pass
+
+
 class NewsPlease:
     """
     Access news-please functionality via this interface
@@ -44,6 +48,8 @@ class NewsPlease:
         except LookupError:
             # non-existent encoding: fallback to utf-9
             html = raw_stream.decode('utf-8', errors=decode_errors)
+        if not html:
+            raise EmptyResponseError()
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
         article = NewsPlease.from_html(html, url=url, download_date=download_date)
