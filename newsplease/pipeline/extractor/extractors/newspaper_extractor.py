@@ -15,6 +15,9 @@ class NewspaperExtractor(AbstractExtractor):
         self.log = logging.getLogger(__name__)
         self.name = "newspaper"
 
+    def _article_kwargs(self):
+        return {}
+
     def extract(self, item):
         """Creates an instance of Article without a Download and returns an ArticleCandidate with the results of
         parsing the HTML-Code.
@@ -25,7 +28,7 @@ class NewspaperExtractor(AbstractExtractor):
         article_candidate = ArticleCandidate()
         article_candidate.extractor = self._name()
 
-        article = Article('')
+        article = Article('', **self._article_kwargs())
         article.set_html(item['spider_response'].body)
         article.parse()
         article_candidate.title = article.title
