@@ -33,7 +33,7 @@ class NewspaperExtractor(AbstractExtractor):
         article_candidate.text = article.text
         article_candidate.topimage = article.top_image
         article_candidate.author = article.authors
-        if article.publish_date is not None:
+        if article.publish_date:
             try:
                 article_candidate.publish_date = article.publish_date.strftime('%Y-%m-%d %H:%M:%S')
             except ValueError as exception:
