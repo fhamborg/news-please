@@ -17,7 +17,7 @@ from scrapy.utils.log import configure_logging
 from six.moves import urllib
 from warcio.archiveiterator import ArchiveIterator
 
-from .. import NewsPlease
+from .. import NewsPlease, EmptyResponseError
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
@@ -255,13 +255,13 @@ class CommonCrawlExtractor:
                         # if the article passes filter tests, we notify the user
                         try:
                             filter_pass, article = self.filter_record(record)
-                        except UnicodeDecodeError:
+                        except (UnicodeDecodeError, EmptyResponseError):
                             filter_pass = False
                         if filter_pass:
                             try:
                                 if not article:
                                     article = self._from_warc(record)
-                            except UnicodeDecodeError:
+                            except (UnicodeDecodeError, EmptyResponseError):
                                 filter_pass = False
                         if filter_pass:
                             counter_article_passed += 1
