@@ -325,9 +325,9 @@ class CommonCrawlExtractor:
                                  valid_hosts=None,
                                  start_date=None, end_date=None,
                                  strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
-                                 continue_after_error=True, ignore_unicode_errors=False, fetch_images=False,
+                                 continue_after_error=True, ignore_unicode_errors=False,
                                  show_download_progress=False, log_level=logging.ERROR, delete_warc_after_extraction=True,
-                                 log_pathname_fully_extracted_warcs=None):
+                                 log_pathname_fully_extracted_warcs=None, fetch_images=False):
         """
         Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
         successfully the callback function callback_on_article_extracted is invoked where the first parameter is the

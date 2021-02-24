@@ -23,6 +23,9 @@ that might have been installed with pip. Hence, you must run this script followi
 git clone https://github.com/fhamborg/news-please.git
 cd news-please
 python3 -m newsplease.examples.commoncrawl
+
+Note that by default the script does not extract main images since they are not contained
+WARC files. You can enable extraction of main images by setting
 """
 import hashlib
 import json
@@ -71,6 +74,10 @@ my_delete_warc_after_extraction = True
 # if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
 # crawling new WARC files. This assumes that the filter criteria have not been changed since the previous run!
 my_continue_process = True
+# if True, will crawl and extract main image of each article. Note that the WARC files
+# do not contain any images, so that news-please will crawl the current image from
+# the articles online webpage, if this option is enabled.
+my_fetch_images = False
 ############ END YOUR CONFIG #########
 
 
@@ -168,7 +175,8 @@ def main():
                                                number_of_extraction_processes=my_number_of_extraction_processes,
                                                log_level=my_log_level,
                                                delete_warc_after_extraction=my_delete_warc_after_extraction,
-                                               continue_process=True)
+                                               continue_process=True,
+                                               fetch_images=my_fetch_images)
 
 
 if __name__ == "__main__":

@@ -224,7 +224,7 @@ def __callback_on_warc_completed(warc_path, counter_article_passed, counter_arti
 
 def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extracted=None,
                                   callback_on_warc_completed=None, valid_hosts=None,
-                                  start_date=None, end_date=None, 
+                                  start_date=None, end_date=None,
                                   strict_date=True, reuse_previously_downloaded_files=True,
                                   local_download_dir_warc=None,
                                   continue_after_error=True, show_download_progress=False,
@@ -232,7 +232,8 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
                                   delete_warc_after_extraction=True,
                                   continue_process=True,
                                   log_pathname_fully_extracted_warcs=None,
-                                  extractor_cls=CommonCrawlExtractor):
+                                  extractor_cls=CommonCrawlExtractor,
+                                  fetch_images=fetch_images):
     """
     Starts a single CommonCrawlExtractor
     :param warc_download_url:
@@ -263,16 +264,17 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
                                                    show_download_progress=show_download_progress,
                                                    log_level=log_level,
                                                    delete_warc_after_extraction=delete_warc_after_extraction,
-                                                   log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs)
+                                                   log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs,
+                                                   fetch_images=fetch_images)
 
 
 def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_completed=None, valid_hosts=None,
-                           start_date=None, end_date=None, warc_files_start_date=None, strict_date=True, 
-                           reuse_previously_downloaded_files=True, local_download_dir_warc=None, 
+                           start_date=None, end_date=None, warc_files_start_date=None, strict_date=True,
+                           reuse_previously_downloaded_files=True, local_download_dir_warc=None,
                            continue_after_error=True, show_download_progress=False,
                            number_of_extraction_processes=4, log_level=logging.ERROR,
                            delete_warc_after_extraction=True, continue_process=True,
-                           extractor_cls=CommonCrawlExtractor):
+                           extractor_cls=CommonCrawlExtractor, fetch_images=False):
     """
     Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
     successfully the callback function callback_on_article_extracted is invoked where the first parameter is the
@@ -340,7 +342,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                                                 log_level=log_level,
                                                 delete_warc_after_extraction=delete_warc_after_extraction,
                                                 log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs,
-                                                extractor_cls=extractor_cls),
+                                                extractor_cls=extractor_cls,
+                                                fetch_images=fetch_images),
                                         warc_download_urls)
     else:
         for warc_download_url in warc_download_urls:
@@ -357,4 +360,5 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                                           log_level=log_level,
                                           delete_warc_after_extraction=delete_warc_after_extraction,
                                           log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs,
-                                          extractor_cls=extractor_cls)
+                                          extractor_cls=extractor_cls,
+                                          fetch_images=fetch_images)
