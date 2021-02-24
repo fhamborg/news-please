@@ -18,24 +18,34 @@ class Extractor:
 
         :param extractor_list: List of strings containing all extractors to be initialized.
         """
+        def proc_instance(instance):
+            if instance is not None:
+                self.log.info('Extractor initialized: %s', extractor)
+                self.extractor_list.append(instance)
+            else:
+                self.log.error("Misconfiguration: An unknown Extractor was found and"
+                               " will be ignored: %s", extractor)
+
         self.log = logging.getLogger(__name__)
         self.extractor_list = []
         for extractor in extractor_list:
 
-            module = importlib.import_module(__package__ + '.extractors.' + extractor)
+            if isinstance(extractor, tuple):
+                extractor_module = extractor[0]
+            else:
+                extractor_module = extractor
 
-            # check module for subclasses of AbstractExtractor
-            for member in inspect.getmembers(module, inspect.isclass):
-                if issubclass(member[1], AbstractExtractor) and member[0] != 'AbstractExtractor':
+            module = importlib.import_module(__package__ + '.extractors.' + extractor_module)
 
-                    # instantiate extractor
-                    instance = getattr(module, member[0], None)()
-                    if instance is not None:
-                        self.log.info('Extractor initialized: %s', extractor)
-                        self.extractor_list.append(instance)
-                    else:
-                        self.log.error("Misconfiguration: An unknown Extractor was found and"
-                                       " will be ignored: %s", extractor)
+            if isinstance(extractor, tuple):
+                proc_instance(getattr(module, extractor[1], None)())
+            else:
+                # check module for subclasses of AbstractExtractor
+                for member in inspect.getmembers(module, inspect.isclass):
+                    if issubclass(member[1], AbstractExtractor) and member[0] != 'AbstractExtractor':
+
+                        # instantiate extractor
+                        proc_instance(getattr(module, member[0], None)())
 
         self.cleaner = Cleaner()
         self.comparer = Comparer()

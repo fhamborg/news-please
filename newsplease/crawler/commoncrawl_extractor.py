@@ -44,6 +44,8 @@ class CommonCrawlExtractor:
     __continue_after_error = False
     # ignore unicode errors
     __ignore_unicode_errors = False
+    # fetch images
+    __fetch_images = False
     # log level
     __log_level = logging.INFO
     __delete_warc_after_extraction = True
@@ -230,7 +232,7 @@ class CommonCrawlExtractor:
             return local_filepath
 
     def _from_warc(self, record):
-        return NewsPlease.from_warc(record, decode_errors="replace" if self.__ignore_unicode_errors else "strict")
+        return NewsPlease.from_warc(record, decode_errors="replace" if self.__ignore_unicode_errors else "strict", fetch_images=self.__fetch_images)
 
     def __process_warc_gz_file(self, path_name):
         """
@@ -323,8 +325,8 @@ class CommonCrawlExtractor:
                                  valid_hosts=None,
                                  start_date=None, end_date=None,
                                  strict_date=True, reuse_previously_downloaded_files=True, local_download_dir_warc=None,
-                                 continue_after_error=True, ignore_unicode_errors=False, show_download_progress=False,
-                                 log_level=logging.ERROR, delete_warc_after_extraction=True,
+                                 continue_after_error=True, ignore_unicode_errors=False, fetch_images=False,
+                                 show_download_progress=False, log_level=logging.ERROR, delete_warc_after_extraction=True,
                                  log_pathname_fully_extracted_warcs=None):
         """
         Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
@@ -356,6 +358,7 @@ class CommonCrawlExtractor:
         self.__reuse_previously_downloaded_files = reuse_previously_downloaded_files
         self.__continue_after_error = continue_after_error
         self.__ignore_unicode_errors = ignore_unicode_errors
+        self.__fetch_images = fetch_images
         self.__callback_on_article_extracted = callback_on_article_extracted
         self.__callback_on_warc_completed = callback_on_warc_completed
         self.__show_download_progress = show_download_progress

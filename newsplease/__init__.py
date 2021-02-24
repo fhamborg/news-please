@@ -25,7 +25,7 @@ class NewsPlease:
     """
 
     @staticmethod
-    def from_warc(warc_record, decode_errors="replace"):
+    def from_warc(warc_record, decode_errors="replace", fetch_images=True):
         """
         Extracts relevant information from a WARC record. This function does not invoke scrapy but only uses the article
         extractor.
@@ -52,11 +52,11 @@ class NewsPlease:
             raise EmptyResponseError()
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
-        article = NewsPlease.from_html(html, url=url, download_date=download_date)
+        article = NewsPlease.from_html(html, url=url, download_date=download_date, fetch_images=fetch_images)
         return article
 
     @staticmethod
-    def from_html(html, url=None, download_date=None):
+    def from_html(html, url=None, download_date=None, fetch_images=True):
         """
         Extracts relevant information from an HTML page given as a string. This function does not invoke scrapy but only
         uses the article extractor. If you have the original URL make sure to provide it as this helps NewsPlease
@@ -66,7 +66,13 @@ class NewsPlease:
         :return:
         """
         extractor = article_extractor.Extractor(
-            ['newspaper_extractor', 'readability_extractor', 'date_extractor', 'lang_detect_extractor'])
+            (
+                ['newspaper_extractor']
+                if fetch_images
+                else [("newspaper_extractor_no_images", "NewspaperExtractorNoImages")]
+            ) +
+            ['readability_extractor', 'date_extractor', 'lang_detect_extractor']
+        )
 
         title_encoded = ''.encode()
         if not url:
