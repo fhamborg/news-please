@@ -233,7 +233,7 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
                                   continue_process=True,
                                   log_pathname_fully_extracted_warcs=None,
                                   extractor_cls=CommonCrawlExtractor,
-                                  fetch_images=fetch_images):
+                                  fetch_images=False):
     """
     Starts a single CommonCrawlExtractor
     :param warc_download_url:
