@@ -43,6 +43,8 @@ __counter_warc_skipped = 0
 __counter_warc_processed = 0
 __start_time = time.time()
 
+# When Common Crawl started.
+__common_crawl_start_date = datetime.datetime(2016, 8, 26)
 
 def __setup(local_download_dir_warc, log_level):
     """
@@ -90,7 +92,14 @@ def __get_download_url(name):
     """
     return __cc_base_url + name
 
-def __iterate_by_month(start_date, end_date, month_step=1):
+
+def __iterate_by_month(start_date=None, end_date=None, month_step=1):
+    if start_date is None:
+        # The starting month of Common Crawl.
+        start_date = __common_crawl_start_date
+    if end_date is None:
+        # Until now.
+        end_date = datetime.datetime.today()
     current_date = start_date
     while current_date < end_date:
         yield current_date
@@ -109,11 +118,22 @@ def __extract_date_from_warc_filename(path):
     return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
 
 
-def __get_remote_index(warc_files_start_date):
+def __date_within_period(date, start_date=None, end_date=None):
+    if start_date is None:
+        # The starting month of Common Crawl.
+        start_date = __common_crawl_start_date
+    if end_date is None:
+        # Until now.
+        end_date = datetime.datetime.today()
+    return start_date <= date < end_date
+
+
+def __get_remote_index(warc_files_start_date, warc_files_end_date):
     """
     Gets the index of news crawl files from commoncrawl.org and returns an array of names
     :param warc_files_start_date: only list .warc files with greater or equal date in
     their filename
+    :param warc_files_end_date: only list .warc files with smaller date in their filename
     :return:
     """
 
@@ -128,7 +148,7 @@ def __get_remote_index(warc_files_start_date):
         # get the remote info
 
         cmd = ''
-        if warc_files_start_date:
+        if warc_files_start_date or warc_files_end_date:
             # cleanup
             try:
                 os.remove(temp_filename)
@@ -136,7 +156,7 @@ def __get_remote_index(warc_files_start_date):
                 pass
 
             # The news files are grouped per year and month in separate folders
-            warc_dates = __iterate_by_month(warc_files_start_date, datetime.datetime.today())
+            warc_dates = __iterate_by_month(start_date=warc_files_start_date, end_date=warc_files_end_date)
             for date in warc_dates:
                 year = date.strftime('%Y')
                 month = date.strftime('%m')
@@ -155,10 +175,15 @@ def __get_remote_index(warc_files_start_date):
 
     lines = stdout_data.splitlines()
 
-    if warc_files_start_date:
+    if warc_files_start_date or warc_files_end_date:
         # Now filter further on day of month, hour, minute
-        lines = [p for p in lines
-                 if __extract_date_from_warc_filename(p) >= warc_files_start_date]
+        lines = [
+            p for p in lines if __date_within_period(
+                __extract_date_from_warc_filename(p),
+                start_date=warc_files_start_date,
+                end_date=warc_files_end_date,
+            )
+        ]
 
     return lines
 
@@ -269,7 +294,7 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
 
 
 def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_completed=None, valid_hosts=None,
-                           start_date=None, end_date=None, warc_files_start_date=None, strict_date=True,
+                           start_date=None, end_date=None, warc_files_start_date=None, warc_files_end_date=None, strict_date=True,
                            reuse_previously_downloaded_files=True, local_download_dir_warc=None,
                            continue_after_error=True, show_download_progress=False,
                            number_of_extraction_processes=4, log_level=logging.ERROR,
@@ -286,6 +311,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
     :param valid_hosts:
     :param start_date:
     :param end_date:
+    :param warc_files_start_date
+    :param warc_files_end_date
     :param strict_date:
     :param reuse_previously_downloaded_files:
     :param local_download_dir_warc:
@@ -300,7 +327,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
     global __extern_callback_on_warc_completed
     __extern_callback_on_warc_completed = callback_on_warc_completed
 
-    cc_news_crawl_names = __get_remote_index(warc_files_start_date)
+    cc_news_crawl_names = __get_remote_index(warc_files_start_date, warc_files_end_date)
     global __number_of_warc_files_on_cc
     __number_of_warc_files_on_cc = len(cc_news_crawl_names)
     __logger.info('found %i files at commoncrawl.org', __number_of_warc_files_on_cc)
