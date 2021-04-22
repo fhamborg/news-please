@@ -54,6 +54,10 @@ my_filter_start_date = None  # datetime.datetime(2016, 1, 1)
 # end date (if None, any date is OK as end date), as datetime
 my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
 # Only .warc files published within [my_warc_files_start_date, my_warc_files_end_date) will be downloaded.
+# Note that the date a warc file has been published does not imply it contains only news
+# articles from that date. Instead, you must assume that the warc file can contain articles
+# from ANY time before the warc file was published, e.g., a warc file published in August 2020
+# may contain news articles from December 2016.
 my_warc_files_start_date = None # example: datetime.datetime(2020, 3, 1)
 my_warc_files_end_date = None # example: datetime.datetime(2020, 3, 2)
 # if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
