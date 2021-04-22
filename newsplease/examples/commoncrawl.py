@@ -53,8 +53,10 @@ my_filter_valid_hosts = []  # example: ['elrancaguino.cl']
 my_filter_start_date = None  # datetime.datetime(2016, 1, 1)
 # end date (if None, any date is OK as end date), as datetime
 my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
-# if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
+# Only .warc files published within [my_warc_files_start_date, my_warc_files_end_date) will be downloaded.
 my_warc_files_start_date = None # example: datetime.datetime(2020, 3, 1)
+my_warc_files_end_date = None # example: datetime.datetime(2020, 3, 2)
+# if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
 my_filter_strict_date = True
 # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
@@ -167,6 +169,7 @@ def main():
                                                start_date=my_filter_start_date,
                                                end_date=my_filter_end_date,
                                                warc_files_start_date=my_warc_files_start_date,
+                                               warc_files_end_date=my_warc_files_end_date,
                                                strict_date=my_filter_strict_date,
                                                reuse_previously_downloaded_files=my_reuse_previously_downloaded_files,
                                                local_download_dir_warc=my_local_download_dir_warc,
