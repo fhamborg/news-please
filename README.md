@@ -52,6 +52,12 @@ news-please supports three main use cases, which are explained in more detail in
 ## Getting started
 It's super easy, we promise!
 
+### Requirements
+news-please depends on cchardet for character encoding
+```
+$ pip3 install cchardet
+```
+
 ### Installation
 news-please runs on Python 3.5+.
 ```
