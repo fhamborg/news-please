@@ -205,7 +205,7 @@ By contributing to this project, you agree that your contributions will be licen
 We love contributions by our users! If you plan to submit a pull request, please open an issue first and desribe the issue you want to fix or what you want to improve and how! This way, we can discuss whether your idea could be added to news-please in the first place and if so, how it could best be implemented in order to fit into the existing architecture and coding style. In the issue, please state that you're planning to implement the issue yourself. 
 
 ### Custom features
-Please note that unfortunately we do not have resources to implement features requested by users. Instead, we recommend to implement them yourself and appreciate if you send a pull request so that the community can benefit from your improvements, too.
+Please note that unfortunately we do not have resources to implement features requested by users. Instead, we recommend that you implement features you need and if you'd like open a pull request here so that the community can benefit from your improvements, too.
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
