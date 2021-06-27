@@ -25,7 +25,7 @@ cd news-please
 python3 -m newsplease.examples.commoncrawl
 
 Note that by default the script does not extract main images since they are not contained
-WARC files. You can enable extraction of main images by setting
+WARC files. You can enable extraction of main images by setting `my_fetch_images=True`
 """
 import hashlib
 import json
