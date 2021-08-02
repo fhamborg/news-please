@@ -1,12 +1,13 @@
 ---
 name: Bug report
-about: Create a report to help us improve news-please. Please use this issue template when reporting a bug or other issue, always. It helps us to better understand the issue at hand.
+about: Create a report to help us improve news-please. Please always use this issue template when reporting a bug or other issue. It helps us to better understand the issue at hand.
 
 ---
 
 **Mandatory**
 * [ ] I read the documentation ([readme](https://github.com/fhamborg/news-please/blob/master/README.md) and [wiki](https://github.com/fhamborg/news-please/wiki)).
 * [ ] I searched other issues (including closed issues) and could not find any to be related. If you find related issues post them below or directly add your issue to the most related one.
+* [ ] I confirm that this bug report does not report on a specific news site where news-please does not work. Please keep in mind that news-please is a generic crawler so it is expected that it will not work for all sites well or even at all. 
 
 Related issues:
 * add them here
