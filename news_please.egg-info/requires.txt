@@ -19,6 +19,7 @@ lxml>=3.3.5
 awscli>=1.11.117
 hurry.filesize>=0.9
 bs4
+cchardet>=2.1.7
 
 [:sys_platform == "win32"]
 pywin32>=220

@@ -114,11 +114,15 @@ def __extract_date_from_warc_filename(path):
     # Assume the filename pattern is CC-NEWS-20160911145202-00018.warc.gz
     fn = fn.replace('CC-NEWS-', '')
     dt = fn.split('-')[0]
-
-    return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
+    try:
+        return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
+    except ValueError as e:
+        #raise ValueError(f'Could not convert fn={fn},dt={dt}')
+        return None #20210327090019
 
 
 def __date_within_period(date, start_date=None, end_date=None):
+    if date is None: return False
     if start_date is None:
         # The starting month of Common Crawl.
         start_date = __common_crawl_start_date
