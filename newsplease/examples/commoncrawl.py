@@ -58,29 +58,25 @@ my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
 # articles from that date. Instead, you must assume that the warc file can contain articles
 # from ANY time before the warc file was published, e.g., a warc file published in August 2020
 # may contain news articles from December 2016.
-my_warc_files_start_date = None # example: datetime.datetime(2020, 3, 1)
-my_warc_files_start_date = datetime.datetime(2021, 3, 1,12, 30)
-my_warc_files_end_date = datetime.datetime(2021, 3, 1, 12, 55)
+
+my_warc_files_start_date = None #datetime.datetime(2021, 3, 1,12, 30)
+my_warc_files_end_date = None #datetime.datetime(2021, 3, 15, 12, 55)
 # if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
 my_filter_strict_date = True
 # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
 # again. Note that there is no check whether the file has been downloaded completely or is valid!
 my_reuse_previously_downloaded_files = True
-# continue after error
-my_continue_after_error = True
-# show the progress of downloading the WARC files
-my_show_download_progress = True
-# log_level
+my_continue_after_error = True  # continue after error
+my_show_download_progress = True  # show the progress of downloading the WARC files
 my_log_level = logging.INFO
-# json export style
-my_json_export_style = 1  # 0 (minimize), 1 (pretty)
-# number of extraction processes
-my_number_of_extraction_processes = 4
-# if True, the WARC file will be deleted after all articles have been extracted from it
-my_delete_warc_after_extraction = True
-# if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
+my_json_export_style = 0  # 0 (minimize), 1 (pretty)
+
+my_number_of_extraction_processes = 1 # only 1 URL,
+my_delete_warc_after_extraction = True # if True, the WARC file will be deleted after all articles have been extracted from it
+
+my_continue_process = True # if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
 # crawling new WARC files. This assumes that the filter criteria have not been changed since the previous run!
-my_continue_process = True
+
 # if True, will crawl and extract main image of each article. Note that the WARC files
 # do not contain any images, so that news-please will crawl the current image from
 # the articles online webpage, if this option is enabled.

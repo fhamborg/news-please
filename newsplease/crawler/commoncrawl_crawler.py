@@ -5,6 +5,7 @@ and host list, can be defined. Currently, all WARC files will be downloaded to t
 not otherwise specified.
 """
 import logging
+from multiprocessing.sharedctypes import Value
 import os
 import subprocess
 import tempfile
@@ -281,7 +282,7 @@ def __start_commoncrawl_extractor(warc_download_url, callback_on_article_extract
         to add custom filtering by overriding .filter_record(...)
     :return:
     """
-    commoncrawl_extractor = extractor_cls()
+    commoncrawl_extractor: CommonCrawlExtractor = extractor_cls()
     commoncrawl_extractor.extract_from_commoncrawl(warc_download_url, callback_on_article_extracted,
                                                    callback_on_warc_completed=callback_on_warc_completed,
                                                    valid_hosts=valid_hosts,
@@ -303,28 +304,11 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                            continue_after_error=True, show_download_progress=False,
                            number_of_extraction_processes=4, log_level=logging.ERROR,
                            delete_warc_after_extraction=True, continue_process=True,
-                           extractor_cls=CommonCrawlExtractor, fetch_images=False):
+                           extractor_cls=CommonCrawlExtractor, fetch_images=False, process_hardcoded_partition=True):
     """
     Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
     successfully the callback function callback_on_article_extracted is invoked where the first parameter is the
     article object.
-    :param continue_process:
-    :param delete_warc_after_extraction:
-    :param number_of_extraction_processes:
-    :param callback_on_article_extracted:
-    :param valid_hosts:
-    :param start_date:
-    :param end_date:
-    :param warc_files_start_date
-    :param warc_files_end_date
-    :param strict_date:
-    :param reuse_previously_downloaded_files:
-    :param local_download_dir_warc:
-    :param continue_after_error:
-    :param show_download_progress:
-    :param log_level:
-    :param extractor_cls:
-    :return:
     """
     __setup(local_download_dir_warc, log_level)
 
@@ -340,6 +324,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
     __logger.info('creating extraction process pool with %i processes', number_of_extraction_processes)
     warc_download_urls = []
     fully_extracted_warc_urls = __get_list_of_fully_extracted_warc_urls()
+    __logger.info(f'found {__number_of_warc_files_on_cc} files at commoncrawl.org {len(fully_extracted_warc_urls)} locally')
+
     for name in cc_news_crawl_names:
         warc_download_url = __get_download_url(name)
         if continue_process:
@@ -356,8 +342,27 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
         else:
             # if not continue process, then always add
             warc_download_urls.append(warc_download_url)
-
+    #raise ValueError(f'n_warc_download_urls={len(warc_download_urls)}')
     # run the crawler in the current, single process if number of extraction processes is set to 1
+    if True:
+        import os
+        import numpy as np
+        node_id = int(os.environ['CC_NODE_ID'])
+        n_nodes = 30 # number of nodes
+        chunks = np.array_split(warc_download_urls, n_nodes)
+        assert sum(chunk_lens) == len(warc_download_urls), f'{sum(chunk_lens)} != {len(warc_download_urls)}'
+        chunk_lens = [len(x) for x in chunks]
+        assert len(chunk_lens) == n_nodes
+
+        my_chunk = chunks[node_id]
+        
+
+    else:
+        my_chunk = warc_download_urls
+        
+        
+
+
     if number_of_extraction_processes > 1:
         with Pool(number_of_extraction_processes) as extraction_process_pool:
             extraction_process_pool.map(partial(__start_commoncrawl_extractor,
@@ -375,8 +380,9 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                                                 log_pathname_fully_extracted_warcs=__log_pathname_fully_extracted_warcs,
                                                 extractor_cls=extractor_cls,
                                                 fetch_images=fetch_images),
-                                        warc_download_urls)
+                                        my_chunk)
     else:
+        raise ValueError('1 Process')
         for warc_download_url in warc_download_urls:
             __start_commoncrawl_extractor(warc_download_url,
                                           callback_on_article_extracted=callback_on_article_extracted,
