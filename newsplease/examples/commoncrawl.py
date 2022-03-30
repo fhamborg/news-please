@@ -37,6 +37,8 @@ from datetime import date
 
 from ..crawler import commoncrawl_crawler as commoncrawl_crawler
 
+import socket
+
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
@@ -71,7 +73,9 @@ my_show_download_progress = True  # show the progress of downloading the WARC fi
 my_log_level = logging.INFO
 my_json_export_style = 0  # 0 (minimize), 1 (pretty)
 
-my_number_of_extraction_processes = 1 # only 1 URL,
+my_number_of_extraction_processes = 64 # (os.cpu_count() / 2)
+
+
 my_delete_warc_after_extraction = True # if True, the WARC file will be deleted after all articles have been extracted from it
 
 my_continue_process = True # if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then

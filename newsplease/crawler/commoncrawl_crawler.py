@@ -13,11 +13,50 @@ import time
 from functools import partial
 from multiprocessing import Pool
 import datetime
-
+import socket
 from dateutil import parser
 from scrapy.utils.log import configure_logging
 
 from ..crawler.commoncrawl_extractor import CommonCrawlExtractor
+ORACLE_HOSTS = {'inst-0kygf-elegant-pegasus': 0,
+ 'inst-1peuj-elegant-pegasus': 1,
+ 'inst-4ilmp-elegant-pegasus': 2,
+ 'inst-4mhhw-elegant-pegasus': 3,
+ 'inst-6utfo-elegant-pegasus': 4,
+ 'inst-8cas1-elegant-pegasus': 5,
+ 'inst-bm1tl-elegant-pegasus': 6,
+ 'inst-c3vih-elegant-pegasus': 7,
+ 'inst-ceia2-elegant-pegasus': 8,
+ 'inst-cu41e-elegant-pegasus': 9,
+ 'inst-czlp2-elegant-pegasus': 10,
+ 'inst-d6zdi-elegant-pegasus': 11,
+ 'inst-dxwdy-elegant-pegasus': 12,
+ 'inst-e06o7-elegant-pegasus': 13,
+ 'inst-e7jdm-elegant-pegasus': 14,
+ 'inst-eg5rm-elegant-pegasus': 15,
+ 'inst-evudf-elegant-pegasus': 16,
+ 'inst-faunu-elegant-pegasus': 17,
+ 'inst-ieq5l-elegant-pegasus': 18,
+ 'inst-ixm8o-elegant-pegasus': 19,
+ 'inst-kwjdc-elegant-pegasus': 20,
+ 'inst-n8ztw-elegant-pegasus': 21,
+ 'inst-nmggj-elegant-pegasus': 22,
+ 'inst-pvwsj-elegant-pegasus': 23,
+ 'inst-qsk26-elegant-pegasus': 24,
+ 'inst-qukiw-elegant-pegasus': 25,
+ 'inst-rt9cr-elegant-pegasus': 26,
+ 'inst-szfph-elegant-pegasus': 27,
+ 'inst-t6h37-elegant-pegasus': 28,
+ 'inst-xl6if-elegant-pegasus': 29,
+ 'inst-z2ukx-elegant-pegasus': 30}
+
+def _get_host_id():
+    
+    hostname = socket.gethostname()
+    try:
+        return ORACLE_HOSTS[hostname]
+    except KeyError:
+        raise KeyError(f'hostname {hostname} not in {ORACLE_HOSTS}')
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
@@ -344,25 +383,16 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
             warc_download_urls.append(warc_download_url)
     #raise ValueError(f'n_warc_download_urls={len(warc_download_urls)}')
     # run the crawler in the current, single process if number of extraction processes is set to 1
-    if True:
-        import os
-        import numpy as np
-        node_id = int(os.environ['CC_NODE_ID'])
-        n_nodes = 30 # number of nodes
-        chunks = np.array_split(warc_download_urls, n_nodes)
-        assert sum(chunk_lens) == len(warc_download_urls), f'{sum(chunk_lens)} != {len(warc_download_urls)}'
-        chunk_lens = [len(x) for x in chunks]
-        assert len(chunk_lens) == n_nodes
-
-        my_chunk = chunks[node_id]
-        
-
-    else:
-        my_chunk = warc_download_urls
-        
-        
-
-
+    import os
+    import numpy as np
+    node_id = _get_host_id()
+    n_nodes = len(ORACLE_HOSTS) # number of nodes
+    chunks = np.array_split(warc_download_urls, n_nodes)
+    
+    chunk_lens = [len(x) for x in chunks]
+    assert len(chunk_lens) == n_nodes
+    assert sum(chunk_lens) == len(warc_download_urls), f'{sum(chunk_lens)} != {len(warc_download_urls)}'
+    my_chunk = chunks[node_id]
     if number_of_extraction_processes > 1:
         with Pool(number_of_extraction_processes) as extraction_process_pool:
             extraction_process_pool.map(partial(__start_commoncrawl_extractor,
