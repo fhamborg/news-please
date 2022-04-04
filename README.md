@@ -59,7 +59,7 @@ $ pip3 install news-please
 ```
 
 ### Use within your own code (as a library)
-You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction (given only the root URL) or continuous crawling mode (using RSS), you'll need to use the CLI mode.
+You can access the core functionality of news-please, i.e. extraction of semi-structured information from one or more news articles, in your own code by using news-please in library mode. If you want to use news-please's full website extraction (given only the root URL) or continuous crawling mode (using RSS), you'll need to use the CLI mode, which is described later.
 ```python
 from newsplease import NewsPlease
 article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
@@ -197,15 +197,15 @@ If you are using news-please, please cite our [paper](http://www.gipp.com/wp-con
 You can find more information on this and other news projects on our [website](https://felix.hamborg.eu/).
 
 ## Contributions
-Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix bugs (issues are found under the [issues tab](https://github.com/fhamborg/news-please/issues)). We also welcome pull requests that contribute your own ideas. 
+Do you want to contribute? Great, we are always happy for any support on this project! We are particularly looking for pull requests that fix [bugs](https://github.com/fhamborg/news-please/issues). We also welcome pull requests that contribute your own ideas. 
 
 By contributing to this project, you agree that your contributions will be licensed under the project's [license](#license).
 
 ### Pull requests
-We love contributions by our users! If you plan to submit a pull request, please open an issue first and desribe the issue you want to fix or what you want to improve and how! This way, we can discuss whether your idea could be added to news-please in the first place and if so, how it could best be implemented in order to fit into the existing architecture and coding style. In the issue, please state that you're planning to implement the issue yourself. 
+We love contributions by our users! If you plan to submit a pull request, please open an issue first and desribe the issue you want to fix or what you want to improve and how! This way, we can discuss whether your idea could be added to news-please in the first place and, if so, how it could best be implemented in order to fit into architecture and coding style. In the issue, please state that you're planning to implement the described features. 
 
 ### Custom features
-Please note that unfortunately we do not have resources to implement features requested by users. Instead, we recommend to implement them yourself and appreciate if you send a pull request so that the community can benefit from your improvements, too.
+Unfortunately, we do not have resources to implement features requested by users. Instead, we recommend that you implement features you need and if you'd like open a pull request here so that the community can benefit from your improvements, too.
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use news-please except in compliance with the License. A copy of the License is included in the project, see the file [LICENSE.txt](LICENSE.txt).
