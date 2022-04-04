@@ -52,7 +52,7 @@ class CommonCrawlExtractor:
     __log_pathname_fully_extracted_warcs = None
 
     # commoncrawl.org
-    __cc_base_url = 'https://commoncrawl.s3.amazonaws.com/'
+    __cc_base_url = 'https://data.commoncrawl.org/'
     __cc_news_crawl_names = None
 
     # event handler called when an article was extracted successfully and passed all filter criteria
