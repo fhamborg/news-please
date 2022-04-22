@@ -324,7 +324,8 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
                            continue_after_error=True, show_download_progress=False,
                            number_of_extraction_processes=4, log_level=logging.ERROR,
                            delete_warc_after_extraction=True, continue_process=True,
-                           extractor_cls=CommonCrawlExtractor, fetch_images=False):
+                           extractor_cls=CommonCrawlExtractor, fetch_images=False,
+                           dry_run=False):
     """
     Crawl and extract articles form the news crawl provided by commoncrawl.org. For each article that was extracted
     successfully the callback function callback_on_article_extracted is invoked where the first parameter is the
@@ -345,6 +346,7 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
     :param show_download_progress:
     :param log_level:
     :param extractor_cls:
+    :param dry_run: if True just list the WARC files to be processed but do not actually process them
     :return:
     """
     __setup(local_download_dir_warc, log_level)
@@ -376,6 +378,10 @@ def crawl_from_commoncrawl(callback_on_article_extracted, callback_on_warc_compl
         else:
             # if not continue process, then always add
             warc_paths.append(warc_path)
+
+    if dry_run:
+        for warc_path in warc_paths:
+            __logger.info('(Dry run) Selected WARC file for processing: %s', warc_path)
 
     # run the crawler in the current, single process if number of extraction processes is set to 1
     elif number_of_extraction_processes > 1:
