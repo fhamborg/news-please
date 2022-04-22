@@ -122,7 +122,11 @@ def __extract_date_from_warc_filename(path):
     fn = fn.replace('CC-NEWS-', '')
     dt = fn.split('-')[0]
 
-    return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
+    try:
+        return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
+    except:
+        # return date clearly outside the range
+        return datetime.datetime(1900, 1, 1)
 
 
 def __date_within_period(date, start_date=None, end_date=None):
