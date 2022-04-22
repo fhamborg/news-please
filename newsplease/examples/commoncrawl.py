@@ -14,10 +14,6 @@ possibility of passing in a your own subclass of CommonCrawlExtractor as
 extractor_cls=... . One use case here is that your subclass can customise
 filtering by overriding `.filter_record(...)`.
 
-In case the script crashes and contains a log message in the beginning that states that only 1 file on AWS storage
-was found, make sure that awscli was correctly installed. You can check that by running aws --version from a terminal.
-If aws is not installed, you can (on Ubuntu) also install it using sudo apt-get install awscli.
-
 This script uses relative imports to ensure that the latest, local version of news-please is used, instead of the one
 that might have been installed with pip. Hence, you must run this script following this workflow.
 git clone https://github.com/fhamborg/news-please.git
@@ -84,6 +80,8 @@ my_continue_process = True
 # do not contain any images, so that news-please will crawl the current image from
 # the articles online webpage, if this option is enabled.
 my_fetch_images = False
+# if True, just list the WARC files to be processed, but do not actually download and process them
+my_dry_run=False
 ############ END YOUR CONFIG #########
 
 
@@ -183,7 +181,8 @@ def main():
                                                log_level=my_log_level,
                                                delete_warc_after_extraction=my_delete_warc_after_extraction,
                                                continue_process=True,
-                                               fetch_images=my_fetch_images)
+                                               fetch_images=my_fetch_images,
+                                               dry_run=my_dry_run)
 
 
 if __name__ == "__main__":
