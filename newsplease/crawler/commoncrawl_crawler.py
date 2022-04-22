@@ -108,12 +108,15 @@ def __iterate_by_month(start_date=None, end_date=None, month_step=1):
         # Until now.
         end_date = datetime.datetime.today()
     current_date = start_date
-    while current_date < end_date:
-        yield current_date
+    yield current_date
+    while True:
         carry, new_month = divmod(current_date.month - 1 + month_step, 12)
         new_month += 1
         current_date = current_date.replace(year=current_date.year + carry,
                                             month=new_month)
+        yield current_date
+        if current_date > end_date:
+            break
 
 
 def __extract_date_from_warc_filename(path):
