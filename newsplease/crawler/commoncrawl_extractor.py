@@ -203,7 +203,7 @@ class CommonCrawlExtractor:
             if self.__s3_client:
                 with open(local_filepath, 'wb') as file_obj:
                     self.__s3_client.download_fileobj(self.__cc_bucket, path, file_obj)
-                    return local_file_path
+                return local_filepath
             else:
                 url = self.__cc_base_url + path
                 self.__logger.info('downloading %s (local: %s)', url, local_filepath)
