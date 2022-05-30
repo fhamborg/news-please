@@ -6,11 +6,12 @@ not otherwise specified.
 """
 import logging
 import os
-import subprocess
 import sys
 import time
 
 from ago import human
+import boto3
+import botocore
 from dateutil import parser
 from hurry.filesize import size
 from scrapy.utils.log import configure_logging
@@ -18,6 +19,7 @@ from six.moves import urllib
 from warcio.archiveiterator import ArchiveIterator
 
 from .. import NewsPlease, EmptyResponseError
+from . import commoncrawl_crawler
 
 __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
@@ -26,7 +28,7 @@ __credits__ = ["Sebastian Nagel"]
 
 class CommonCrawlExtractor:
     # remote url where we can download the warc file
-    __warc_download_url = None
+    __warc_path = None
     # download dir for warc files
     __local_download_dir_warc = './cc_download_warc/'
     # hosts (if None or empty list, any host is OK)
@@ -53,6 +55,7 @@ class CommonCrawlExtractor:
 
     # commoncrawl.org
     __cc_base_url = 'https://data.commoncrawl.org/'
+    __cc_bucket = 'commoncrawl'
     __cc_news_crawl_names = None
 
     # event handler called when an article was extracted successfully and passed all filter criteria
@@ -73,7 +76,7 @@ class CommonCrawlExtractor:
         """
         os.makedirs(self.__local_download_dir_warc, exist_ok=True)
 
-        # make loggers quite
+        # make loggers quiet
         configure_logging({"LOG_LEVEL": "ERROR"})
         logging.getLogger('requests').setLevel(logging.CRITICAL)
         logging.getLogger('readability').setLevel(logging.CRITICAL)
@@ -82,12 +85,16 @@ class CommonCrawlExtractor:
         logging.getLogger('newsplease').setLevel(logging.CRITICAL)
         logging.getLogger('urllib3').setLevel(logging.CRITICAL)
 
+        boto3.set_stream_logger('botocore', self.__log_level)
+        boto3.set_stream_logger('boto3', self.__log_level)
+        boto3.set_stream_logger('s3transfer', self.__log_level)
+
         # set own logger
         logging.basicConfig(level=self.__log_level)
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(self.__log_level)
 
-    def __register_fully_extracted_warc_file(self, warc_url):
+    def __register_fully_extracted_warc_file(self, warc_path):
         """
         Saves the URL warc_url in the log file for fully extracted WARC URLs
         :param warc_url:
@@ -95,7 +102,7 @@ class CommonCrawlExtractor:
         """
         if self.__log_pathname_fully_extracted_warcs is not None:
             with open(self.__log_pathname_fully_extracted_warcs, 'a') as log_file:
-                log_file.write(warc_url + '\n')
+                log_file.write(warc_path + '\n')
 
     def filter_record(self, warc_record, article=None):
         """
@@ -146,45 +153,12 @@ class CommonCrawlExtractor:
         else:
             return None
 
-    def __get_download_url(self, name):
-        """
-        Creates a download url given the name
-        :param name:
-        :return:
-        """
-        return self.__cc_base_url + name
-
     def __get_remote_index(self):
         """
         Gets the index of news crawl files from commoncrawl.org and returns an array of names
         :return:
         """
-        temp_filename = "tmpaws.txt"
-
-        if os.name == 'nt':
-            awk_parameter = '"{ print $4 }"'
-        else:
-            awk_parameter = "'{ print $4 }'"
-
-        # get the remote info
-        cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " \
-              "awk %s %s " % (temp_filename, awk_parameter, temp_filename)
-
-        self.__logger.info('executing: %s', cmd)
-        exitcode, stdout_data = subprocess.getstatusoutput(cmd)
-
-        if exitcode > 0:
-            raise Exception(stdout_data)
-
-        print(stdout_data)
-
-        try:
-            os.remove(temp_filename)
-        except OSError:
-            pass
-
-        lines = stdout_data.splitlines()
-        return lines
+        return commoncrawl_crawler.__get_remote_index()
 
     def __on_download_progress_update(self, blocknum, blocksize, totalsize):
         """
@@ -206,13 +180,13 @@ class CommonCrawlExtractor:
         else:  # total size is unknown
             sys.stdout.write("\rread %s" % (size(readsofar)))
 
-    def __download(self, url):
+    def __download(self, path):
         """
         Download and save a file locally.
         :param url: Where to download from
         :return: File path name of the downloaded file
         """
-        local_filename = urllib.parse.quote_plus(url)
+        local_filename = urllib.parse.quote_plus(path)
         local_filepath = os.path.join(self.__local_download_dir_warc, local_filename)
 
         if os.path.isfile(local_filepath) and self.__reuse_previously_downloaded_files:
@@ -226,10 +200,16 @@ class CommonCrawlExtractor:
                 pass
 
             # download
-            self.__logger.info('downloading %s (local: %s)', url, local_filepath)
-            urllib.request.urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
-            self.__logger.info('download completed, local file: %s', local_filepath)
-            return local_filepath
+            if self.__s3_client:
+                with open(local_filepath, 'wb') as file_obj:
+                    self.__s3_client.download_fileobj(self.__cc_bucket, path, file_obj)
+                return local_filepath
+            else:
+                url = self.__cc_base_url + path
+                self.__logger.info('downloading %s (local: %s)', url, local_filepath)
+                urllib.request.urlretrieve(url, local_filepath, reporthook=self.__on_download_progress_update)
+                self.__logger.info('download completed, local file: %s', local_filepath)
+                return local_filepath
 
     def _from_warc(self, record):
         return NewsPlease.from_warc(record, decode_errors="replace" if self.__ignore_unicode_errors else "strict", fetch_images=self.__fetch_images)
@@ -304,8 +284,8 @@ class CommonCrawlExtractor:
         if self.__delete_warc_after_extraction:
             os.remove(path_name)
 
-        self.__register_fully_extracted_warc_file(self.__warc_download_url)
-        self.__callback_on_warc_completed(self.__warc_download_url, counter_article_passed, counter_article_discarded,
+        self.__register_fully_extracted_warc_file(self.__warc_path)
+        self.__callback_on_warc_completed(self.__warc_path, counter_article_passed, counter_article_discarded,
                                           counter_article_error, counter_article_total)
 
     def __run(self):
@@ -317,10 +297,10 @@ class CommonCrawlExtractor:
         """
         self.__setup()
 
-        local_path_name = self.__download(self.__warc_download_url)
+        local_path_name = self.__download(self.__warc_path)
         self.__process_warc_gz_file(local_path_name)
 
-    def extract_from_commoncrawl(self, warc_download_url, callback_on_article_extracted,
+    def extract_from_commoncrawl(self, warc_path, callback_on_article_extracted,
                                  callback_on_warc_completed=None,
                                  valid_hosts=None,
                                  start_date=None, end_date=None,
@@ -334,7 +314,7 @@ class CommonCrawlExtractor:
         article object.
         :param log_pathname_fully_extracted_warcs:
         :param delete_warc_after_extraction:
-        :param warc_download_url:
+        :param warc_path:
         :param callback_on_article_extracted:
         :param callback_on_warc_completed:
         :param valid_hosts:
@@ -348,7 +328,7 @@ class CommonCrawlExtractor:
         :param log_level:
         :return:
         """
-        self.__warc_download_url = warc_download_url
+        self.__warc_path = warc_path
         self.__filter_valid_hosts = valid_hosts
         self.__filter_start_date = start_date
         self.__filter_end_date = end_date
@@ -365,5 +345,15 @@ class CommonCrawlExtractor:
         self.__log_level = log_level
         self.__delete_warc_after_extraction = delete_warc_after_extraction
         self.__log_pathname_fully_extracted_warcs = log_pathname_fully_extracted_warcs
+
+        self.__s3_client = None
+        try:
+            s3_client = boto3.client('s3')
+            # Verify access to commoncrawl bucket
+            s3_client.head_bucket(Bucket=self.__cc_bucket)
+            self.__s3_client = s3_client
+        except (botocore.exceptions.ClientError, botocore.exceptions.NoCredentialsError):
+            self.__logger.info('Failed to read %s bucket, using monthly WARC file listings', self.__cc_bucket)
+
 
         self.__run()
