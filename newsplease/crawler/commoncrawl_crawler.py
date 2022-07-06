@@ -272,7 +272,7 @@ def __callback_on_warc_completed(warc_path, counter_article_passed, counter_arti
                   __counter_warc_processed, remaining_warcs, __number_of_warc_files_on_cc)
     __logger.info("global [s/article] = %f", sec_per_article)
     __logger.info("global [h/warc] = %.3f", h_per_warc)
-    __logger.info("estimated remaining time [h] = %f", remaining_warcs / h_per_warc)
+    __logger.info("estimated remaining time [h] = %f", remaining_warcs * h_per_warc)
 
     # invoke the external callback
     __extern_callback_on_warc_completed(warc_path, __counter_article_passed, __counter_article_discarded,
