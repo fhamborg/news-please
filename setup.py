@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='news-please',
-      version='1.5.22',
+      version='1.5.23',
       description="news-please is an open source easy-to-use news extractor that just works.",
       long_description="""\
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can follow recursively internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website. Furthermore, its API allows developers to access the exctraction functionality within their software. news-please also implements a workflow optimized for the news archive provided by commoncrawl.org, allowing users to efficiently crawl and extract news articles including various filter options.""",
@@ -48,10 +48,10 @@ news-please is an open source, easy-to-use news crawler that extracts structured
           'ago>=0.0.9',
           'six>=1.10.0',
           'lxml>=3.3.5',
-          'awscli>=1.11.117',
           'hurry.filesize>=0.9',
           'bs4',
-          'cchardet>=2.1.7'
+          'cchardet>=2.1.7',
+          'boto3'
       ],
       extras_require={
           ':sys_platform == "win32"': [

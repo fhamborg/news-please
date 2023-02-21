@@ -47,7 +47,7 @@ news-please supports three main use cases, which are explained in more detail in
 * commoncrawl.org provides an extensive, free-to-use archive of news articles from small and major publishers world wide
 * news-please enables users to conveniently download and extract articles from commoncrawl.org
 * you can optionally define filter criteria, such as news publisher(s) or the date period, within which articles need to be published
-* clone the news-please repository, [install the awscli tool](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html), adapt the config section in [newsplease/examples/commoncrawl.py](/newsplease/examples/commoncrawl.py), and execute `python3 -m newsplease.examples.commoncrawl`
+* clone the news-please repository, adapt the config section in [newsplease/examples/commoncrawl.py](/newsplease/examples/commoncrawl.py), and execute `python3 -m newsplease.examples.commoncrawl`
 
 ## Getting started
 It's super easy, we promise!
@@ -151,7 +151,7 @@ If you plan to use news-please and its export to PostgreSQL in a production envi
 ### What's next?
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
-## Wiki and support (also, how to open an issue)
+## Support (also, how to open an issue)
 You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. Please understand that we are not able to provide individual support via email. We think that help is more valuable if it is shared publicly so that more people can benefit from it.
 
 ### Issues
