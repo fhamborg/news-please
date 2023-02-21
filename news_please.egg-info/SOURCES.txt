@@ -23,6 +23,7 @@ newsplease/crawler/__init__.py
 newsplease/crawler/commoncrawl_crawler.py
 newsplease/crawler/commoncrawl_extractor.py
 newsplease/crawler/items.py
+newsplease/crawler/response_decoder.py
 newsplease/crawler/simple_crawler.py
 newsplease/crawler/spiders/__init__.py
 newsplease/crawler/spiders/download_crawler.py
@@ -36,6 +37,7 @@ newsplease/examples/commoncrawl.py
 newsplease/examples/downloadfromfile.py
 newsplease/examples/downloadfromurl.py
 newsplease/helper_classes/__init__.py
+newsplease/helper_classes/class_loader.py
 newsplease/helper_classes/heuristics.py
 newsplease/helper_classes/parse_crawler.py
 newsplease/helper_classes/savepath_parser.py
@@ -62,4 +64,5 @@ newsplease/pipeline/extractor/extractors/abstract_extractor.py
 newsplease/pipeline/extractor/extractors/date_extractor.py
 newsplease/pipeline/extractor/extractors/lang_detect_extractor.py
 newsplease/pipeline/extractor/extractors/newspaper_extractor.py
+newsplease/pipeline/extractor/extractors/newspaper_extractor_no_images.py
 newsplease/pipeline/extractor/extractors/readability_extractor.py
