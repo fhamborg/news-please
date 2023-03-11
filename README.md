@@ -99,6 +99,41 @@ The results are stored by default in JSON files in the `data` folder. In the def
 
 Most likely, you will not want to crawl from the websites provided in our example configuration. Simply head over to the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. news-please also can extract the most recent events from the [GDELT project](https://www.gdeltproject.org/), see [here](https://github.com/fhamborg/news-please/blob/master/newsplease/crawler/spiders/gdelt_crawler.py).
 
+### JSON
+
+news-please supports exporting results to json. There are two methods for getting the crawling result as dict, `get_dict()` and `get_serializable_dict()`, `get_dict()` will get the result in dict format like below.
+
+```python
+{
+    'authors': article.authors,
+    'date_download': article.date_download,
+    'date_modify': article.date_modify,
+    'date_publish': article.date_publish,
+    'description': article.description,
+    'filename': article.filename,
+    'image_url': article.image_url,
+    'language': article.language,
+    'localpath': article.localpath,
+    'maintext': article.maintext,
+    'source_domain': article.source_domain,
+    'text': article.text,
+    'title': article.title,
+    'title_page': article.title_page,
+    'title_rss': article.title_rss,
+    'url': article.url
+}
+```
+
+`get_serializable_dict()` will transform dates in the dict into string so the dict can be directly exported to JSON or other formats. For example if you want to export the crawling result to JSON:
+
+```python
+from newsplease import NewsPlease
+import json
+article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
+with open("news.txt", "w") as ofile:
+    json.dump(article.get_serializable_dict(), ofile)
+```
+
 ### ElasticSearch
 
 news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can also be changed with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
