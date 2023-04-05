@@ -85,6 +85,15 @@ NewsPlease.from_warc(warc_record)
 ```
 In library mode, news-please will attempt to download and extract information from each URL. The previously described functions are blocking, i.e., will return once news-please has attempted all URLs. The resulting list contains all successfully extracted articles.
 
+Finally, you can process the extracted information contained in the article object(s). For example, to export into a JSON format, you may use:
+
+```python
+import json
+
+with open("article.json", "w") as file:
+    json.dump(article.get_serializable_dict(), file)
+```
+
 ### Run the crawler (via the CLI)
 
 ```
@@ -98,41 +107,6 @@ The results are stored by default in JSON files in the `data` folder. In the def
 ### Crawl other pages
 
 Most likely, you will not want to crawl from the websites provided in our example configuration. Simply head over to the [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) file and add the root URLs of the news outlets' web pages of your choice. news-please also can extract the most recent events from the [GDELT project](https://www.gdeltproject.org/), see [here](https://github.com/fhamborg/news-please/blob/master/newsplease/crawler/spiders/gdelt_crawler.py).
-
-### JSON
-
-news-please supports exporting results to json. There are two methods for getting the crawling result as dict, `get_dict()` and `get_serializable_dict()`, `get_dict()` will get the result in dict format like below.
-
-```python
-{
-    'authors': article.authors,
-    'date_download': article.date_download,
-    'date_modify': article.date_modify,
-    'date_publish': article.date_publish,
-    'description': article.description,
-    'filename': article.filename,
-    'image_url': article.image_url,
-    'language': article.language,
-    'localpath': article.localpath,
-    'maintext': article.maintext,
-    'source_domain': article.source_domain,
-    'text': article.text,
-    'title': article.title,
-    'title_page': article.title_page,
-    'title_rss': article.title_rss,
-    'url': article.url
-}
-```
-
-`get_serializable_dict()` will transform dates in the dict into string so the dict can be directly exported to JSON or other formats. For example if you want to export the crawling result to JSON:
-
-```python
-from newsplease import NewsPlease
-import json
-article = NewsPlease.from_url('https://www.nytimes.com/2017/02/23/us/politics/cpac-stephen-bannon-reince-priebus.html?hp')
-with open("news.txt", "w") as ofile:
-    json.dump(article.get_serializable_dict(), ofile)
-```
 
 ### ElasticSearch
 
@@ -247,4 +221,4 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. The news-please logo is courtesy of [Mario Hamborg](https://mario.hamborg.eu/).
 
-Copyright 2016-2021 The news-please team
+Copyright 2016-2023 The news-please team
