@@ -29,7 +29,10 @@ class NewspaperExtractor(AbstractExtractor):
         article_candidate.extractor = self._name()
 
         article = Article('', **self._article_kwargs())
-        article.set_html(item['spider_response'].body)
+        # old version of newspaper2k
+        # article.set_html(item['spider_response'].body)
+        # new version
+        article.download(input_html=item['spider_response'].body, title=item['html_title'].decode())
         article.parse()
         article_candidate.title = article.title
         article_candidate.description = article.meta_description

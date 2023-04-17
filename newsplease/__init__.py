@@ -34,25 +34,31 @@ class NewsPlease:
         raw_stream = warc_record.raw_stream.read()
         encoding = None
         try:
-            encoding = warc_record.http_headers.get_header('Content-Type').split(';')[1].split('=')[1]
+            encoding = (
+                warc_record.http_headers.get_header("Content-Type")
+                .split(";")[1]
+                .split("=")[1]
+            )
         except:
             pass
         if not encoding:
             encoding = EncodingDetector.find_declared_encoding(raw_stream, is_html=True)
         if not encoding:
             # assume utf-8
-            encoding = 'utf-8'
+            encoding = "utf-8"
 
         try:
             html = raw_stream.decode(encoding, errors=decode_errors)
         except LookupError:
             # non-existent encoding: fallback to utf-9
-            html = raw_stream.decode('utf-8', errors=decode_errors)
+            html = raw_stream.decode("utf-8", errors=decode_errors)
         if not html:
             raise EmptyResponseError()
-        url = warc_record.rec_headers.get_header('WARC-Target-URI')
-        download_date = warc_record.rec_headers.get_header('WARC-Date')
-        article = NewsPlease.from_html(html, url=url, download_date=download_date, fetch_images=fetch_images)
+        url = warc_record.rec_headers.get_header("WARC-Target-URI")
+        download_date = warc_record.rec_headers.get_header("WARC-Date")
+        article = NewsPlease.from_html(
+            html, url=url, download_date=download_date, fetch_images=fetch_images
+        )
         return article
 
     @staticmethod
@@ -67,31 +73,33 @@ class NewsPlease:
         """
         extractor = article_extractor.Extractor(
             (
-                ['newspaper_extractor']
+                ["newspaper_extractor"]
                 if fetch_images
                 else [("newspaper_extractor_no_images", "NewspaperExtractorNoImages")]
-            ) +
-            ['readability_extractor', 'date_extractor', 'lang_detect_extractor']
+            )
+            + ["readability_extractor", "date_extractor", "lang_detect_extractor"]
         )
 
-        title_encoded = ''.encode()
+        title_encoded = "".encode()
         if not url:
-            url = ''
+            url = ""
 
         # if an url was given, we can use that as the filename
-        filename = urllib.parse.quote_plus(url) + '.json'
+        filename = urllib.parse.quote_plus(url) + ".json"
 
         item = NewscrawlerItem()
-        item['spider_response'] = DotMap()
-        item['spider_response'].body = html
-        item['url'] = url
-        item['source_domain'] = urllib.parse.urlparse(url).hostname.encode() if url != '' else ''.encode()
-        item['html_title'] = title_encoded
-        item['rss_title'] = title_encoded
-        item['local_path'] = None
-        item['filename'] = filename
-        item['download_date'] = download_date
-        item['modified_date'] = None
+        item["spider_response"] = DotMap()
+        item["spider_response"].body = html
+        item["url"] = url
+        item["source_domain"] = (
+            urllib.parse.urlparse(url).hostname.encode() if url != "" else "".encode()
+        )
+        item["html_title"] = title_encoded
+        item["rss_title"] = title_encoded
+        item["local_path"] = None
+        item["filename"] = filename
+        item["download_date"] = download_date
+        item["modified_date"] = None
         item = extractor.extract(item)
 
         tmp_article = ExtractedInformationStorage.extract_relevant_info(item)
@@ -122,16 +130,15 @@ class NewsPlease:
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
         results = {}
-        download_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        download_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if len(urls) == 0:
-            # Nested blocks of code should not be left empty.
-            # When a block contains a comment, this block is not considered to be empty
             pass
         elif len(urls) == 1:
             url = urls[0]
             html = SimpleCrawler.fetch_url(url, timeout=timeout)
-            results[url] = NewsPlease.from_html(html, url, download_date)
+            if html:
+                results[url] = NewsPlease.from_html(html, url, download_date)
         else:
             results = SimpleCrawler.fetch_urls(urls)
             for url in results:
