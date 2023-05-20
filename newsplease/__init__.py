@@ -133,7 +133,7 @@ class NewsPlease:
         download_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if len(urls) > 0:
-            results = SimpleCrawler.fetch_urls(urls)
+            results = SimpleCrawler.fetch_urls(urls, timeout=timeout)
             for url, html in results.items():
                 if html:
                     results[url] = NewsPlease.from_html(html, url, download_date)
