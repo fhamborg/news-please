@@ -578,10 +578,8 @@ class ElasticsearchStorage(ExtractedInformationStorage):
         self.database = self.cfg.section("Elasticsearch")
 
         self.es = Elasticsearch(
-            [self.database["host"]],
+            hosts = [self.database["host"]],
             http_auth=(str(self.database["username"]), str(self.database["secret"])),
-            port=self.database["port"],
-            use_ssl=self.database["use_ca_certificates"],
             verify_certs=self.database["use_ca_certificates"],
             ca_certs=self.database["ca_cert_path"],
             client_cert=self.database["client_cert_path"],
@@ -603,10 +601,10 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             es_log.setLevel('ERROR')
 
             # check if the necessary indices exist and create them if needed
-            if not self.es.indices.exists(self.index_current):
+            if not self.es.indices.exists(index=self.index_current):
                 self.es.indices.create(index=self.index_current, ignore=[400, 404])
                 self.es.indices.put_mapping(index=self.index_current, body=self.mapping)
-            if not self.es.indices.exists(self.index_archive):
+            if not self.es.indices.exists(index=self.index_archive):
                 self.es.indices.create(index=self.index_archive, ignore=[400, 404])
                 self.es.indices.put_mapping(index=self.index_archive, body=self.mapping)
             self.running = True
@@ -632,7 +630,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                     # save old version into index_archive
                     old_version = request['hits']['hits'][0]
                     old_version['_source']['descendent'] = True
-                    self.es.index(index=self.index_archive, doc_type='_doc', body=old_version['_source'])
+                    self.es.index(index=self.index_archive, body=old_version['_source'])
                     version += 1
                     ancestor = old_version['_id']
 
@@ -641,7 +639,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info['ancestor'] = ancestor
                 extracted_info['version'] = version
-                self.es.index(index=self.index_current, doc_type='_doc', id=ancestor,
+                self.es.index(index=self.index_current,  id=ancestor,
                               body=extracted_info)
 
 
