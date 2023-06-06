@@ -36,7 +36,7 @@ jobs:
           push: true
 
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/news-please-ng:${{ github.head_ref }}$(date +%s)
+            ${{ secrets.DOCKER_HUB_USERNAME }}/news-please-ng:${{ github.head_ref }}
             ${{ secrets.DOCKER_HUB_USERNAME }}/news-please-ng:latest
 
       - name: Image digest
