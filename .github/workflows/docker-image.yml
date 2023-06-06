@@ -4,11 +4,11 @@ on:
   schedule:
     - cron: "0 23 15 * *"
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "*docker*" ]
 
 jobs:
   build-crawler:
@@ -36,7 +36,7 @@ jobs:
           push: true
           
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/news-please-ng:$(date +%s)
+            ${{ secrets.DOCKER_HUB_USERNAME }}/news-please-ng:${GITHUB_REF##*/}$(date +%s)
             ${{ secrets.DOCKER_HUB_USERNAME }}/news-please-ng:latest
 
 
