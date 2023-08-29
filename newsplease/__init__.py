@@ -132,18 +132,11 @@ class NewsPlease:
         results = {}
         download_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        if len(urls) == 0:
-            pass
-        elif len(urls) == 1:
-            url = urls[0]
-            html = SimpleCrawler.fetch_url(url, timeout=timeout)
-            if html:
-                results[url] = NewsPlease.from_html(html, url, download_date)
-        else:
-            results = SimpleCrawler.fetch_urls(urls)
-            for url in results:
-                results[url] = NewsPlease.from_html(results[url], url, download_date)
-
+        if len(urls) > 0:
+            results = SimpleCrawler.fetch_urls(urls, timeout=timeout)
+            for url, html in results.items():
+                if html:
+                    results[url] = NewsPlease.from_html(html, url, download_date)
         return results
 
     @staticmethod
