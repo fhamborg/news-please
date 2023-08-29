@@ -18,5 +18,5 @@ ago>=0.0.9
 six>=1.10.0
 hurry.filesize>=0.9
 bs4
-cchardet>=2.1.7
+faust-cchardet>=2.1.18
 boto3
