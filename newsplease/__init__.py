@@ -1,3 +1,4 @@
+import concurrent.futures as cf
 import datetime
 import os
 import sys
@@ -71,6 +72,9 @@ class NewsPlease:
         :param url:
         :return:
         """
+        if bool(html) is False:
+            return {}
+
         extractor = article_extractor.Extractor(
             (
                 ["newspaper_extractor"]
@@ -132,11 +136,32 @@ class NewsPlease:
         results = {}
         download_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        if len(urls) > 0:
-            results = SimpleCrawler.fetch_urls(urls, timeout=timeout)
-            for url, html in results.items():
-                if html:
-                    results[url] = NewsPlease.from_html(html, url, download_date)
+        if len(urls) == 0:
+            # Nested blocks of code should not be left empty.
+            # When a block contains a comment, this block is not considered to be empty
+            pass
+        elif len(urls) == 1:
+            url = urls[0]
+            html = SimpleCrawler.fetch_url(url, timeout=timeout)
+            results[url] = NewsPlease.from_html(html, url, download_date)
+        else:
+            results = SimpleCrawler.fetch_urls(urls)
+
+            futures = {}
+            with cf.ProcessPoolExecutor() as exec:
+                for url in results:
+                    future = exec.submit(
+                        NewsPlease.from_html, results[url], url, download_date
+                    )
+                    futures[future] = url
+
+            for future in cf.as_completed(futures):
+                url = futures[future]
+                try:
+                    results[url] = future.result(timeout=timeout)
+                except Exception as err:
+                    results[url] = {}
+
         return results
 
     @staticmethod
