@@ -10,7 +10,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
 
 news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from the (very) large news archive at commoncrawl.org.
 
-If you want to [contribute](#contributions) to news-please, please have a look at our list of [issues that need help](https://github.com/fhamborg/news-please/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or look [here](#contributions-and-custom-features).
+If you want to [contribute](#contributions) to news-please, please first read [here](#contributions-and-custom-features).
 
 ## Announcements
 03/23/2021: If you're interested in sentiment classification in news articles, check out our large-scale dataset for target-dependent sentiment classification. We also publish an easy-to-use neural model that achieves state-of-the-art performance. Visit the project [here](https://github.com/fhamborg/NewsMTSC).
