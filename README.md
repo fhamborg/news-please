@@ -13,6 +13,8 @@ news-please also features a library mode, which allows Python developers to use 
 If you want to contribute to news-please, please first read [here](#contributions).
 
 ## Announcements
+10/11/2023: If you're interested in text annotation software, check out [textada](https://textada.com/) - an AI-powered text annotation tool. Add your documents and categories, do some manual annotations, and let the AI do the work for you. The university-based project is not open source, but free to use.
+
 03/23/2021: If you're interested in sentiment classification in news articles, check out our large-scale dataset for target-dependent sentiment classification. We also publish an easy-to-use neural model that achieves state-of-the-art performance. Visit the project [here](https://github.com/fhamborg/NewsMTSC).
 
 06/01/2018: If you're interested in news analysis, you might also want to check out our new project, [Giveme5W1H](https://github.com/fhamborg/Giveme5W1H) - a tool that extracts phrases answering the journalistic five W and one H questions to describe an article's main event, i.e., who did what, when, where, why, and how.
