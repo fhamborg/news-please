@@ -111,7 +111,7 @@ class NewsPlease:
         return final_article
 
     @staticmethod
-    def from_url(url, timeout=None, user_agent=SimpleCrawler.USER_AGENT):
+    def from_url(url, timeout=None, user_agent=None):
         """
         Crawls the article from the url and extracts relevant information.
         :param url:
@@ -126,7 +126,7 @@ class NewsPlease:
             return None
 
     @staticmethod
-    def from_urls(urls, timeout=None, user_agent=SimpleCrawler.USER_AGENT):
+    def from_urls(urls, timeout=None, user_agent=None):
         """
         Crawls articles from the urls and extracts relevant information.
         :param urls:
