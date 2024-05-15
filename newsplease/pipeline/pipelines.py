@@ -392,11 +392,13 @@ class PostgresqlStorage(ExtractedInformationStorage):
         self.log = logging.getLogger(__name__)
         self.cfg = CrawlerConfig.get_instance()
         self.database = self.cfg.section("Postgresql")
+        options = f"-c search_path={self.database.get('schema')}" if self.database.get('schema') else ''
         # Establish DB connection
         # Closing of the connection is handled once the spider closes
         self.conn = psycopg2.connect(host=self.database["host"],
                             port=self.database["port"],
                             database=self.database["database"],
+                            options=options,
                             user=self.database["user"],
                             password=self.database["password"])
         self.cursor = self.conn.cursor()
