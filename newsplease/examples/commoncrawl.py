@@ -34,7 +34,7 @@ from datetime import date
 from ..crawler import commoncrawl_crawler as commoncrawl_crawler
 
 __author__ = "Felix Hamborg"
-__copyright__ = "Copyright 2017"
+__copyright__ = "Copyright 2024"
 __credits__ = ["Sebastian Nagel"]
 
 
