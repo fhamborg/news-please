@@ -155,6 +155,7 @@ news-please allows for storing of articles to a PostgreSQL database, including t
     host = localhost
     port = 5432
     database = 'news-please'
+    # schema = 'news-please'
     user = 'user'
     password = 'password'
 

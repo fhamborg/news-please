@@ -429,10 +429,12 @@ Cleanup Postgresql database:
         print("Resetting database...")
 
         try:
+            options = f"-c search_path={self.postgresql.get('schema')}" if self.postgresql.get('schema') else ''
             # initialize DB connection
             self.conn = psycopg2.connect(host=self.postgresql["host"],
                                         port=self.postgresql["port"],
                                         database=self.postgresql["database"],
+                                        options=options,
                                         user=self.postgresql["user"],
                                         password=self.postgresql["password"])
             self.cursor = self.conn.cursor()
