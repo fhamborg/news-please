@@ -174,7 +174,6 @@ For bug reports, we ask you to use the Bug report template. Make sure you're usi
 Your donations are greatly appreciated! They will free us up to work on this project more, to take on tasks such as adding new features, bug-fix support, and addressing further concerns with the library. 
 
 * [GitHub Sponsors](https://github.com/sponsors/fhamborg)
-* [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XX272QZV9A2FN&source=url)
 
 ## Acknowledgements
 This project would not have been possible without the contributions of the following students (ordered alphabetically):
