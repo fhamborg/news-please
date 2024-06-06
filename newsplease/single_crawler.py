@@ -49,7 +49,7 @@ class SingleCrawler(object):
     json_file_path = None
     cfg_crawler = None
     __scrapy_options = None
-    __crawer_module = "newsplease.crawler.spiders"
+    __default_spider_modules = "newsplease.crawler.spiders"
     site_number = None
     shall_resume = False
     daemonize = False
@@ -228,14 +228,17 @@ class SingleCrawler(object):
 
     def get_crawler_class(self, crawler):
         """
-        Searches through the modules in self.__crawer_module for a crawler with
+        Searches through the modules in spider_modules for a crawler with
         the name passed along.
 
         :param str crawler: Name of the crawler to load
         :rtype: crawler-class
         """
         settings = Settings()
-        settings.set('SPIDER_MODULES', [self.__crawer_module])
+        spider_modules = self.cfg.section("Scrapy").get(
+            "spider_modules", [self.__default_spider_modules]
+        )
+        settings.set("SPIDER_MODULES", spider_modules)
         spider_loader = SpiderLoader(settings)
         return spider_loader.load(crawler)
 
