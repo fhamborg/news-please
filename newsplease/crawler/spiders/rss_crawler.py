@@ -1,3 +1,5 @@
+from requests import get
+from scrapy.http import Request, TextResponse, XmlResponse
 from newsplease.helper_classes.url_extractor import UrlExtractor
 
 try:
@@ -47,8 +49,9 @@ class RssCrawler(scrapy.Spider):
 
         :param obj response: The scrapy response
         """
-        yield scrapy.Request(self.helper.url_extractor.get_rss_url(response),
-                             callback=self.rss_parse)
+        yield scrapy.Request(
+            UrlExtractor.get_rss_url(response), callback=self.rss_parse
+        )
 
     def rss_parse(self, response):
         """
@@ -85,6 +88,14 @@ class RssCrawler(scrapy.Spider):
         return True
 
     @staticmethod
+    def get_potential_redirection_from_url(url):
+        """Ensure we have the correct URL to check for RSS feed"""
+        opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
+        url = UrlExtractor.url_to_request_with_agent(url)
+        redirect_url = opener.open(url).url
+        return redirect_url
+
+    @staticmethod
     def supports_site(url):
         """
         Rss Crawler are supported if by every site containing an rss feed.
@@ -96,11 +107,26 @@ class RssCrawler(scrapy.Spider):
         """
 
         # Follow redirects
-        opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
-        url = UrlExtractor.url_to_request_with_agent(url)
-        redirect = opener.open(url).url
-        redirect = UrlExtractor.url_to_request_with_agent(redirect)
-        response = urllib2.urlopen(redirect).read()
+        redirect_url = RssCrawler.get_potential_redirection_from_url(url)
+        redirect = UrlExtractor.url_to_request_with_agent(redirect_url)
 
         # Check if a standard rss feed exists
-        return re.search(re_rss, response.decode('utf-8')) is not None
+        response = urllib2.urlopen(redirect).read()
+        return re.search(re_rss, response.decode("utf-8")) is not None
+
+    @staticmethod
+    def has_urls_to_scan(url):
+        """Check either the RSS feed contains any URL to scan"""
+        redirect_url = RssCrawler.get_potential_redirection_from_url(url)
+        response = get(redirect_url)
+        scrapy_response = TextResponse(url=redirect_url, body=response.text.encode())
+        rss_url = UrlExtractor.get_rss_url(scrapy_response)
+        rss_content = get(rss_url).text
+        print(rss_content)
+        rss_response = XmlResponse(url=rss_url, body=rss_content, encoding="utf-8")
+        urls_to_scan = [
+            url
+            for item in rss_response.xpath("//item")
+            for url in item.xpath("link/text()").extract()
+        ]
+        return len(urls_to_scan) > 0

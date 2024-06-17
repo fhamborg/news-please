@@ -181,7 +181,7 @@ class SingleCrawler(object):
 
         self.__scrapy_options["JOBDIR"] = working_path + jobdirname + hashed.hexdigest()
 
-    def get_crawler(self, crawler, url):
+    def get_crawler(self, crawler, url, check_urls_for_crawler):
         """
         Checks if a crawler supports a website (the website offers e.g. RSS
         or sitemap) and falls back to the fallbacks defined in the config if
@@ -189,6 +189,8 @@ class SingleCrawler(object):
 
         :param str crawler: Crawler-string (from the crawler-module)
         :param str url: the url this crawler is supposed to be loaded with
+        :param str check_urls_for_crawler: Allow to fallback if the crawler is supported,
+        but don't have any URLs to scan
         :rtype: crawler-class or None
         """
         checked_crawlers = []
@@ -205,9 +207,10 @@ class SingleCrawler(object):
                                       exc_info=True)
                         crawler_supports_site = False
 
-                    if crawler_supports_site:
-                        self.log.debug("Using crawler %s for %s.",
-                                       crawler, url)
+                    if (
+                        crawler_supports_site
+                    ):  # TODO : Add URLs checks here with an option
+                        self.log.debug("Using crawler %s for %s.", crawler, url)
                         return current
                     elif (crawler in self.cfg_crawler["fallbacks"] and
                                   self.cfg_crawler["fallbacks"][crawler] is not None):

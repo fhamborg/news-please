@@ -1,6 +1,7 @@
 """
 Helper class for url extraction.
 """
+
 import os
 import re
 from newsplease.config import CrawlerConfig
@@ -124,7 +125,8 @@ class UrlExtractor(object):
         # Check if "Sitemap" is set
         return "Sitemap:" in response.read().decode('utf-8')
 
-    def get_rss_url(self, response):
+    @staticmethod
+    def get_rss_url(response):
         """
         Extracts the rss feed's url from the scrapy response.
 
