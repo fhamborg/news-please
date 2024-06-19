@@ -1,3 +1,5 @@
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
+
 try:
     import urllib2
 except ImportError:
@@ -16,7 +18,7 @@ import zipfile
 re_export = re.compile(r'.*?(http.*?export\.CSV\.zip)')
 
 
-class GdeltCrawler(scrapy.Spider):
+class GdeltCrawler(NewspleaseSpider, scrapy.Spider):
     name = "GdeltCrawler"
     ignored_allowed_domains = None
     start_urls = None

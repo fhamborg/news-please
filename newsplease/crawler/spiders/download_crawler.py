@@ -2,8 +2,10 @@ import logging
 
 import scrapy
 
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
-class Download(scrapy.Spider):
+
+class Download(NewspleaseSpider, scrapy.Spider):
     name = "Download"
     start_urls = None
 

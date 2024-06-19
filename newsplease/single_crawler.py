@@ -11,10 +11,15 @@ import sys
 from ast import literal_eval
 
 import os
+from typing import Type
+
+from scrapy import Spider
 from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 from scrapy.spiderloader import SpiderLoader
 from scrapy.utils.log import configure_logging
+
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 par_path = os.path.dirname(cur_path)
@@ -181,7 +186,7 @@ class SingleCrawler(object):
 
         self.__scrapy_options["JOBDIR"] = working_path + jobdirname + hashed.hexdigest()
 
-    def get_crawler(self, crawler, url, check_urls_for_crawler):
+    def get_crawler(self, crawler: str, url: str, check_urls_for_crawler=False):
         """
         Checks if a crawler supports a website (the website offers e.g. RSS
         or sitemap) and falls back to the fallbacks defined in the config if
@@ -197,39 +202,34 @@ class SingleCrawler(object):
         while crawler is not None and crawler not in checked_crawlers:
             checked_crawlers.append(crawler)
             current = self.get_crawler_class(crawler)
-            if hasattr(current, "supports_site"):
-                supports_site = getattr(current, "supports_site")
-                if callable(supports_site):
-                    try:
-                        crawler_supports_site = supports_site(url)
-                    except Exception as e:
-                        self.log.info(f'Crawler not supported due to: {str(e)}',
-                                      exc_info=True)
-                        crawler_supports_site = False
 
-                    if (
-                        crawler_supports_site
-                    ):  # TODO : Add URLs checks here with an option
-                        self.log.debug("Using crawler %s for %s.", crawler, url)
-                        return current
-                    elif (crawler in self.cfg_crawler["fallbacks"] and
-                                  self.cfg_crawler["fallbacks"][crawler] is not None):
-                        self.log.warn("Crawler %s not supported by %s. "
-                                      "Trying to fall back.", crawler, url)
-                        crawler = self.cfg_crawler["fallbacks"][crawler]
-                    else:
-                        self.log.error("No crawlers (incl. fallbacks) "
-                                       "found for url %s.", url)
-                        raise RuntimeError("No crawler found. Quit.")
-            else:
-                self.log.warning("The crawler %s has no "
-                                 "supports_site-method defined", crawler)
+            if not isinstance(current, NewspleaseSpider):
+                self.log.warning("The crawler %s has no supports_site-method defined", crawler)
                 return current
+
+            try:
+                crawler_supports_site = current.supports_site(url)
+            except Exception as e:
+                self.log.info(f'Crawler not supported due to: {str(e)}', exc_info=True)
+                crawler_supports_site = False
+
+            if crawler_supports_site:  # TODO : Add URLs checks here with an option
+                self.log.debug("Using crawler %s for %s.", crawler, url)
+                return current
+
+            fallbacks = self.cfg_crawler["fallbacks"]
+            if crawler in fallbacks and fallbacks[crawler] is not None:
+                self.log.warning("Crawler %s not supported by %s. Trying to fall back.", crawler, url)
+                crawler = fallbacks[crawler]
+            else:
+                self.log.error("No crawlers (incl. fallbacks) found for url %s.", url)
+                raise RuntimeError("No crawler found. Quit.")
+
         self.log.error("Could not fall back since you created a fall back "
                        "loop for %s in the config file.", crawler)
         sys.exit(1)
 
-    def get_crawler_class(self, crawler):
+    def get_crawler_class(self, crawler: str) -> Type[Spider]:
         """
         Searches through the modules in spider_modules for a crawler with
         the name passed along.
@@ -237,11 +237,11 @@ class SingleCrawler(object):
         :param str crawler: Name of the crawler to load
         :rtype: crawler-class
         """
+        spider_modules = self.cfg.section("Scrapy").get("SPIDER_MODULES", [self.__default_spider_modules])
+
         settings = Settings()
-        spider_modules = self.cfg.section("Scrapy").get(
-            "spider_modules", [self.__default_spider_modules]
-        )
         settings.set("SPIDER_MODULES", spider_modules)
+
         spider_loader = SpiderLoader(settings)
         return spider_loader.load(crawler)
 

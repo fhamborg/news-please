@@ -1,5 +1,7 @@
 from requests import get
-from scrapy.http import Request, TextResponse, XmlResponse
+from scrapy.http import TextResponse, XmlResponse
+
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 from newsplease.helper_classes.url_extractor import UrlExtractor
 
 try:
@@ -18,7 +20,7 @@ re_rss = re.compile(
 )
 
 
-class RssCrawler(scrapy.Spider):
+class RssCrawler(NewspleaseSpider, scrapy.Spider):
     name = "RssCrawler"
     ignored_allowed_domains = None
     start_urls = None

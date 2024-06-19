@@ -2,10 +2,12 @@ import logging
 
 import scrapy
 
-from ...helper_classes.url_extractor import UrlExtractor
+
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
+from newsplease.helper_classes.url_extractor import UrlExtractor
 
 
-class SitemapCrawler(scrapy.spiders.SitemapSpider):
+class SitemapCrawler(NewspleaseSpider, scrapy.spiders.SitemapSpider):
     name = "SitemapCrawler"
     allowed_domains = None
     sitemap_urls = None
