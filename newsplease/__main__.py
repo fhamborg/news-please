@@ -5,13 +5,12 @@ import signal
 import sys
 import threading
 import time
-from copy import copy
 from distutils.dir_util import copy_tree
 from subprocess import Popen
 
 import plac
-import pymysql
 import psycopg2
+import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
 
