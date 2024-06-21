@@ -240,7 +240,7 @@ class SingleCrawler(object):
         :param str crawler: Name of the crawler to load
         :rtype: crawler-class
         """
-        spider_modules = self.cfg.section("Scrapy").get("SPIDER_MODULES", [self.__default_spider_modules])
+        spider_modules = self.cfg.section("Scrapy").get("spider_modules", [self.__default_spider_modules])
 
         settings = Settings()
         settings.set("SPIDER_MODULES", spider_modules)
