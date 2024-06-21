@@ -17,3 +17,13 @@ class NewspleaseSpider(ABC):
         :return bool:
         """
         pass
+
+    @staticmethod
+    def has_urls_to_scan(url: str) -> bool:
+        """
+        Determines if this spider has any URLs to scan.
+
+        :param str url: The url to test
+        :return bool:
+        """
+        return True

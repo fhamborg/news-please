@@ -117,18 +117,26 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
         return re.search(re_rss, response.decode("utf-8")) is not None
 
     @staticmethod
-    def has_urls_to_scan(url):
-        """Check either the RSS feed contains any URL to scan"""
+    def has_urls_to_scan(url: str) -> bool:
+        """
+        Check if the RSS feed contains any URL to scan
+
+        :param str url: The url to test
+        :return bool:
+        """
         redirect_url = RssCrawler.get_potential_redirection_from_url(url)
+
         response = get(redirect_url)
         scrapy_response = TextResponse(url=redirect_url, body=response.text.encode())
+
         rss_url = UrlExtractor.get_rss_url(scrapy_response)
         rss_content = get(rss_url).text
-        print(rss_content)
         rss_response = XmlResponse(url=rss_url, body=rss_content, encoding="utf-8")
+
         urls_to_scan = [
             url
             for item in rss_response.xpath("//item")
             for url in item.xpath("link/text()").extract()
         ]
+
         return len(urls_to_scan) > 0

@@ -19,7 +19,6 @@ from scrapy.settings import Settings
 from scrapy.spiderloader import SpiderLoader
 from scrapy.utils.log import configure_logging
 
-from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 par_path = os.path.dirname(cur_path)
@@ -30,6 +29,7 @@ from newsplease.config import JsonConfig
 from newsplease.helper import Helper
 from newsplease.helper_classes.class_loader import ClassLoader
 from newsplease.crawler.items import NewscrawlerItem
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
 try:
     from _thread import start_new_thread
@@ -186,7 +186,7 @@ class SingleCrawler(object):
 
         self.__scrapy_options["JOBDIR"] = working_path + jobdirname + hashed.hexdigest()
 
-    def get_crawler(self, crawler: str, url: str, check_urls_for_crawler=False):
+    def get_crawler(self, crawler: str, url: str):
         """
         Checks if a crawler supports a website (the website offers e.g. RSS
         or sitemap) and falls back to the fallbacks defined in the config if
@@ -194,16 +194,16 @@ class SingleCrawler(object):
 
         :param str crawler: Crawler-string (from the crawler-module)
         :param str url: the url this crawler is supposed to be loaded with
-        :param str check_urls_for_crawler: Allow to fallback if the crawler is supported,
-        but don't have any URLs to scan
         :rtype: crawler-class or None
         """
+        should_check_crawler_has_urls_to_scan = self.cfg_crawler.get('should_check_crawler_has_urls_to_scan')
+
         checked_crawlers = []
         while crawler is not None and crawler not in checked_crawlers:
             checked_crawlers.append(crawler)
             current = self.get_crawler_class(crawler)
 
-            if not isinstance(current, NewspleaseSpider):
+            if not issubclass(current, NewspleaseSpider):
                 self.log.warning("The crawler %s has no supports_site-method defined", crawler)
                 return current
 
@@ -213,9 +213,12 @@ class SingleCrawler(object):
                 self.log.info(f'Crawler not supported due to: {str(e)}', exc_info=True)
                 crawler_supports_site = False
 
-            if crawler_supports_site:  # TODO : Add URLs checks here with an option
-                self.log.debug("Using crawler %s for %s.", crawler, url)
-                return current
+            if crawler_supports_site:
+                if should_check_crawler_has_urls_to_scan and not current.has_urls_to_scan(url):
+                    self.log.warning(f"Crawler {crawler} has no url to scan for {url}")
+                else:
+                    self.log.debug("Using crawler %s for %s.", crawler, url)
+                    return current
 
             fallbacks = self.cfg_crawler["fallbacks"]
             if crawler in fallbacks and fallbacks[crawler] is not None:
