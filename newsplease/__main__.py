@@ -556,25 +556,7 @@ Cleanup Redis database:
             print("Did not type yes. Thus aborting.")
             return
 
-        redis_conn = copy(self.redis)
-
-        # Should the connection be allowed to flush the redis db?
-        # We assume News-please is not the only user of the redis instance.
-        _dangerously_flush_db = (
-            redis_conn.pop("dangerously_flush_db") if "dangerously_flush_db" in redis_conn else "false"
-        )
-        dangerously_flush_db = _dangerously_flush_db.lower() in ("1", "true")
-
-        connection = RedisStorageClient(
-            host=redis_conn.pop("host"),
-            port=int(redis_conn.pop("port")),
-            db=int(redis_conn.pop("db")),
-            health_check_interval=int(redis_conn.pop("health_check_interval"))
-            if "health_check_interval" in redis_conn
-            else 0,
-            dangerously_flush_db=dangerously_flush_db,
-            **redis_conn,
-        )
+        connection = RedisStorageClient.from_config_parser(self.cfg.parser)
         connection.purge()
 
     class CrawlerList(object):
