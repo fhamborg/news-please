@@ -169,7 +169,7 @@ news-please allows to store articles on a Redis database, including the versioni
        'newsplease.pipeline.pipelines.RedisStorage':350
      }
 
-    [Reids]
+    [Redis]
     host = localhost
     port = 6379
     db = 0
