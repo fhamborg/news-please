@@ -5,14 +5,25 @@
 import datetime
 import json
 import logging
+import lzma
 import os.path
 import sys
+import warnings
+from concurrent.futures import ThreadPoolExecutor
+from enum import Enum
+from itertools import islice, chain
+from typing import Optional, Dict, Any
+from typing_extensions import TypedDict, cast
+
+import scrapy
 
 import pymysql
 import psycopg2
 from dateutil import parser as dateparser
 from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
+
+from redis import StrictRedis
 
 from NewsArticle import NewsArticle
 from .extractor import article_extractor
@@ -803,3 +814,201 @@ class PandasStorage(ExtractedInformationStorage):
         )
         self.df.to_pickle(self.full_path)
         self.log.info("Wrote to Pandas to %s", self.full_path)
+
+
+class Collections(str, Enum):
+    """
+    Collections names for storage in redis.
+    """
+
+    CurrentVersions = "CurrentVersions"
+    ArchiveVersions = "ArchiveVersions"
+
+
+class RedisStorageClient(StrictRedis):
+    """
+    Client for Redis / AWS Elasticache / GCP MemoryStore
+
+    Implementations choices:
+    * For faster lookups, we use keys of that form: key = { collection name } + { separator } + { identifier }
+    * LZMA compression
+    * It is safe to store objects not related to news-please in the same db
+    * It is possible to set a TTL on objects stored
+    """
+
+    separator = "::"
+
+    def __init__(self, *args, dangerously_flush_db: bool = False, **kwargs):
+        strict_redis_kwargs = {
+            k: v
+            for k, v in kwargs
+            if k in self.strict_redis_expected_params()
+        }
+        if "decode_responses" in strict_redis_kwargs:
+            warnings.warn("`decode_responses` must remain set to False for compression")
+            kwargs["decode_responses"] = False
+        super().__init__(*args, **strict_redis_kwargs)
+        self.dangerously_flush_db = dangerously_flush_db
+
+    @classmethod
+    def strict_redis_expected_params(cls) -> set[str]:
+        from inspect import signature
+        return set(signature(StrictRedis.__init__).parameters.keys())
+
+    @classmethod
+    def _get_name(cls, collection: Collections, url: str) -> str:
+        return f"{collection}{cls.separator}{url}"
+
+    def _get_raw_current_version(self, url: str) -> Optional[bytes]:
+        """
+        Get the value at name = collection + url.
+
+        Depending on the value of decode_responses, response can be str or bytes, if any.
+        """
+        if not url:
+            raise ValueError("A value is expected for `url`")
+        return self.get(self._get_name(Collections.CurrentVersions, url))
+
+    def get_current_version(self, url: str) -> Optional[Dict[str, Any]]:
+        """
+        Get the value at name = collection + url.
+
+        Depending on the value of decode_responses, response can be str or bytes, if any.
+        """
+        raw = self._get_raw_current_version(url)
+        return json.loads(lzma.decompress(raw))
+
+    def save_item(
+        self,
+        url: str,
+        item: dict[str, Any],
+        collection: Collections = Collections.CurrentVersions,
+        ttl: Optional[int] = None,
+    ) -> None:
+        if not url:
+            raise ValueError("A value is expected for `url`")
+        serialized = json.dumps(item)
+        self.set(
+            name=self._get_name(collection=collection, url=url),
+            value=lzma.compress(serialized.encode("utf-8")),
+            ex=ttl,
+        )
+
+    def purge(self):
+        """
+        Performing the purge through a full scan on the 2 collections.
+        We assume, as it is done for the Postgres pipeline, that the client may have other objects stored on redis.
+        """
+
+        if self.dangerously_flush_db:
+            self.flushdb()
+
+        else:
+            full_scan = chain.from_iterable(
+                (
+                    self.scan_iter(match=f"^{Collections.CurrentVersions}{self.separator}"),
+                    self.scan_iter(match=f"^{Collections.ArchiveVersions}{self.separator}"),
+                ),
+            )
+            full_scan_batched = iter(lambda: tuple(islice(full_scan, 100)), ())
+
+            def partial(names: tuple[str, ...]):
+                self.delete(*names)
+
+            # Remove current versions
+            with ThreadPoolExecutor(max_workers=128) as pool:
+                pool.map(partial, full_scan_batched)
+
+
+class RedisStorage(ExtractedInformationStorage):
+    """
+    Stores extracted information in a Redis database.
+    """
+
+    class VersionTag(TypedDict, total=True):
+        __version: int
+        __ancestor: int
+        __descendant: int
+
+    def __init__(self):
+        super().__init__()
+
+        redis_config = self.cfg.section("Redis")
+
+        # No expiration by default
+        self.ttl = float(redis_config.pop("ttl")) if "ttl" in redis_config else None
+
+        # Sanity check
+        if self.ttl < 1:
+            self.ttl = None
+
+        # Capability to avoid storing archives - default is True
+        _enable_archive = redis_config.pop("enable_archive") if "enable_archive" in redis_config else "true"
+        self.enable_archive = _enable_archive.lower() in ("1", "true")
+
+        # Establish redis connection
+        # Closing of the connection is handled once the spider closes
+        self.conn = RedisStorageClient(
+            host=redis_config.pop("host"),
+            port=int(redis_config.pop("port")),
+            db=int(redis_config.pop("db")),
+            health_check_interval=int(redis_config.pop("health_check_interval"))
+            if "health_check_interval" in redis_config
+            else 0,
+            **redis_config,
+        )
+
+        self.compression = lzma
+
+    def process_item(self, item: Any, spider: scrapy.Spider):
+        # get the original url, so that the library class (or whoever wants to read this) can access the article
+        if "redirect_urls" in item._values["spider_response"].meta:
+            url = item._values["spider_response"].meta["redirect_urls"][0]
+        else:
+            url = item._values["url"]
+
+        # Set defaults
+        new_version_tag = self.VersionTag(
+            __version=1,
+            __ancestor=0,
+            __descendant=0,
+        )
+
+        old_version = self.conn.get_current_version(url)
+
+        # We still consider an empty value as valid version value
+        # TODO: this could be an option
+        if old_version is not None:
+            # Update the version number and the ancestor variable for later references
+            new_version_tag["__version"] = old_version["__version"] + 1
+            new_version_tag["__ancestor"] = old_version["__version"]
+
+        # Add the new version of the article to the CurrentVersion table
+        new_version = cast(dict[str, Any], ExtractedInformationStorage.extract_relevant_info(item))
+        new_version = {**new_version, **new_version_tag}
+
+        # If an old version existed, this replaces it
+        self.conn.save_item(
+            url=url,
+            item=new_version,
+            ttl=self.ttl,
+        )
+        self.log.info(f"Article from {url!r} inserted in current versions.")
+
+        # Now, move the old version from the CurrentVersions collection to the ArchiveVersions collection, if applicable
+        if old_version and self.enable_archive:
+            old_version["__descendant"] = new_version_tag["__version"]
+
+            self.conn.save_item(
+                url=url,
+                item=new_version,
+                collection=Collections.ArchiveVersions,
+                ttl=self.ttl,
+            )
+            self.log.info(f"Moved old version of article from {url!r} to the archive.")
+
+        return item
+
+    def close_spider(self, spider: scrapy.Spider):
+        # Close redis connection
+        self.conn.close()

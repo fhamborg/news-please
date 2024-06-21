@@ -5,6 +5,7 @@ import signal
 import sys
 import threading
 import time
+from copy import copy
 from distutils.dir_util import copy_tree
 from subprocess import Popen
 
@@ -13,6 +14,8 @@ import pymysql
 import psycopg2
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
+
+from .pipeline.pipelines import RedisStorageClient
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 par_path = os.path.dirname(cur_path)
@@ -53,6 +56,7 @@ class NewsPleaseLauncher(object):
     mysql = None
     postgresql = None
     elasticsearch = None
+    redis = None
     number_of_active_crawlers = 0
     config_directory_default_path = "~/news-please-repo/config/"
     config_file_default_name = "config.cfg"
@@ -61,7 +65,7 @@ class NewsPleaseLauncher(object):
     __single_crawler = False
 
     def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch,
-        is_reset_json, is_reset_mysql, is_reset_postgresql, is_no_confirm, library_mode=False):
+        is_reset_json, is_reset_mysql, is_reset_postgresql, is_reset_redis, is_no_confirm, library_mode=False):
         """
         The constructor of the main class, thus the real entry point to the tool.
         :param cfg_file_path:
@@ -70,6 +74,7 @@ class NewsPleaseLauncher(object):
         :param is_reset_json:
         :param is_reset_mysql:
         :param is_reset_postgresql:
+        :param is_reset_redis:
         :param is_no_confirm:
         """
         configure_logging({"LOG_LEVEL": "ERROR"})
@@ -109,6 +114,7 @@ class NewsPleaseLauncher(object):
         self.mysql = self.cfg.section("MySQL")
         self.postgresql = self.cfg.section("Postgresql")
         self.elasticsearch = self.cfg.section("Elasticsearch")
+        self.redis = self.cfg.section("Redis")
 
         # perform reset if given as parameter
         if is_reset_mysql:
@@ -119,8 +125,10 @@ class NewsPleaseLauncher(object):
             self.reset_files()
         if is_reset_elasticsearch:
             self.reset_elasticsearch()
+        if is_reset_redis:
+            self.reset_redis()
         # close the process
-        if is_reset_elasticsearch or is_reset_json or is_reset_mysql or is_reset_postgresql:
+        if is_reset_elasticsearch or is_reset_json or is_reset_mysql or is_reset_postgresql or is_reset_redis:
             sys.exit(0)
 
         self.json_file_path = self.cfg_directory_path + self.cfg.section('Files')['url_input_file_name']
@@ -527,6 +535,48 @@ Cleanup files:
                 self.log.error("%s does not exist.", path)
             self.log.error(error)
 
+    def reset_redis(self):
+        """
+        Resets the redis cache.
+        """
+        print("""
+Cleanup Redis database:
+    This will flush collections.
+              """)
+
+        confirm = self.no_confirm
+
+        if not confirm:
+            confirm = "yes" in builtins.input(
+                """
+    Do you really want to do this? Write 'yes' to confirm: {yes}""".format(yes="yes" if confirm else "")
+            )
+
+        if not confirm:
+            print("Did not type yes. Thus aborting.")
+            return
+
+        redis_conn = copy(self.redis)
+
+        # Should the connection be allowed to flush the redis db?
+        # We assume News-please is not the only user of the redis instance.
+        _dangerously_flush_db = (
+            redis_conn.pop("dangerously_flush_db") if "dangerously_flush_db" in redis_conn else "false"
+        )
+        dangerously_flush_db = _dangerously_flush_db.lower() in ("1", "true")
+
+        connection = RedisStorageClient(
+            host=redis_conn.pop("host"),
+            port=int(redis_conn.pop("port")),
+            db=int(redis_conn.pop("db")),
+            health_check_interval=int(redis_conn.pop("health_check_interval"))
+            if "health_check_interval" in redis_conn
+            else 0,
+            dangerously_flush_db=dangerously_flush_db,
+            **redis_conn,
+        )
+        connection.purge()
+
     class CrawlerList(object):
         """
         Class that manages all crawlers that aren't supposed to be daemonized.
@@ -681,22 +731,43 @@ Cleanup files:
     reset_json=plac.Annotation('reset JSON files', 'flag'),
     reset_mysql=plac.Annotation('reset MySQL database', 'flag'),
     reset_postgresql=plac.Annotation('reset Postgresql database', 'flag'),
+    reset_redis=plac.Annotation('reset Redis database', 'flag'),
     reset_all=plac.Annotation('combines all reset options', 'flag'),
     no_confirm=plac.Annotation('skip confirm dialogs', 'flag')
 )
-def cli(cfg_file_path, resume, reset_elasticsearch, reset_mysql, reset_postgresql, reset_json, reset_all, no_confirm):
-    "A generic news crawler and extractor."
+def cli(
+    cfg_file_path,
+    resume,
+    reset_elasticsearch,
+    reset_json,
+    reset_mysql,
+    reset_postgresql,
+    reset_redis,
+    reset_all,
+    no_confirm,
+):
+    """A generic news crawler and extractor."""
 
     if reset_all:
         reset_elasticsearch = True
         reset_json = True
         reset_mysql = True
         reset_postgresql = True
+        reset_redis = True
 
     if cfg_file_path and not cfg_file_path.endswith(os.path.sep):
         cfg_file_path += os.path.sep
 
-    NewsPleaseLauncher(cfg_file_path, resume, reset_elasticsearch, reset_json, reset_mysql, reset_postgresql, no_confirm)
+    NewsPleaseLauncher(
+        cfg_file_path,
+        resume,
+        reset_elasticsearch,
+        reset_json,
+        reset_mysql,
+        reset_postgresql,
+        reset_redis,
+        no_confirm,
+    )
 
 
 def main():

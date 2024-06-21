@@ -9,3 +9,6 @@ __pycache__/
 news-please.iml
 
 venv/
+.python-version
+build
+**.egg-info/
