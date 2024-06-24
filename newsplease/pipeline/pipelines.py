@@ -854,7 +854,7 @@ class RedisStorageClient(StrictRedis):
             "db": config_parser.getint("Redis", "db"),
             "password": config_parser.get("Redis", "password", fallback=None),
             "socket_timeout": config_parser.getfloat("Redis", "socket_timeout", fallback=None),
-            "socket_connect_timeout": config_parser.float("Redis", "socket_connect_timeout", fallback=None),
+            "socket_connect_timeout": config_parser.getfloat("Redis", "socket_connect_timeout", fallback=None),
             "socket_keepalive": config_parser.getboolean("Redis", "socket_keepalive", fallback=None),
             "socket_keepalive_options": config_parser.get("Redis", "socket_keepalive_options", fallback=None),
             "unix_socket_path": config_parser.get("Redis", "unix_socket_path", fallback=None),
@@ -920,6 +920,8 @@ class RedisStorageClient(StrictRedis):
         Depending on the value of decode_responses, response can be str or bytes, if any.
         """
         raw = self._get_raw_current_version(url)
+        if not raw:
+            return None
         return json.loads(lzma.decompress(raw))
 
     def save_item(
@@ -950,8 +952,8 @@ class RedisStorageClient(StrictRedis):
         else:
             full_scan = chain.from_iterable(
                 (
-                    self.scan_iter(match=f"^{Collections.CurrentVersions}{self.separator}"),
-                    self.scan_iter(match=f"^{Collections.ArchiveVersions}{self.separator}"),
+                    self.scan_iter(match=f"{Collections.CurrentVersions}{self.separator}*"),
+                    self.scan_iter(match=f"{Collections.ArchiveVersions}{self.separator}*"),
                 ),
             )
             full_scan_batched = iter(lambda: tuple(islice(full_scan, 100)), ())
