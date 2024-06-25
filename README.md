@@ -38,7 +38,7 @@ news-please extracts the following attributes from news articles. An examplary j
 news-please supports three main use cases, which are explained in more detail in the following.
 
 #### CLI mode
-* stores extracted results in JSON files, PostgreSQL, ElasticSearch, or your own storage
+* stores extracted results in JSON files, PostgreSQL, ElasticSearch, Redis, or your own storage
 * simple but extensive configuration (if you want to tweak the results)
 * revisions: crawl articles multiple times and track changes
 

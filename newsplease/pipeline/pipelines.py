@@ -942,8 +942,8 @@ class RedisStorageClient(StrictRedis):
 
     def purge(self):
         """
-        Performing the purge through a full scan on the 2 collections.
-        We assume, as it is done for the Postgres pipeline, that the client may have other objects stored on redis.
+        Empty the database.
+        Either a flushdb is performed or a scan+delete batched in the case of a shared database.
         """
 
         if self.dangerously_flush_db:
@@ -956,7 +956,7 @@ class RedisStorageClient(StrictRedis):
                     self.scan_iter(match=f"{Collections.ArchiveVersions}{self.separator}*"),
                 ),
             )
-            full_scan_batched = iter(lambda: tuple(islice(full_scan, 100)), ())
+            full_scan_batched = iter(lambda: tuple(islice(full_scan, 1000)), ())
 
             def partial(names: tuple[str, ...]):
                 self.delete(*names)
