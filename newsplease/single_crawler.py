@@ -196,7 +196,7 @@ class SingleCrawler(object):
         :param str url: the url this crawler is supposed to be loaded with
         :rtype: crawler-class or None
         """
-        should_check_crawler_has_urls_to_scan = self.cfg_crawler.get('should_check_crawler_has_urls_to_scan')
+        check_crawler_has_urls_to_scan = self.cfg_crawler.get('check_crawler_has_urls_to_scan')
 
         checked_crawlers = []
         while crawler is not None and crawler not in checked_crawlers:
@@ -214,7 +214,7 @@ class SingleCrawler(object):
                 crawler_supports_site = False
 
             if crawler_supports_site:
-                if should_check_crawler_has_urls_to_scan and not current.has_urls_to_scan(url):
+                if check_crawler_has_urls_to_scan and not current.has_urls_to_scan(url):
                     self.log.warning(f"Crawler {crawler} has no url to scan for {url}")
                 else:
                     self.log.debug("Using crawler %s for %s.", crawler, url)
