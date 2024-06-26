@@ -2,8 +2,10 @@ import logging
 
 import scrapy
 
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
-class RecursiveCrawler(scrapy.Spider):
+
+class RecursiveCrawler(NewspleaseSpider, scrapy.Spider):
     name = "RecursiveCrawler"
     allowed_domains = None
     start_urls = None
