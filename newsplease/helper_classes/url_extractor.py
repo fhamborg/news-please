@@ -5,6 +5,7 @@ Helper class for url extraction.
 import logging
 import os
 import re
+from scrapy.http import Response
 from http.client import HTTPResponse
 from urllib.error import URLError
 from newsplease.config import CrawlerConfig
@@ -45,7 +46,7 @@ class UrlExtractor(object):
     """
 
     @staticmethod
-    def get_allowed_domain(url, allow_subdomains=True):
+    def get_allowed_domain(url: str, allow_subdomains: bool = True) -> str:
         """
         Determines the url's domain.
 
@@ -59,7 +60,7 @@ class UrlExtractor(object):
             return re.search(re_domain, UrlExtractor.get_allowed_domain(url)).group(0)
 
     @staticmethod
-    def get_subdomain(url):
+    def get_subdomain(url: str) -> str:
         """
         Determines the domain's subdomains.
 
@@ -168,7 +169,7 @@ class UrlExtractor(object):
         return UrlExtractor.check_sitemap_urls(domain_url=domain_url)
 
     @staticmethod
-    def get_rss_url(response) -> str:
+    def get_rss_url(response: Response) -> str:
         """
         Extracts the rss feed's url from the scrapy response.
 
@@ -194,7 +195,7 @@ class UrlExtractor(object):
         return "http://" + UrlExtractor.get_allowed_domain(url) + "/"
 
     @staticmethod
-    def get_url_directory_string(url):
+    def get_url_directory_string(url: str) -> str:
         """
         Determines the url's directory string.
 
@@ -210,8 +211,8 @@ class UrlExtractor(object):
         # index = [index for index in range(len(splitted_url))
         #          if not re.search(domain, splitted_url[index]) is None][0]
         for index in range(len(splitted_url)):
-            if not re.search(domain, splitted_url[index]) is None:
-                if splitted_url[-1] is "":
+            if re.search(domain, splitted_url[index]) is not None:
+                if splitted_url[-1] == "":
                     splitted_url = splitted_url[index + 1 : -2]
                 else:
                     splitted_url = splitted_url[index + 1 : -1]
@@ -220,7 +221,7 @@ class UrlExtractor(object):
         return "_".join(splitted_url)
 
     @staticmethod
-    def get_url_file_name(url):
+    def get_url_file_name(url: str) -> str:
         """
         Determines the url's file name.
 
