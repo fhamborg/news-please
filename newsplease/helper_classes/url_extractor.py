@@ -3,9 +3,9 @@ Helper class for url extraction.
 """
 
 import logging
-import http
 import os
 import re
+from http.client import HTTPResponse
 from urllib.error import URLError
 from newsplease.config import CrawlerConfig
 
@@ -93,7 +93,7 @@ class UrlExtractor(object):
             request = UrlExtractor.url_to_request_with_agent(url_sitemap)
             try:
                 response = urllib2.urlopen(request)
-                if response.status_code == 200:
+                if response.getcode() == 200:
                     working_sitemap_paths.append(url_sitemap)
             except URLError:
                 continue
@@ -101,17 +101,14 @@ class UrlExtractor(object):
         return working_sitemap_paths
 
     @staticmethod
-    def get_robots_response(
-        url: str, allow_subdomains: bool
-    ) -> http.client.HTTPResponse:
+    def get_robots_response(url: str, allow_subdomains: bool) -> HTTPResponse | None:
         """
-        Determines the domain's robot.txt
+        Retrieve robots.txt if it exists
 
         :param str url: the url to work on
         :param bool allow_subdomains: Determines if the robot.txt may be the
                                       subdomain's
-        :return: the robot.txt's address
-        :raises Exception: if there's no robot.txt on the site's domain
+        :return: the robot.txt's HTTP response
         """
         redirect_url = UrlExtractor.follow_redirects(
             url="http://"
@@ -129,42 +126,44 @@ class UrlExtractor(object):
             url=parsed, url_netloc=url_netloc
         )
         robots_req = UrlExtractor.url_to_request_with_agent(robots_url)
-        response = urllib2.urlopen(robots_req)
-        if response.status_code == 200:
-            return response
-        if allow_subdomains:
-            return UrlExtractor.get_robots_response(url=url, allow_subdomains=False)
-        return response
+        try:
+            response = urllib2.urlopen(robots_req)
+            if response.getcode() == 200:
+                return response
+        except URLError:
+            if allow_subdomains:
+                return UrlExtractor.get_robots_response(url=url, allow_subdomains=False)
+        return None
 
     @staticmethod
     def sitemap_check(url: str) -> bool:
         """
-        Sitemap-Crawler are supported by every site which have a
-        Sitemap set in the robots.txt.
+        Sitemap-Crawlers are supported by every site that has a
+        Sitemap set in the robots.txt, or any sitemap present in the domain
 
         :param str url: the url to work on
-        :return bool: Determines if Sitemap is set in the site's robots.txt
+        :return bool: Determines if a sitemap exists
         """
         robots_response = UrlExtractor.get_robots_response(
             url=url, allow_subdomains=True
         )
-        if robots_response.status_code == 200:
+        if robots_response and robots_response.getcode() == 200:
             # Check if "Sitemap" is set
             return "Sitemap:" in robots_response.read().decode("utf-8")
         # Check if there is an existing sitemap, outside from robots.txt
         sitemap_urls = UrlExtractor.check_sitemap_urls(domain_url=url)
         any_sitemap_found = len(sitemap_urls) > 0
         if not any_sitemap_found:
-            logging.warning("Fatal: no robots.txt nor sitemap found.")
+            logging.warning("Fatal: neither robots.txt nor sitemap found.")
         return any_sitemap_found
 
     @staticmethod
     def get_sitemap_urls(domain_url: str, allow_subdomains: bool) -> list[str]:
-        """Retrieve SitemapCrawler file inputs from robots or sitemaps"""
+        """Retrieve SitemapCrawler input URLs from robots.txt or sitemaps"""
         robots_response = UrlExtractor.get_robots_response(
             url=domain_url, allow_subdomains=allow_subdomains
         )
-        if robots_response.status_code == 200:
+        if robots_response and robots_response.getcode() == 200:
             return [robots_response.url]
         return UrlExtractor.check_sitemap_urls(domain_url=domain_url)
 
