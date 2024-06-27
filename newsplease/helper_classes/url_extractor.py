@@ -86,7 +86,7 @@ class UrlExtractor(object):
 
     @staticmethod
     def check_sitemap_urls(domain_url: str) -> list[str]:
-        """Check if a set of sitemap exists for the requested domain"""
+        """Check if a set of sitemaps exists for the requested domain"""
         working_sitemap_paths = []
         for sitemap_path in SITEMAP_PATTERNS:
             # check common patterns
