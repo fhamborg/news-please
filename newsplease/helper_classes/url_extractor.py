@@ -150,7 +150,7 @@ class UrlExtractor(object):
         if robots_response and robots_response.getcode() == 200:
             # Check if "Sitemap" is set
             return "Sitemap:" in robots_response.read().decode("utf-8")
-        # Check if there is an existing sitemap, outside from robots.txt
+        # Check if there is an existing sitemap outside of robots.txt
         sitemap_urls = UrlExtractor.check_sitemap_urls(domain_url=url)
         any_sitemap_found = len(sitemap_urls) > 0
         if not any_sitemap_found:
