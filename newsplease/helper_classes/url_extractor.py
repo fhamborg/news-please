@@ -86,7 +86,11 @@ class UrlExtractor(object):
 
     @staticmethod
     def check_sitemap_urls(domain_url: str) -> list[str]:
-        """Check if a set of sitemaps exists for the requested domain"""
+        """Check if a set of sitemaps exists for the requested domain
+
+        :param str domain_url: The URL to work on
+        :return list[str] working_sitemap_paths: All available sitemap for the domain_url
+        """
         working_sitemap_paths = []
         for sitemap_path in SITEMAP_PATTERNS:
             # check common patterns
@@ -104,12 +108,12 @@ class UrlExtractor(object):
     @staticmethod
     def get_robots_response(url: str, allow_subdomains: bool) -> HTTPResponse | None:
         """
-        Retrieve robots.txt if it exists
+        Retrieve robots.txt response if it exists
 
         :param str url: the url to work on
         :param bool allow_subdomains: Determines if the robot.txt may be the
                                       subdomain's
-        :return: the robot.txt's HTTP response
+        :return: the robot.txt's HTTP response or None if it's not retrieved
         """
         redirect_url = UrlExtractor.follow_redirects(
             url="http://"
@@ -160,7 +164,13 @@ class UrlExtractor(object):
 
     @staticmethod
     def get_sitemap_urls(domain_url: str, allow_subdomains: bool) -> list[str]:
-        """Retrieve SitemapCrawler input URLs from robots.txt or sitemaps"""
+        """Retrieve SitemapCrawler input URLs from robots.txt or sitemaps
+
+        :param str domain_url: The URL to work on
+        :param bool allow_subdomains: Determines if the robot.txt may be the
+            subdomain's
+        :return list[str]: robots.txt URL or available sitemaps
+        """
         robots_response = UrlExtractor.get_robots_response(
             url=domain_url, allow_subdomains=allow_subdomains
         )
