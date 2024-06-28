@@ -900,8 +900,11 @@ class RedisStorageClient(StrictRedis):
         return set(signature(StrictRedis.__init__).parameters.keys())
 
     @classmethod
-    def _get_name(cls, collection: Collections, url: str) -> str:
-        return f"{collection}{cls.separator}{url}"
+    def _get_name(cls, collection: Collections, url: str, version: Optional[str] = None) -> str:
+        name = f"{collection}{cls.separator}{url}"
+        if version:
+            return f"{name}{cls.separator}{version}"
+        return name
 
     def _get_raw_current_version(self, url: str) -> Optional[bytes]:
         """
@@ -929,13 +932,18 @@ class RedisStorageClient(StrictRedis):
         url: str,
         item: dict[str, Any],
         collection: Collections = Collections.CurrentVersions,
+        version: Optional[str] = None,
         ttl: Optional[int] = None,
     ) -> None:
         if not url:
             raise ValueError("A value is expected for `url`")
+
+        if collection == Collections.ArchiveVersions and not version:
+            raise ValueError("A version value is expected for archives")
+
         serialized = json.dumps(item)
         self.set(
-            name=self._get_name(collection=collection, url=url),
+            name=self._get_name(collection=collection, url=url, version=version),
             value=lzma.compress(serialized.encode("utf-8")),
             ex=ttl,
         )
@@ -993,6 +1001,10 @@ class RedisStorage(ExtractedInformationStorage):
         # Capability to avoid storing archives - default is True
         self.enable_archive = self.cfg.parser.getboolean("Redis", "enable_archive", fallback=True)
 
+    @property
+    def is_archive_enabled(self) -> bool:
+        return self.enable_archive
+
     def process_item(self, item: Any, spider: scrapy.Spider):
         # get the original url, so that the library class (or whoever wants to read this) can access the article
         if "redirect_urls" in item._values["spider_response"].meta:
@@ -1029,13 +1041,14 @@ class RedisStorage(ExtractedInformationStorage):
         self.log.info(f"Article from {url!r} inserted in current versions.")
 
         # Now, move the old version from the CurrentVersions collection to the ArchiveVersions collection, if applicable
-        if old_version and self.enable_archive:
+        if old_version and self.is_archive_enabled:
             old_version["__descendant"] = new_version_tag["__version"]
 
             self.conn.save_item(
                 url=url,
-                item=new_version,
+                item=old_version,
                 collection=Collections.ArchiveVersions,
+                version=old_version["__version"],
                 ttl=self.ttl,
             )
             self.log.info(f"Moved old version of article from {url!r} to the archive.")
