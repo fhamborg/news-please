@@ -53,6 +53,8 @@ news-please is an open source, easy-to-use news crawler that extracts structured
           'faust-cchardet>=2.1.18',
           'boto3',
           'redis',
+          'newspaper4k>=0.9.3.1',
+          'lxml-html-clean>=0.1.1',
       ],
       extras_require={
           ':sys_platform == "win32"': [
