@@ -992,7 +992,7 @@ class RedisStorage(ExtractedInformationStorage):
         self.conn = RedisStorageClient.from_config_parser(self.cfg.parser)
 
         # No expiration by default
-        self.ttl = self.cfg.parser.getfloat("Redis", "ttl", fallback=-1.0)
+        self.ttl = self.cfg.parser.getint("Redis", "ttl", fallback=-1.0)
 
         # Sanity check
         if self.ttl < 1:
