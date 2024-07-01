@@ -23,18 +23,6 @@ except ImportError:
 # len(".markdown") = 9
 MAX_FILE_EXTENSION_LENGTH = 9
 
-# Set of sitemap patterns
-SITEMAP_PATTERNS = [
-    "sitemap.xml",
-    "post-sitemap.xml",
-    "blog-posts-sitemap.xml",
-    "sitemaps/post-sitemap.xml",
-    "sitemap_index.xml",
-    "sitemaps/sitemap_index.xml",
-    "sitemaps/sitemap.xml",
-    "sitemaps/sitemap-articles.xml",
-]
-
 # to improve performance, regex statements are compiled only once per module
 re_www = re.compile(r"^(www.)")
 re_domain = re.compile(r"[^/.]+\.[^/.]+$")
@@ -92,14 +80,18 @@ class UrlExtractor(object):
         :return list[str] working_sitemap_paths: All available sitemap for the domain_url
         """
         working_sitemap_paths = []
-        for sitemap_path in SITEMAP_PATTERNS:
+        config = CrawlerConfig.get_instance()
+        sitemap_patterns = config.section("Crawler").get("sitemap_patterns", [])
+        for sitemap_path in sitemap_patterns:
             # check common patterns
             url_sitemap = urljoin(domain_url, sitemap_path)
             request = UrlExtractor.url_to_request_with_agent(url_sitemap)
             try:
                 response = urllib2.urlopen(request)
-                if response.getcode() == 200:
-                    working_sitemap_paths.append(url_sitemap)
+                # Keep sitemaps that exist, including those resulting from redirections
+                if response.getcode() in [200, 301, 308]:
+                    logging.debug(f"Found an existing sitemap: {response.url}")
+                    working_sitemap_paths.append(response.url)
             except URLError:
                 continue
 
