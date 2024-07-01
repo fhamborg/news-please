@@ -38,7 +38,7 @@ news-please extracts the following attributes from news articles. An examplary j
 news-please supports three main use cases, which are explained in more detail in the following.
 
 #### CLI mode
-* stores extracted results in JSON files, PostgreSQL, ElasticSearch, or your own storage
+* stores extracted results in JSON files, PostgreSQL, ElasticSearch, Redis, or your own storage
 * simple but extensive configuration (if you want to tweak the results)
 * revisions: crawl articles multiple times and track changes
 
@@ -160,6 +160,26 @@ news-please allows for storing of articles to a PostgreSQL database, including t
 
 If you plan to use news-please and its export to PostgreSQL in a production environment, we recommend to uninstall the `psycopg2-binary` package and install `psycopg2`. We use the former since it does not require a C compiler in order to be installed. See [here](https://pypi.org/project/psycopg2-binary/), for more information on differences between `psycopg2` and `psycopg2-binary` and how to setup a production environment.
 
+### Redis
+news-please allows to store articles on a Redis database, including the versioning feature. To export to Redis, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the RedisStorage module to the pipeline and adjust the connection credentials:
+
+    [Scrapy]
+    ITEM_PIPELINES = {
+       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+       'newsplease.pipeline.pipelines.RedisStorage':350
+     }
+
+    [Redis]
+    host = localhost
+    port = 6379
+    db = 0
+
+    # You can add any redis connection parameter here
+    ssl_check_hostname = True
+    username = "news-please"
+    max_connections = 24
+
+This pipeline should also be compatible with AWS Elasticache and GCP MemoryStore
 
 ### What's next?
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
