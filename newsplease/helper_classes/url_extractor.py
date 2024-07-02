@@ -5,6 +5,7 @@ Helper class for url extraction.
 import logging
 import os
 import re
+from typing import Optional
 from scrapy.http import Response
 from http.client import HTTPResponse
 from urllib.error import URLError
@@ -61,7 +62,7 @@ class UrlExtractor(object):
         ]
 
     @staticmethod
-    def follow_redirects(url):
+    def follow_redirects(url: str) -> str:
         """
         Get's the url actual address by following forwards
 
@@ -98,7 +99,7 @@ class UrlExtractor(object):
         return working_sitemap_paths
 
     @staticmethod
-    def get_robots_response(url: str, allow_subdomains: bool) -> HTTPResponse | None:
+    def get_robots_response(url: str, allow_subdomains: bool) -> Optional[HTTPResponse]:
         """
         Retrieve robots.txt response if it exists
 
