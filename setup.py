@@ -55,6 +55,7 @@ news-please is an open source, easy-to-use news crawler that extracts structured
           'redis',
           'newspaper4k>=0.9.3.1',
           'lxml-html-clean>=0.1.1',
+          'typing-extensions>=4.3.0',
       ],
       extras_require={
           ':sys_platform == "win32"': [

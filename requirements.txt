@@ -21,3 +21,4 @@ hurry.filesize>=0.9
 bs4
 faust-cchardet>=2.1.18
 boto3
+typing-extensions>=4.3.0
