@@ -55,7 +55,7 @@ news-please supports three main use cases, which are explained in more detail in
 It's super easy, we promise!
 
 ### Installation
-news-please runs on Python 3.5+.
+news-please runs on Python 3.7+.
 ```
 $ pip3 install news-please
 ```
