@@ -14,7 +14,7 @@ from configparser import RawConfigParser
 from enum import Enum
 from itertools import islice, chain
 from typing import Optional, Dict, Any
-from typing_extensions import TypedDict, cast
+from typing_extensions import TypedDict
 
 import scrapy
 
@@ -1029,7 +1029,7 @@ class RedisStorage(ExtractedInformationStorage):
             new_version_tag["__ancestor"] = old_version["__version"]
 
         # Add the new version of the article to the CurrentVersion table
-        new_version = cast(dict[str, Any], ExtractedInformationStorage.extract_relevant_info(item))
+        new_version = ExtractedInformationStorage.extract_relevant_info(item)
         new_version = {**new_version, **new_version_tag}
 
         # If an old version existed, this replaces it
