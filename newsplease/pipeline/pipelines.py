@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from configparser import RawConfigParser
 from enum import Enum
 from itertools import islice, chain
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Set, Tuple
 from typing_extensions import TypedDict, cast
 
 import scrapy
@@ -895,7 +895,7 @@ class RedisStorageClient(StrictRedis):
         return cls(**connection_kwargs)
 
     @classmethod
-    def strict_redis_expected_params(cls) -> set[str]:
+    def strict_redis_expected_params(cls) -> Set[str]:
         from inspect import signature
         return set(signature(StrictRedis.__init__).parameters.keys())
 
@@ -930,7 +930,7 @@ class RedisStorageClient(StrictRedis):
     def save_item(
         self,
         url: str,
-        item: dict[str, Any],
+        item: Dict[str, Any],
         collection: Collections = Collections.CurrentVersions,
         version: Optional[str] = None,
         ttl: Optional[int] = None,
@@ -966,7 +966,7 @@ class RedisStorageClient(StrictRedis):
             )
             full_scan_batched = iter(lambda: tuple(islice(full_scan, 1000)), ())
 
-            def partial(names: tuple[str, ...]):
+            def partial(names: Tuple[str, ...]):
                 self.delete(*names)
 
             # Remove current versions
@@ -1029,7 +1029,7 @@ class RedisStorage(ExtractedInformationStorage):
             new_version_tag["__ancestor"] = old_version["__version"]
 
         # Add the new version of the article to the CurrentVersion table
-        new_version = cast(dict[str, Any], ExtractedInformationStorage.extract_relevant_info(item))
+        new_version = cast(Dict[str, Any], ExtractedInformationStorage.extract_relevant_info(item))
         new_version = {**new_version, **new_version_tag}
 
         # If an old version existed, this replaces it
