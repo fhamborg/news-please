@@ -66,8 +66,8 @@ class ParseCrawler(object):
         article['download_date'] = timestamp
         article['source_domain'] = source_domain.encode("utf-8")
         article['url'] = response.url
-        article['html_title'] = response.selector.xpath('//title/text()') \
-            .extract_first().encode("utf-8")
+        extracted_title = response.selector.xpath('//title/text()').extract_first()
+        article['html_title'] = extracted_title.encode("utf-8") if extracted_title is not None else ''
         if rss_title is None:
             article['rss_title'] = 'NULL'
         else:
