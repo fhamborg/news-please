@@ -15,7 +15,6 @@ news-please is an open source, easy-to-use news crawler that extracts structured
         "Operating System :: MacOS",
         "Operating System :: Microsoft",
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
