@@ -18,6 +18,7 @@ class Extractor:
 
         :param extractor_list: List of strings containing all extractors to be initialized.
         """
+
         def proc_instance(instance):
             if instance is not None:
                 self.log.info('Extractor initialized: %s', extractor)
@@ -35,15 +36,19 @@ class Extractor:
             else:
                 extractor_module = extractor
 
-            module = importlib.import_module(__package__ + '.extractors.' + extractor_module)
+            module_name = __package__ + '.extractors.' + extractor_module
+            module = importlib.import_module(module_name)
 
             if isinstance(extractor, tuple):
                 proc_instance(getattr(module, extractor[1], None)())
             else:
-                # check module for subclasses of AbstractExtractor
+                # check in the current module for subclasses of AbstractExtractor
                 for member in inspect.getmembers(module, inspect.isclass):
-                    if issubclass(member[1], AbstractExtractor) and member[0] != 'AbstractExtractor':
-
+                    if (
+                        member[1].__module__ == module_name
+                        and issubclass(member[1], AbstractExtractor)
+                        and member[0] != 'AbstractExtractor'
+                    ):
                         # instantiate extractor
                         proc_instance(getattr(module, member[0], None)())
 
