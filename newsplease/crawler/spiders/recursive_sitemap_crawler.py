@@ -35,8 +35,13 @@ class RecursiveSitemapCrawler(NewspleaseSpider, scrapy.spiders.SitemapSpider):
         self.original_url = url
 
         self.allowed_domains = [self.helper.url_extractor.get_allowed_domain(url)]
+        self.check_certificate = (bool(config.section("Crawler").get('check_certificate'))
+                                  if config.section("Crawler").get('check_certificate') is not None
+                                  else True)
         self.sitemap_urls = self.helper.url_extractor.get_sitemap_urls(
-            url, config.section("Crawler")["sitemap_allow_subdomains"]
+            domain_url=url,
+            allow_subdomains=config.section("Crawler")["sitemap_allow_subdomains"],
+            check_certificate=self.check_certificate,
         )
         super(RecursiveSitemapCrawler, self).__init__(*args, **kwargs)
 
@@ -60,7 +65,7 @@ class RecursiveSitemapCrawler(NewspleaseSpider, scrapy.spiders.SitemapSpider):
         )
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         Sitemap-Crawler are supported by every site which have a
         Sitemap set in the robots.txt.
@@ -68,6 +73,7 @@ class RecursiveSitemapCrawler(NewspleaseSpider, scrapy.spiders.SitemapSpider):
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param bool check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
-        return UrlExtractor.sitemap_check(url)
+        return UrlExtractor.sitemap_check(url=url, check_certificate=check_certificate)
