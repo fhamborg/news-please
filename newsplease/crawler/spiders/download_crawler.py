@@ -42,13 +42,14 @@ class Download(NewspleaseSpider, scrapy.Spider):
         )
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         As long as the url exists, this crawler will work!
 
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param str check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
         return True

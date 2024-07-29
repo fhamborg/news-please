@@ -104,13 +104,14 @@ class GdeltCrawler(NewspleaseSpider, scrapy.Spider):
         return True
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         Rss Crawler is supported if the url is a valid rss feed
 
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param str check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
 

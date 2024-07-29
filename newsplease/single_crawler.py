@@ -197,6 +197,9 @@ class SingleCrawler(object):
         :rtype: crawler-class or None
         """
         check_crawler_has_urls_to_scan = self.cfg_crawler.get('check_crawler_has_urls_to_scan')
+        check_certificate = (bool(self.cfg_crawler.get('check_certificate'))
+                             if self.cfg_crawler.get('check_certificate') is not None
+                             else True)
 
         checked_crawlers = []
         while crawler is not None and crawler not in checked_crawlers:
@@ -208,13 +211,15 @@ class SingleCrawler(object):
                 return current
 
             try:
-                crawler_supports_site = current.supports_site(url)
+                crawler_supports_site = current.supports_site(url=url, check_certificate=check_certificate)
             except Exception as e:
                 self.log.info(f'Crawler not supported due to: {str(e)}', exc_info=True)
                 crawler_supports_site = False
 
             if crawler_supports_site:
-                if check_crawler_has_urls_to_scan and not current.has_urls_to_scan(url):
+                if (check_crawler_has_urls_to_scan
+                        and not current.has_urls_to_scan(url=url, check_certificate=check_certificate)
+                ):
                     self.log.warning(f"Crawler {crawler} has no url to scan for {url}")
                 else:
                     self.log.debug("Using crawler %s for %s.", crawler, url)

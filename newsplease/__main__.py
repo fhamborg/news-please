@@ -14,7 +14,7 @@ import pymysql
 from elasticsearch import Elasticsearch
 from scrapy.utils.log import configure_logging
 
-from .pipeline.pipelines import RedisStorageClient
+from newsplease.pipeline.pipelines import RedisStorageClient
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 par_path = os.path.dirname(cur_path)
