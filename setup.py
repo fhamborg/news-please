@@ -44,7 +44,6 @@ news-please is an open source, easy-to-use news crawler that extracts structured
         "python-dateutil>=2.4.0",
         "plac>=0.9.6",
         "dotmap>=1.2.17",
-        "readability-lxml>=0.6.2",
         "PyDispatcher>=2.0.5",
         "warcio>=1.3.3",
         "ago>=0.0.9",
