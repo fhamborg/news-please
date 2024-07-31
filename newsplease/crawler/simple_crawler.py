@@ -28,17 +28,17 @@ class SimpleCrawler(object):
     _results = {}
 
     @staticmethod
-    def fetch_url(url, timeout=None, user_agent=USER_AGENT):
+    def fetch_url(url, timeout=None, user_agent=USER_AGENT, **kwargs):
         """
         Crawls the html content of the parameter url and returns the html
         :param url:
         :param timeout: in seconds, if None, the urllib default is used
         :return:
         """
-        return SimpleCrawler._fetch_url(url, False, timeout=timeout, user_agent=user_agent)
+        return SimpleCrawler._fetch_url(url, False, timeout=timeout, user_agent=user_agent, **kwargs)
 
     @staticmethod
-    def _fetch_url(url, is_threaded, timeout=None, user_agent=USER_AGENT):
+    def _fetch_url(url, is_threaded, timeout=None, user_agent=USER_AGENT, **kwargs):
         """
         Crawls the html content of the parameter url and saves the html in _results
         :param url:
@@ -61,6 +61,7 @@ class SimpleCrawler(object):
                 verify=False,
                 allow_redirects=True,
                 headers=headers,
+                **kwargs
             )
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
             LOGGER.error("malformed URL: %s", url)
@@ -91,7 +92,7 @@ class SimpleCrawler(object):
         return html_str
 
     @staticmethod
-    def fetch_urls(urls, timeout=None, user_agent=USER_AGENT):
+    def fetch_urls(urls, timeout=None, user_agent=USER_AGENT, **kwargs):
         """
         Crawls the html content of all given urls in parallel. Returns when all requests are processed.
         :param urls:
@@ -99,7 +100,7 @@ class SimpleCrawler(object):
         :return:
         """
         threads = [
-            threading.Thread(target=SimpleCrawler._fetch_url, args=(url, True, timeout, user_agent))
+            threading.Thread(target=SimpleCrawler._fetch_url, args=(url, True, timeout, user_agent), kwargs=kwargs)
             for url in urls
         ]
         for thread in threads:

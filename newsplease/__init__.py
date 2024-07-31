@@ -111,7 +111,7 @@ class NewsPlease:
         return final_article
 
     @staticmethod
-    def from_url(url, timeout=None, user_agent=None):
+    def from_url(url, timeout=None, user_agent=None, **kwargs):
         """
         Crawls the article from the url and extracts relevant information.
         :param url:
@@ -119,14 +119,14 @@ class NewsPlease:
         :return: A NewsArticle object containing all the information of the article. Else, None.
         :rtype: NewsArticle, None
         """
-        articles = NewsPlease.from_urls([url], timeout=timeout, user_agent=user_agent)
+        articles = NewsPlease.from_urls([url], timeout=timeout, user_agent=user_agent, **kwargs)
         if url in articles.keys():
             return articles[url]
         else:
             return None
 
     @staticmethod
-    def from_urls(urls, timeout=None, user_agent=None):
+    def from_urls(urls, timeout=None, user_agent=None, **kwargs):
         """
         Crawls articles from the urls and extracts relevant information.
         :param urls:
@@ -142,10 +142,10 @@ class NewsPlease:
             pass
         elif len(urls) == 1:
             url = urls[0]
-            html = SimpleCrawler.fetch_url(url, timeout=timeout, user_agent=user_agent)
+            html = SimpleCrawler.fetch_url(url, timeout=timeout, user_agent=user_agent, **kwargs)
             results[url] = NewsPlease.from_html(html, url, download_date)
         else:
-            results = SimpleCrawler.fetch_urls(urls, timeout=timeout, user_agent=user_agent)
+            results = SimpleCrawler.fetch_urls(urls, timeout=timeout, user_agent=user_agent, **kwargs)
 
             futures = {}
             with cf.ProcessPoolExecutor() as exec:
