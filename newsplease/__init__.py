@@ -119,7 +119,7 @@ class NewsPlease:
         :return: A NewsArticle object containing all the information of the article. Else, None.
         :rtype: NewsArticle, None
         """
-        articles = NewsPlease.from_urls([url], timeout=timeout, user_agent=user_agent, , fetch_images=fetch_images)
+        articles = NewsPlease.from_urls([url], timeout=timeout, user_agent=user_agent, fetch_images=fetch_images)
         if url in articles.keys():
             return articles[url]
         else:
