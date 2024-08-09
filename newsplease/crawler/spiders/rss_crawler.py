@@ -42,11 +42,23 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
         self.ignored_allowed_domain = self.helper.url_extractor \
             .get_allowed_domain(url)
 
-        self.check_certificate = (bool(config.section("Crawler").get('check_certificate'))
-                                  if config.section("Crawler").get('check_certificate') is not None
-                                  else True)
+        self.check_certificate = (
+            bool(config.section("Crawler").get('check_certificate'))
+            if config.section("Crawler").get('check_certificate') is not None
+            else True
+        )
 
-        self.start_urls = [self.helper.url_extractor.get_start_url(url)]
+        crawl_from_base_domain_by_rss_crawler = (
+            bool(config.section("Crawler").get('crawl_from_base_domain_by_rss_crawler'))
+            if config.section("Crawler").get('crawl_from_base_domain_by_rss_crawler') is not None
+            else True
+        )
+
+        self.start_urls = [
+            self.helper.url_extractor.get_start_url(url)
+            if crawl_from_base_domain_by_rss_crawler
+            else url
+        ]
 
         super(RssCrawler, self).__init__(*args, **kwargs)
 
