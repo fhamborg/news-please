@@ -48,15 +48,15 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
             else True
         )
 
-        crawl_from_base_domain_by_rss_crawler = (
-            bool(config.section("Crawler").get('crawl_from_base_domain_by_rss_crawler'))
-            if config.section("Crawler").get('crawl_from_base_domain_by_rss_crawler') is not None
+        crawl_from_base_url_by_rss_crawler = (
+            bool(config.section("Crawler").get('crawl_from_base_url_by_rss_crawler'))
+            if config.section("Crawler").get('crawl_from_base_url_by_rss_crawler') is not None
             else True
         )
 
         self.start_urls = [
             self.helper.url_extractor.get_start_url(url)
-            if crawl_from_base_domain_by_rss_crawler
+            if crawl_from_base_url_by_rss_crawler
             else url
         ]
 
