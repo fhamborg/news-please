@@ -28,6 +28,7 @@ MAX_FILE_EXTENSION_LENGTH = 9
 # to improve performance, regex statements are compiled only once per module
 re_www = re.compile(r"^(www.)")
 re_domain = re.compile(r"[^/.]+\.[^/.]+$")
+re_sitemap = re.compile(r"Sitemap:\s([^\r\n#]*)", re.MULTILINE)
 
 
 class UrlExtractor(object):
@@ -194,7 +195,9 @@ class UrlExtractor(object):
             url=domain_url, allow_subdomains=allow_subdomains, check_certificate=check_certificate
         )
         if robots_response and robots_response.getcode() == 200:
-            return [robots_response.url]
+            robots_content = robots_response.read().decode("utf-8")
+            sitemap_urls = re_sitemap.findall(robots_content)
+            return sitemap_urls
         return UrlExtractor.check_sitemap_urls(domain_url=domain_url, check_certificate=check_certificate)
 
     @staticmethod
