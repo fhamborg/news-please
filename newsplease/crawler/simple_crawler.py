@@ -28,27 +28,28 @@ class SimpleCrawler(object):
     _results = {}
 
     @staticmethod
-    def fetch_url(url, timeout=None, user_agent=USER_AGENT, request_args=None):
+    def fetch_url(url, request_args=None):
         """
         Crawls the html content of the parameter url and returns the html
         :param url:
-        :param timeout: in seconds, if None, the urllib default is used
+        :param request_args: optional arguments that `request` takes
         :return:
         """
-        return SimpleCrawler._fetch_url(url, False, timeout=timeout, user_agent=user_agent, request_args=request_args)
+        return SimpleCrawler._fetch_url(url, False, request_args=request_args)
 
     @staticmethod
-    def _fetch_url(url, is_threaded, timeout=None, user_agent=USER_AGENT, request_args=None):
+    def _fetch_url(url, is_threaded, request_args=None):
         """
         Crawls the html content of the parameter url and saves the html in _results
         :param url:
         :param is_threaded: If True, results will be stored for later processing by the fetch_urls method. Else not.
-        :param timeout: in seconds, if None, the urllib default is used
+        :param request_args: optional arguments that `request` takes
         :return: html of the url
         """
-        headers = HEADERS
-        if user_agent:
-            headers["User-Agent"] = user_agent
+        if request_args is None:
+            request_args = {}
+        if "headers" not in request_args:
+            request_args["headers"] = HEADERS
 
         html_str = None
         # send
@@ -56,13 +57,7 @@ class SimpleCrawler(object):
             # read by streaming chunks (stream=True, iter_content=xx)
             # so we can stop downloading as soon as MAX_FILE_SIZE is reached
             response = requests.get(
-                url,
-                timeout=timeout,
-                verify=False,
-                allow_redirects=True,
-                headers=headers,
-                **(request_args or {})
-            )
+                url, verify=False, allow_redirects=True, **request_args)
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
             LOGGER.error("malformed URL: %s", url)
         except requests.exceptions.TooManyRedirects:
@@ -92,15 +87,15 @@ class SimpleCrawler(object):
         return html_str
 
     @staticmethod
-    def fetch_urls(urls, timeout=None, user_agent=USER_AGENT, request_args=None):
+    def fetch_urls(urls, request_args=None):
         """
         Crawls the html content of all given urls in parallel. Returns when all requests are processed.
         :param urls:
-        :param timeout: in seconds, if None, the urllib default is used
+        :param request_args: optional arguments that `request` takes
         :return:
         """
         threads = [
-            threading.Thread(target=SimpleCrawler._fetch_url, args=(url, True, timeout, user_agent, request_args))
+            threading.Thread(target=SimpleCrawler._fetch_url, args=(url, True, request_args))
             for url in urls
         ]
         for thread in threads:
