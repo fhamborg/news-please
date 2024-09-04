@@ -69,9 +69,9 @@ print(article.title)
 ```
 A sample of an extracted article can be found [here (as a JSON file)](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json).
 
-If you want to crawl multiple articles at a time, optionally with a timeout in seconds
+If you want to crawl multiple articles at a time, optionally with any optional parameter taken by [requests.request()](https://requests.readthedocs.io/en/latest/api/#requests.request) 
 ```python
-NewsPlease.from_urls([url1, url2, ...], timeout=6)
+NewsPlease.from_urls([url1, url2, ...], request_args={"timeout": 6})
 ```
 or if you have a file containing all URLs (each line containing a single URL)
 ```python
