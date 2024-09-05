@@ -70,6 +70,8 @@ class NewsPlease:
         to extract the publishing date and title.
         :param html:
         :param url:
+        :param download_date:
+        :param fetch_images:
         :return:
         """
         if bool(html) is False:
@@ -111,26 +113,28 @@ class NewsPlease:
         return final_article
 
     @staticmethod
-    def from_url(url, request_args=None):
+    def from_url(url, request_args=None, fetch_images=True):
         """
         Crawls the article from the url and extracts relevant information.
         :param url:
         :param request_args: optional arguments that `request` takes
+        :param fetch_images: whether to download images
         :return: A NewsArticle object containing all the information of the article. Else, None.
         :rtype: NewsArticle, None
         """
-        articles = NewsPlease.from_urls([url], request_args=request_args)
+        articles = NewsPlease.from_urls([url], request_args=request_args, fetch_images=fetch_images)
         if url in articles.keys():
             return articles[url]
         else:
             return None
 
     @staticmethod
-    def from_urls(urls, request_args=None):
+    def from_urls(urls, request_args=None, fetch_images=True):
         """
         Crawls articles from the urls and extracts relevant information.
         :param urls:
         :param request_args: optional arguments that `request` takes
+        :param fetch_images: whether to download images
         :return: A dict containing given URLs as keys, and extracted information as corresponding values.
         """
         results = {}
@@ -143,7 +147,7 @@ class NewsPlease:
         elif len(urls) == 1:
             url = urls[0]
             html = SimpleCrawler.fetch_url(url, request_args=request_args)
-            results[url] = NewsPlease.from_html(html, url, download_date)
+            results[url] = NewsPlease.from_html(html, url, download_date, fetch_images)
         else:
             results = SimpleCrawler.fetch_urls(urls, request_args=request_args)
 
@@ -151,7 +155,7 @@ class NewsPlease:
             with cf.ProcessPoolExecutor() as exec:
                 for url in results:
                     future = exec.submit(
-                        NewsPlease.from_html, results[url], url, download_date
+                        NewsPlease.from_html, results[url], url, download_date, fetch_images
                     )
                     futures[future] = url
 
