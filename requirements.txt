@@ -5,6 +5,7 @@ PyMySQL>=0.7.9
 psycopg2-binary>=2.8.4
 hjson>=1.5.8
 elasticsearch>=2.4
+opensearch-py>=2.7
 beautifulsoup4>=4.3.2
 readability-lxml>=0.6.2
 langdetect>=1.0.7
