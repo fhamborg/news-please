@@ -139,6 +139,34 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
     username = 'root'  
     secret = 'password'
 
+### OpenSearch
+
+news-please supports export to OpenSearch. OpenSearch is the same as ElasticSearch with minor differences in the client implementation, so has same features that ElasticSearch
+
+Example pipline settings
+    [Scrapy]
+
+    ITEM_PIPELINES = {
+                       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+                       'newsplease.pipeline.pipelines.OpensearchStorage':350
+                     }
+
+if your Opensearch database is not located at `http://localhost:9200`, uses a different username/password or CA-certificate authentication. In these cases, you will also need to change the following.
+
+    [Opensearch]
+
+    host = localhost
+    port = 9200    
+    # means that requesth should be send through https
+    use_ssl = True 
+
+    ...
+
+    # Credentials used  for authentication
+    username = 'root'  
+    secret = 'password'
+
+
 ### PostgreSQL
 news-please allows for storing of articles to a PostgreSQL database, including the versioning feature. To export to PostgreSQL, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the PostgresqlStorage module to the pipeline and adjust the database credentials:
 

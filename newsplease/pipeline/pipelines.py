@@ -22,6 +22,7 @@ import pymysql
 import psycopg2
 from dateutil import parser as dateparser
 from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch
 from scrapy.exceptions import DropItem
 
 from redis import StrictRedis
@@ -662,6 +663,94 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             except ConnectionError as error:
                 self.running = False
                 self.log.error("Lost connection to Elasticsearch, this module will be deactivated: %s" % error)
+        return item
+
+class OpensearchStorage(ExtractedInformationStorage):
+    """
+    Handles remote storage of the meta data in Elasticsearch or Opensearch
+    """
+
+    log = None
+    cfg = None
+    es = None
+    index_current = None
+    index_archive = None
+    mapping = None
+    running = False
+
+    def __init__(self):
+        self.log = logging.getLogger('opensearch.trace')
+        self.log.addHandler(logging.NullHandler())
+        self.cfg = CrawlerConfig.get_instance()
+        self.database = self.cfg.section("Opensearch")
+
+        self.conn = OpenSearch(
+            hosts=[{"host": self.database["host"], "port": self.database["port"]}],
+            http_compress = True,
+            http_auth=(str(self.database["username"]), str(self.database["secret"])),
+            use_ssl = self.database["use_ssl"]
+        )
+        self.index_current = self.database["index_current"]
+        self.index_archive = self.database["index_archive"]
+        self.mapping = self.database["mapping"]
+
+        # check connection to Database and set the configuration
+
+        try:
+            # check if server is available
+            self.conn.ping()
+
+            # raise logging level due to indices.exists() habit of logging a warning if an index doesn't exist.
+            os_log = logging.getLogger('elasticsearch')
+            os_level = os_log.getEffectiveLevel()
+            os_log.setLevel('ERROR')
+
+            # check if the necessary indices exist and create them if needed
+            if not self.conn.indices.exists(index=self.index_current):
+                self.conn.indices.create(index=self.index_current, ignore=[400, 404])
+                self.conn.indices.put_mapping(index=self.index_current, body=self.mapping)
+            if not self.conn.indices.exists(self.index_archive):
+                self.conn.indices.create(index=self.index_archive, ignore=[400, 404])
+                self.conn.indices.put_mapping(index=self.index_archive, body=self.mapping)
+            self.running = True
+
+            # restore previous logging level
+            os_log.setLevel(os_level)
+
+        except ConnectionError as error:
+            self.running = False
+            self.log.error("Failed to connect to Opensearch, this module will be deactivated. "
+                           "Please check if the database is running and the config is correct: %s" % error)
+
+    def process_item(self, item, spider):
+
+        if self.running:
+            try:
+                version = 1
+                ancestor = None
+
+                # search for previous version
+                request = self.conn.search(index=self.index_current, body={'query': {'match': {'url.keyword': item['url']}}})
+                if request['hits']['total']['value'] > 0:
+                    # save old version into index_archive
+                    old_version = request['hits']['hits'][0]
+                    old_version['_source']['descendent'] = True
+                    self.conn.index(index=self.index_archive, body=old_version['_source'])
+                    version += 1
+                    ancestor = old_version['_id']
+
+                # save new version into old id of index_current
+                self.log.info("Saving to Opensearch: %s" % item['url'])
+                extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
+                extracted_info['ancestor'] = ancestor
+                extracted_info['version'] = version
+                self.conn.index(index=self.index_current, id=ancestor,
+                              body=extracted_info)
+
+
+            except ConnectionError as error:
+                self.running = False
+                self.log.error("Lost connection to Opensearch, this module will be deactivated: %s" % error)
         return item
 
 
