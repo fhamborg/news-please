@@ -2,8 +2,10 @@ import logging
 
 import scrapy
 
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
-class RecursiveCrawler(scrapy.Spider):
+
+class RecursiveCrawler(NewspleaseSpider, scrapy.Spider):
     name = "RecursiveCrawler"
     allowed_domains = None
     start_urls = None
@@ -54,13 +56,14 @@ class RecursiveCrawler(scrapy.Spider):
             response, self.allowed_domains[0], self.original_url)
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         Recursive Crawler are supported by every site!
 
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param bool check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
         return True

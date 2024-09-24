@@ -12,7 +12,6 @@ news-please also features a library mode, which allows Python developers to use 
 If you want to contribute to news-please, please first read [here](#contributions).
 
 ## Announcements
-10/11/2023: If you're interested in **text annotation software**, check out [textada](https://textada.com/) - an AI-powered text annotation tool. Add your documents and categories, do some manual annotations, and let the AI do the work for you. The university-based project is not open source, but free to use.
 
 03/23/2021: If you're interested in **sentiment classification** in news articles, check out our large-scale dataset for target-dependent sentiment classification. We also publish an easy-to-use neural model that achieves state-of-the-art performance. Visit the project [here](https://github.com/fhamborg/NewsMTSC).
 
@@ -38,7 +37,7 @@ news-please extracts the following attributes from news articles. An examplary j
 news-please supports three main use cases, which are explained in more detail in the following.
 
 #### CLI mode
-* stores extracted results in JSON files, PostgreSQL, ElasticSearch, or your own storage
+* stores extracted results in JSON files, PostgreSQL, ElasticSearch, Redis, or your own storage
 * simple but extensive configuration (if you want to tweak the results)
 * revisions: crawl articles multiple times and track changes
 
@@ -56,9 +55,9 @@ news-please supports three main use cases, which are explained in more detail in
 It's super easy, we promise!
 
 ### Installation
-news-please runs on Python 3.5+.
+news-please runs on Python 3.8+.
 ```bash
-$ pip3 install news-please
+$ pip install news-please
 ```
 
 ### Use within your own code (as a library)
@@ -70,9 +69,9 @@ print(article.title)
 ```
 A sample of an extracted article can be found [here (as a JSON file)](https://github.com/fhamborg/news-please/blob/master/newsplease/examples/sample.json).
 
-If you want to crawl multiple articles at a time, optionally with a timeout in seconds
+If you want to crawl multiple articles at a time, optionally with any optional parameter taken by [requests.request()](https://requests.readthedocs.io/en/latest/api/#requests.request) 
 ```python
-NewsPlease.from_urls([url1, url2, ...], timeout=6)
+NewsPlease.from_urls([url1, url2, ...], request_args={"timeout": 6})
 ```
 or if you have a file containing all URLs (each line containing a single URL)
 ```python
@@ -165,6 +164,26 @@ password = 'password'
 ```
 If you plan to use news-please and its export to PostgreSQL in a production environment, we recommend to uninstall the `psycopg2-binary` package and install `psycopg2`. We use the former since it does not require a C compiler in order to be installed. See [here](https://pypi.org/project/psycopg2-binary/), for more information on differences between `psycopg2` and `psycopg2-binary` and how to setup a production environment.
 
+### Redis
+news-please allows to store articles on a Redis database, including the versioning feature. To export to Redis, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the RedisStorage module to the pipeline and adjust the connection credentials:
+
+    [Scrapy]
+    ITEM_PIPELINES = {
+       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+       'newsplease.pipeline.pipelines.RedisStorage':350
+     }
+
+    [Redis]
+    host = localhost
+    port = 6379
+    db = 0
+
+    # You can add any redis connection parameter here
+    ssl_check_hostname = True
+    username = "news-please"
+    max_connections = 24
+
+This pipeline should also be compatible with AWS Elasticache and GCP MemoryStore
 
 ### What's next?
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).

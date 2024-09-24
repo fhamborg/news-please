@@ -12,3 +12,6 @@ build/
 .python-version
 
 venv/
+.python-version
+build
+**.egg-info/

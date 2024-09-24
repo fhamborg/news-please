@@ -2,10 +2,12 @@ import logging
 
 import scrapy
 
-from ...helper_classes.url_extractor import UrlExtractor
+
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
+from newsplease.helper_classes.url_extractor import UrlExtractor
 
 
-class SitemapCrawler(scrapy.spiders.SitemapSpider):
+class SitemapCrawler(NewspleaseSpider, scrapy.spiders.SitemapSpider):
     name = "SitemapCrawler"
     allowed_domains = None
     sitemap_urls = None
@@ -21,13 +23,22 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
 
         self.config = config
         self.helper = helper
+
         self.original_url = url
 
-        self.allowed_domains = [self.helper.url_extractor
-                                    .get_allowed_domain(url, config.section(
-            'Crawler')['sitemap_allow_subdomains'])]
-        self.sitemap_urls = [self.helper.url_extractor.get_sitemap_url(
-            url, config.section('Crawler')['sitemap_allow_subdomains'])]
+        self.allowed_domains = [
+            self.helper.url_extractor.get_allowed_domain(
+                url, config.section("Crawler")["sitemap_allow_subdomains"]
+            )
+        ]
+        self.check_certificate = (bool(config.section("Crawler").get('check_certificate'))
+                                  if config.section("Crawler").get('check_certificate') is not None
+                                  else True)
+        self.sitemap_urls = self.helper.url_extractor.get_sitemap_urls(
+            domain_url=url,
+            allow_subdomains=config.section("Crawler")["sitemap_allow_subdomains"],
+            check_certificate=self.check_certificate,
+        )
 
         self.log.debug(self.sitemap_urls)
 
@@ -44,7 +55,8 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
             return
 
         yield self.helper.parse_crawler.pass_to_pipeline_if_article(
-            response, self.allowed_domains[0], self.original_url)
+            response, self.allowed_domains[0], self.original_url
+        )
 
     @staticmethod
     def only_extracts_articles():
@@ -55,7 +67,7 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
         return True
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         Sitemap-Crawler are supported by every site which have a
         Sitemap set in the robots.txt.
@@ -63,7 +75,8 @@ class SitemapCrawler(scrapy.spiders.SitemapSpider):
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param str check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
 
-        return UrlExtractor.sitemap_check(url)
+        return UrlExtractor.sitemap_check(url=url, check_certificate=check_certificate)

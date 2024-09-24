@@ -1,3 +1,7 @@
+from requests import get
+from scrapy.http import TextResponse, XmlResponse
+
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 from newsplease.helper_classes.url_extractor import UrlExtractor
 
 try:
@@ -16,7 +20,7 @@ re_rss = re.compile(
 )
 
 
-class RssCrawler(scrapy.Spider):
+class RssCrawler(NewspleaseSpider, scrapy.Spider):
     name = "RssCrawler"
     ignored_allowed_domains = None
     start_urls = None
@@ -37,6 +41,11 @@ class RssCrawler(scrapy.Spider):
 
         self.ignored_allowed_domain = self.helper.url_extractor \
             .get_allowed_domain(url)
+
+        self.check_certificate = (bool(config.section("Crawler").get('check_certificate'))
+                                  if config.section("Crawler").get('check_certificate') is not None
+                                  else True)
+
         self.start_urls = [self.helper.url_extractor.get_start_url(url)]
 
         super(RssCrawler, self).__init__(*args, **kwargs)
@@ -47,8 +56,9 @@ class RssCrawler(scrapy.Spider):
 
         :param obj response: The scrapy response
         """
-        yield scrapy.Request(self.helper.url_extractor.get_rss_url(response),
-                             callback=self.rss_parse)
+        yield scrapy.Request(
+            UrlExtractor.get_rss_url(response), callback=self.rss_parse
+        )
 
     def rss_parse(self, response):
         """
@@ -58,8 +68,14 @@ class RssCrawler(scrapy.Spider):
         """
         for item in response.xpath('//item'):
             for url in item.xpath('link/text()').extract():
-                yield scrapy.Request(url, lambda resp: self.article_parse(
-                    resp, item.xpath('title/text()').extract()[0]))
+                yield scrapy.Request(
+                    url=url,
+                    callback=lambda resp: self.article_parse(
+                        resp,
+                        item.xpath('title/text()').extract()[0]
+                    ),
+
+                )
 
     def article_parse(self, response, rss_title=None):
         """
@@ -85,22 +101,46 @@ class RssCrawler(scrapy.Spider):
         return True
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         Rss Crawler are supported if by every site containing an rss feed.
 
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param bool check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
 
         # Follow redirects
-        opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
-        url = UrlExtractor.url_to_request_with_agent(url)
-        redirect = opener.open(url).url
-        redirect = UrlExtractor.url_to_request_with_agent(redirect)
-        response = urllib2.urlopen(redirect).read()
+        redirect_url = UrlExtractor.follow_redirects(url=url, check_certificate=check_certificate)
 
         # Check if a standard rss feed exists
-        return re.search(re_rss, response.decode('utf-8')) is not None
+        response = UrlExtractor.request_url(url=redirect_url, check_certificate=check_certificate).read()
+        return re.search(re_rss, response.decode("utf-8")) is not None
+
+    @staticmethod
+    def has_urls_to_scan(url: str, check_certificate: bool = True) -> bool:
+        """
+        Check if the RSS feed contains any URL to scan
+
+        :param str url: The url to test
+        :param bool check_certificate:
+        :return bool:
+        """
+        redirect_url = UrlExtractor.follow_redirects(url=url, check_certificate=check_certificate)
+
+        response = get(url=redirect_url, verify=check_certificate)
+        scrapy_response = TextResponse(url=redirect_url, body=response.text.encode())
+
+        rss_url = UrlExtractor.get_rss_url(scrapy_response)
+        rss_content = get(url=rss_url, verify=check_certificate).text
+        rss_response = XmlResponse(url=rss_url, body=rss_content, encoding="utf-8")
+
+        urls_to_scan = [
+            url
+            for item in rss_response.xpath("//item")
+            for url in item.xpath("link/text()").extract()
+        ]
+
+        return len(urls_to_scan) > 0

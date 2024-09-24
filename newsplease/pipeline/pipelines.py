@@ -5,14 +5,26 @@
 import datetime
 import json
 import logging
+import lzma
 import os.path
 import sys
+import warnings
+from concurrent.futures import ThreadPoolExecutor
+from configparser import RawConfigParser
+from enum import Enum
+from itertools import islice, chain
+from typing import Optional, Dict, Any, Set, Tuple
+from typing_extensions import TypedDict, cast
+
+import scrapy
 
 import pymysql
 import psycopg2
 from dateutil import parser as dateparser
 from elasticsearch import Elasticsearch
 from scrapy.exceptions import DropItem
+
+from redis import StrictRedis
 
 from NewsArticle import NewsArticle
 from .extractor import article_extractor
@@ -803,3 +815,246 @@ class PandasStorage(ExtractedInformationStorage):
         )
         self.df.to_pickle(self.full_path)
         self.log.info("Wrote to Pandas to %s", self.full_path)
+
+
+class Collections(str, Enum):
+    """
+    Collections names for storage in redis.
+    """
+
+    CurrentVersions = "CurrentVersions"
+    ArchiveVersions = "ArchiveVersions"
+
+
+class RedisStorageClient(StrictRedis):
+    """
+    Client for Redis / AWS Elasticache / GCP MemoryStore
+
+    Implementations choices:
+    * For faster lookups, we use keys of that form: key = { collection name } + { separator } + { identifier }
+    * LZMA compression
+    * It is safe to store objects not related to news-please in the same db
+    * It is possible to set a TTL on objects stored
+    """
+
+    separator = "::"
+
+    def __init__(self, *args, dangerously_flush_db: bool = False, **kwargs):
+        if "decode_responses" in kwargs:
+            warnings.warn("`decode_responses` must remain set to False for compression")
+            kwargs["decode_responses"] = False
+        super().__init__(*args, **kwargs)
+        self.dangerously_flush_db = dangerously_flush_db
+
+    @classmethod
+    def from_config_parser(cls, config_parser: RawConfigParser):
+        connection_kwargs = {
+            "host": config_parser.get("Redis", "host"),
+            "port": config_parser.getint("Redis", "port"),
+            "db": config_parser.getint("Redis", "db"),
+            "password": config_parser.get("Redis", "password", fallback=None),
+            "socket_timeout": config_parser.getfloat("Redis", "socket_timeout", fallback=None),
+            "socket_connect_timeout": config_parser.getfloat("Redis", "socket_connect_timeout", fallback=None),
+            "socket_keepalive": config_parser.getboolean("Redis", "socket_keepalive", fallback=None),
+            "socket_keepalive_options": config_parser.get("Redis", "socket_keepalive_options", fallback=None),
+            "unix_socket_path": config_parser.get("Redis", "unix_socket_path", fallback=None),
+            "encoding": config_parser.get("Redis", "encoding", fallback="utf-8"),
+            "encoding_errors": config_parser.get("Redis", "encoding_errors", fallback="strict"),
+            "charset": config_parser.get("Redis", "charset", fallback=None),
+            "errors": config_parser.get("Redis", "errors", fallback=None),
+            "retry_on_timeout": config_parser.getboolean("Redis", "retry_on_timeout", fallback=False),
+            "retry_on_error": config_parser.get("Redis", "retry_on_error", fallback=None),
+            "ssl": config_parser.getboolean("Redis", "ssl", fallback=False),
+            "ssl_keyfile": config_parser.get("Redis", "ssl_keyfile", fallback=None),
+            "ssl_certfile": config_parser.get("Redis", "ssl_certfile", fallback=None),
+            "ssl_cert_reqs": config_parser.get("Redis", "ssl_cert_reqs", fallback="required"),
+            "ssl_ca_certs": config_parser.get("Redis", "ssl_ca_certs", fallback=None),
+            "ssl_ca_path": config_parser.get("Redis", "ssl_ca_path", fallback=None),
+            "ssl_ca_data": config_parser.get("Redis", "ssl_ca_data", fallback=None),
+            "ssl_check_hostname": config_parser.getboolean("Redis", "ssl_check_hostname", fallback=False),
+            "ssl_password": config_parser.get("Redis", "ssl_password", fallback=None),
+            "ssl_validate_ocsp": config_parser.getboolean("Redis", "ssl_validate_ocsp", fallback=False),
+            "ssl_validate_ocsp_stapled": config_parser.getboolean(
+                "Redis", "ssl_validate_ocsp_stapled", fallback=False,
+            ),
+            "ssl_ocsp_context": config_parser.get("Redis", "ssl_ocsp_context", fallback=None),
+            "ssl_ocsp_expected_cert": config_parser.get("Redis", "ssl_ocsp_expected_cert", fallback=None),
+            "ssl_min_version": config_parser.get("Redis", "ssl_min_version", fallback=None),
+            "ssl_ciphers": config_parser.get("Redis", "ssl_ciphers", fallback=None),
+            "max_connections": config_parser.getint("Redis", "max_connections", fallback=None),
+            "single_connection_client": config_parser.getboolean("Redis", "single_connection_client", fallback=False),
+            "health_check_interval": config_parser.getint("Redis", "health_check_interval", fallback=0),
+            "client_name": config_parser.get("Redis", "client_name", fallback=None),
+            "username": config_parser.get("Redis", "username", fallback=None),
+            "retry": config_parser.get("Redis", "retry", fallback=None),
+            "redis_connect_func": config_parser.get("Redis", "redis_connect_func", fallback=None),
+            "credential_provider": config_parser.get("Redis", "credential_provider", fallback=None),
+            "protocol": config_parser.getint("Redis", "protocol", fallback=None),
+            "dangerously_flush_db": config_parser.getboolean("Redis", "dangerously_flush_db", fallback=False),
+        }
+        return cls(**connection_kwargs)
+
+    @classmethod
+    def strict_redis_expected_params(cls) -> Set[str]:
+        from inspect import signature
+        return set(signature(StrictRedis.__init__).parameters.keys())
+
+    @classmethod
+    def _get_name(cls, collection: Collections, url: str, version: Optional[str] = None) -> str:
+        name = f"{collection}{cls.separator}{url}"
+        if version:
+            return f"{name}{cls.separator}{version}"
+        return name
+
+    def _get_raw_current_version(self, url: str) -> Optional[bytes]:
+        """
+        Get the value at name = collection + url.
+
+        Depending on the value of decode_responses, response can be str or bytes, if any.
+        """
+        if not url:
+            raise ValueError("A value is expected for `url`")
+        return self.get(self._get_name(Collections.CurrentVersions, url))
+
+    def get_current_version(self, url: str) -> Optional[Dict[str, Any]]:
+        """
+        Get the value at name = collection + url.
+
+        Depending on the value of decode_responses, response can be str or bytes, if any.
+        """
+        raw = self._get_raw_current_version(url)
+        if not raw:
+            return None
+        return json.loads(lzma.decompress(raw))
+
+    def save_item(
+        self,
+        url: str,
+        item: Dict[str, Any],
+        collection: Collections = Collections.CurrentVersions,
+        version: Optional[str] = None,
+        ttl: Optional[int] = None,
+    ) -> None:
+        if not url:
+            raise ValueError("A value is expected for `url`")
+
+        if collection == Collections.ArchiveVersions and not version:
+            raise ValueError("A version value is expected for archives")
+
+        serialized = json.dumps(item)
+        self.set(
+            name=self._get_name(collection=collection, url=url, version=version),
+            value=lzma.compress(serialized.encode("utf-8")),
+            ex=ttl,
+        )
+
+    def purge(self):
+        """
+        Empty the database.
+        Either a flushdb is performed or a scan+delete batched in the case of a shared database.
+        """
+
+        if self.dangerously_flush_db:
+            self.flushdb()
+
+        else:
+            full_scan = chain.from_iterable(
+                (
+                    self.scan_iter(match=f"{Collections.CurrentVersions}{self.separator}*"),
+                    self.scan_iter(match=f"{Collections.ArchiveVersions}{self.separator}*"),
+                ),
+            )
+            full_scan_batched = iter(lambda: tuple(islice(full_scan, 1000)), ())
+
+            def partial(names: Tuple[str, ...]):
+                self.delete(*names)
+
+            # Remove current versions
+            with ThreadPoolExecutor(max_workers=128) as pool:
+                pool.map(partial, full_scan_batched)
+
+
+class RedisStorage(ExtractedInformationStorage):
+    """
+    Stores extracted information in a Redis database.
+    """
+
+    class VersionTag(TypedDict, total=True):
+        __version: int
+        __ancestor: int
+        __descendant: int
+
+    def __init__(self):
+        super().__init__()
+
+        # Establish redis connection
+        # Closing of the connection is handled once the spider closes
+        self.conn = RedisStorageClient.from_config_parser(self.cfg.parser)
+
+        # No expiration by default
+        self.ttl = self.cfg.parser.getint("Redis", "ttl", fallback=-1.0)
+
+        # Sanity check
+        if self.ttl < 1:
+            self.ttl = None
+
+        # Capability to avoid storing archives - default is True
+        self.enable_archive = self.cfg.parser.getboolean("Redis", "enable_archive", fallback=True)
+
+    @property
+    def is_archive_enabled(self) -> bool:
+        return self.enable_archive
+
+    def process_item(self, item: Any, spider: scrapy.Spider):
+        # get the original url, so that the library class (or whoever wants to read this) can access the article
+        if "redirect_urls" in item._values["spider_response"].meta:
+            url = item._values["spider_response"].meta["redirect_urls"][0]
+        else:
+            url = item._values["url"]
+
+        # Set defaults
+        new_version_tag = self.VersionTag(
+            __version=1,
+            __ancestor=0,
+            __descendant=0,
+        )
+
+        old_version = self.conn.get_current_version(url)
+
+        # We still consider an empty value as valid version value
+        # TODO: this could be an option
+        if old_version is not None:
+            # Update the version number and the ancestor variable for later references
+            new_version_tag["__version"] = old_version["__version"] + 1
+            new_version_tag["__ancestor"] = old_version["__version"]
+
+        # Add the new version of the article to the CurrentVersion table
+        new_version = cast(Dict[str, Any], ExtractedInformationStorage.extract_relevant_info(item))
+        new_version = {**new_version, **new_version_tag}
+
+        # If an old version existed, this replaces it
+        self.conn.save_item(
+            url=url,
+            item=new_version,
+            ttl=self.ttl,
+        )
+        self.log.info(f"Article from {url!r} inserted in current versions.")
+
+        # Now, move the old version from the CurrentVersions collection to the ArchiveVersions collection, if applicable
+        if old_version and self.is_archive_enabled:
+            old_version["__descendant"] = new_version_tag["__version"]
+
+            self.conn.save_item(
+                url=url,
+                item=old_version,
+                collection=Collections.ArchiveVersions,
+                version=old_version["__version"],
+                ttl=self.ttl,
+            )
+            self.log.info(f"Moved old version of article from {url!r} to the archive.")
+
+        return item
+
+    def close_spider(self, spider: scrapy.Spider):
+        # Close redis connection
+        self.conn.close()

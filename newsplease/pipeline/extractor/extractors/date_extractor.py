@@ -124,11 +124,17 @@ class DateExtractor(AbstractExtractor):
                 date = meta['content'].strip()
                 break
 
+            # <meta itemprop="dc.date" content="2015-11-26T11:53:00.000Z" />
+            if 'dc.date' == item_prop:
+                date = meta['content'].strip()
+                break
+
             # <meta property="article:published_time"  content="2015-11-25" />
             if 'article:published_time' == meta_property:
                 date = meta['content'].strip()
                 break
-                # <meta name="Date" content="2015-11-26" />
+
+            # <meta name="Date" content="2015-11-26" />
             if 'date' == meta_name:
                 date = meta['content'].strip()
                 break
@@ -179,6 +185,21 @@ class DateExtractor(AbstractExtractor):
 
             # <meta itemprop="datePublished" content="2015-11-26T11:53:00.000Z" />
             if 'datecreated' == item_prop:
+                date = meta['content'].strip()
+                break
+
+            # <meta itemprop="dcterms.date" content="2015-11-26T11:53:00.000Z" />
+            if 'dcterms.date' == item_prop:
+                date = meta['content'].strip()
+                break
+
+            # <meta itemprop="dcterms.created" content="2015-11-26T11:53:00.000Z" />
+            if 'dcterms.created' == item_prop:
+                date = meta['content'].strip()
+                break
+
+            # <meta itemprop="dcterms.created" content="2015-11-26T11:53:00.000Z" />
+            if 'og:published_time datetime' == item_prop:
                 date = meta['content'].strip()
                 break
 

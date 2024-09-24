@@ -1,3 +1,5 @@
+from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
+
 try:
     import urllib2
 except ImportError:
@@ -16,7 +18,7 @@ import zipfile
 re_export = re.compile(r'.*?(http.*?export\.CSV\.zip)')
 
 
-class GdeltCrawler(scrapy.Spider):
+class GdeltCrawler(NewspleaseSpider, scrapy.Spider):
     name = "GdeltCrawler"
     ignored_allowed_domains = None
     start_urls = None
@@ -102,13 +104,14 @@ class GdeltCrawler(scrapy.Spider):
         return True
 
     @staticmethod
-    def supports_site(url):
+    def supports_site(url: str, check_certificate: bool = True) -> bool:
         """
         Rss Crawler is supported if the url is a valid rss feed
 
         Determines if this crawler works on the given url.
 
         :param str url: The url to test
+        :param str check_certificate:
         :return bool: Determines wether this crawler work on the given url
         """
 

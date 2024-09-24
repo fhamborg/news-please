@@ -313,7 +313,7 @@ class SavepathParser(object):
         max_size = 260 - 1 - size_without_max_url_file_name
         max_size_per_occurrence = max_size / number_occurrences
 
-        return max_size_per_occurrence
+        return int(max_size_per_occurrence)
 
     @staticmethod
     def get_filename(savepath):
