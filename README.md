@@ -116,7 +116,6 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
 
 ```cfg
 [Scrapy]
-
 ITEM_PIPELINES = {
   'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
   'newsplease.pipeline.pipelines.ElasticsearchStorage':350
@@ -127,14 +126,11 @@ That's it! Except, if your Elasticsearch database is not located at `http://loca
 
 ```cfg
 [Elasticsearch]
-
 host = localhost
 port = 9200
-
 ...
 
 # Credentials used  for authentication (supports CA-certificates):
-
 use_ca_certificates = False           # True if authentification needs to be performed
 ca_cert_path = '/path/to/cacert.pem'
 client_cert_path = '/path/to/client_cert.pem'
@@ -167,21 +163,21 @@ If you plan to use news-please and its export to PostgreSQL in a production envi
 ### Redis
 news-please allows to store articles on a Redis database, including the versioning feature. To export to Redis, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the RedisStorage module to the pipeline and adjust the connection credentials:
 
-    [Scrapy]
-    ITEM_PIPELINES = {
-       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-       'newsplease.pipeline.pipelines.RedisStorage':350
-     }
+[Scrapy]
+ITEM_PIPELINES = {
+    'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+    'newsplease.pipeline.pipelines.RedisStorage':350
+}
 
-    [Redis]
-    host = localhost
-    port = 6379
-    db = 0
+[Redis]
+host = localhost
+port = 6379
+db = 0
 
-    # You can add any redis connection parameter here
-    ssl_check_hostname = True
-    username = "news-please"
-    max_connections = 24
+# You can add any redis connection parameter here
+ssl_check_hostname = True
+username = "news-please"
+max_connections = 24
 
 This pipeline should also be compatible with AWS Elasticache and GCP MemoryStore
 
