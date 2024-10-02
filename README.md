@@ -119,7 +119,7 @@ news-please also supports export to ElasticSearch. Using Elasticsearch will also
 ITEM_PIPELINES = {
   'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
   'newsplease.pipeline.pipelines.ElasticsearchStorage':350
-  }
+}
 ```
 
 That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username/password or CA-certificate authentication. In these cases, you will also need to change the following.
@@ -147,7 +147,7 @@ news-please allows for storing of articles to a PostgreSQL database, including t
 ITEM_PIPELINES = {
   'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
   'newsplease.pipeline.pipelines.PostgresqlStorage':350
-  }
+}
 
 [Postgresql]
 # Postgresql-Connection required for saving meta-informations
@@ -163,10 +163,11 @@ If you plan to use news-please and its export to PostgreSQL in a production envi
 ### Redis
 news-please allows to store articles on a Redis database, including the versioning feature. To export to Redis, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the RedisStorage module to the pipeline and adjust the connection credentials:
 
+```cfg
 [Scrapy]
 ITEM_PIPELINES = {
-    'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-    'newsplease.pipeline.pipelines.RedisStorage':350
+  'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+  'newsplease.pipeline.pipelines.RedisStorage':350
 }
 
 [Redis]
@@ -178,6 +179,7 @@ db = 0
 ssl_check_hostname = True
 username = "news-please"
 max_connections = 24
+```
 
 This pipeline should also be compatible with AWS Elasticache and GCP MemoryStore
 
