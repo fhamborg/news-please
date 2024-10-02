@@ -12,6 +12,7 @@ import plac
 import psycopg2
 import pymysql
 from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch
 from scrapy.utils.log import configure_logging
 
 from newsplease.pipeline.pipelines import RedisStorageClient
@@ -55,6 +56,7 @@ class NewsPleaseLauncher(object):
     mysql = None
     postgresql = None
     elasticsearch = None
+    opensearch = None
     redis = None
     number_of_active_crawlers = 0
     config_directory_default_path = "~/news-please-repo/config/"
@@ -63,13 +65,14 @@ class NewsPleaseLauncher(object):
 
     __single_crawler = False
 
-    def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch,
+    def __init__(self, cfg_directory_path, is_resume, is_reset_elasticsearch, is_reset_opensearch,
         is_reset_json, is_reset_mysql, is_reset_postgresql, is_reset_redis, is_no_confirm, library_mode=False):
         """
         The constructor of the main class, thus the real entry point to the tool.
         :param cfg_file_path:
         :param is_resume:
         :param is_reset_elasticsearch:
+        :param is_reset_opensearch:
         :param is_reset_json:
         :param is_reset_mysql:
         :param is_reset_postgresql:
@@ -113,6 +116,7 @@ class NewsPleaseLauncher(object):
         self.mysql = self.cfg.section("MySQL")
         self.postgresql = self.cfg.section("Postgresql")
         self.elasticsearch = self.cfg.section("Elasticsearch")
+        self.opensearch = self.cfg.section("Opensearch")
         self.redis = self.cfg.section("Redis")
 
         # perform reset if given as parameter
@@ -124,10 +128,13 @@ class NewsPleaseLauncher(object):
             self.reset_files()
         if is_reset_elasticsearch:
             self.reset_elasticsearch()
+        if is_reset_opensearch:
+            self.reset_opensearch()
         if is_reset_redis:
             self.reset_redis()
+
         # close the process
-        if is_reset_elasticsearch or is_reset_json or is_reset_mysql or is_reset_postgresql or is_reset_redis:
+        if is_reset_elasticsearch or is_reset_opensearch or is_reset_json or is_reset_mysql or is_reset_postgresql or is_reset_redis:
             sys.exit(0)
 
         self.json_file_path = self.cfg_directory_path + self.cfg.section('Files')['url_input_file_name']
@@ -497,6 +504,45 @@ Do you really want to do this? Write 'yes' to confirm: {yes}"""
             self.log.error("Failed to connect to Elasticsearch. "
                            "Please check if the database is running and the config is correct: %s" % error)
 
+    def reset_opensearch(self):
+        """
+        Resets the Opensearch Database.
+        """
+
+        print("""
+Cleanup OpenSearch database:
+    This will truncate all tables and reset the whole OpenSearch database.
+              """)
+
+        confirm = self.no_confirm
+
+        if not confirm:
+            confirm = 'yes' in builtins.input(
+                """
+Do you really want to do this? Write 'yes' to confirm: {yes}"""
+                    .format(yes='yes' if confirm else ''))
+
+        if not confirm:
+            print("Did not type yes. Thus aborting.")
+            return
+
+        try:
+            # initialize DB connection
+            conn = OpenSearch(
+                hosts=[{"host": self.opensearch["host"], "port": self.opensearch["port"]}],
+                http_compress=True,
+                http_auth=(str(self.opensearch["username"]), str(self.opensearch["secret"])),
+                use_ssl=self.opensearch["use_ssl"]
+            )
+
+            print("Resetting OpensSearch database...")
+            conn.indices.delete(index=self.opensearch["index_current"], ignore=[400, 404])
+            conn.indices.delete(index=self.opensearch["index_archive"], ignore=[400, 404])
+        except ConnectionError as error:
+            self.log.error("Failed to connect to OpenSearch. "
+                           "Please check if the database is running and the config is correct: %s" % error)
+
+
     def reset_files(self):
         """
         Resets the local data directory.
@@ -709,6 +755,7 @@ Cleanup Redis database:
     cfg_file_path=plac.Annotation('path to the config file', 'option', 'c'),
     resume=plac.Annotation('resume crawling from last process', 'flag'),
     reset_elasticsearch=plac.Annotation('reset Elasticsearch indexes', 'flag'),
+    reset_opensearch=plac.Annotation('reset Opensearch indexes', 'flag'),
     reset_json=plac.Annotation('reset JSON files', 'flag'),
     reset_mysql=plac.Annotation('reset MySQL database', 'flag'),
     reset_postgresql=plac.Annotation('reset Postgresql database', 'flag'),
@@ -720,6 +767,7 @@ def cli(
     cfg_file_path,
     resume,
     reset_elasticsearch,
+    reset_opensearch,
     reset_json,
     reset_mysql,
     reset_postgresql,
@@ -731,6 +779,7 @@ def cli(
 
     if reset_all:
         reset_elasticsearch = True
+        reset_opensearch = True
         reset_json = True
         reset_mysql = True
         reset_postgresql = True
@@ -743,6 +792,7 @@ def cli(
         cfg_file_path,
         resume,
         reset_elasticsearch,
+        reset_opensearch,
         reset_json,
         reset_mysql,
         reset_postgresql,
