@@ -5,7 +5,7 @@
 
 <img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" />
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can recursively follow internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). 
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can recursively follow internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/AndyTheFactory/newspaper4k), and [readability](https://github.com/buriy/python-readability).
 
 news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from the (very) large news archive at commoncrawl.org.
 
@@ -56,7 +56,7 @@ It's super easy, we promise!
 
 ### Installation
 news-please runs on Python 3.8+.
-```
+```bash
 $ pip install news-please
 ```
 
@@ -98,7 +98,7 @@ with open("article.json", "w") as file:
 
 ### Run the crawler (via the CLI)
 
-```
+```bash
 $ news-please
 ```
 
@@ -114,49 +114,54 @@ Most likely, you will not want to crawl from the websites provided in our exampl
 
 news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can also be changed with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
-    [Scrapy]
+```cfg
+[Scrapy]
 
-    ITEM_PIPELINES = {
-                       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-                       'newsplease.pipeline.pipelines.ElasticsearchStorage':350
-                     }
+ITEM_PIPELINES = {
+  'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+  'newsplease.pipeline.pipelines.ElasticsearchStorage':350
+  }
+```
 
 That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username/password or CA-certificate authentication. In these cases, you will also need to change the following.
 
-    [Elasticsearch]
+```cfg
+[Elasticsearch]
 
-    host = localhost
-    port = 9200    
+host = localhost
+port = 9200
 
-    ...
+...
 
-    # Credentials used  for authentication (supports CA-certificates):
+# Credentials used  for authentication (supports CA-certificates):
 
-    use_ca_certificates = False           # True if authentification needs to be performed
-    ca_cert_path = '/path/to/cacert.pem'  
-    client_cert_path = '/path/to/client_cert.pem'  
-    client_key_path = '/path/to/client_key.pem'  
-    username = 'root'  
-    secret = 'password'
+use_ca_certificates = False           # True if authentification needs to be performed
+ca_cert_path = '/path/to/cacert.pem'
+client_cert_path = '/path/to/client_cert.pem'
+client_key_path = '/path/to/client_key.pem'
+username = 'root'
+secret = 'password'
+```
 
 ### PostgreSQL
 news-please allows for storing of articles to a PostgreSQL database, including the versioning feature. To export to PostgreSQL, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the PostgresqlStorage module to the pipeline and adjust the database credentials:
 
-    [Scrapy]
-    ITEM_PIPELINES = {
-                   'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-                   'newsplease.pipeline.pipelines.PostgresqlStorage':350
-                 }
+```cfg
+[Scrapy]
+ITEM_PIPELINES = {
+  'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+  'newsplease.pipeline.pipelines.PostgresqlStorage':350
+  }
 
-    [Postgresql]
-    # Postgresql-Connection required for saving meta-informations
-    host = localhost
-    port = 5432
-    database = 'news-please'
-    # schema = 'news-please'
-    user = 'user'
-    password = 'password'
-
+[Postgresql]
+# Postgresql-Connection required for saving meta-informations
+host = localhost
+port = 5432
+database = 'news-please'
+# schema = 'news-please'
+user = 'user'
+password = 'password'
+```
 If you plan to use news-please and its export to PostgreSQL in a production environment, we recommend to uninstall the `psycopg2-binary` package and install `psycopg2`. We use the former since it does not require a C compiler in order to be installed. See [here](https://pypi.org/project/psycopg2-binary/), for more information on differences between `psycopg2` and `psycopg2-binary` and how to setup a production environment.
 
 ### Redis
