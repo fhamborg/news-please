@@ -108,7 +108,7 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
     @staticmethod
     def _get_rss_start_urls(url: str, check_certificate: bool = True) -> list[str]:
         config = CrawlerConfig.get_instance()
-        rss_patterns = config.section("Crawler").get("rss_parent_pages", [])
+        rss_patterns = config.section("Crawler").get("rss_parent_pages", [''])
 
         valid_start_urls = []
         for pattern in rss_patterns:
