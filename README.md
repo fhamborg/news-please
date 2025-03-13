@@ -5,7 +5,7 @@
 
 <img align="right" height="128px" width="128px" src="https://raw.githubusercontent.com/fhamborg/news-please/master/misc/logo/logo-256.png" />
 
-news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can recursively follow internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/codelucas/newspaper), and [readability](https://github.com/buriy/python-readability). 
+news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can recursively follow internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/AndyTheFactory/newspaper4k), and [readability](https://github.com/buriy/python-readability).
 
 news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from the (very) large news archive at commoncrawl.org.
 
@@ -56,7 +56,7 @@ It's super easy, we promise!
 
 ### Installation
 news-please runs on Python 3.8+.
-```
+```bash
 $ pip install news-please
 ```
 
@@ -98,7 +98,7 @@ with open("article.json", "w") as file:
 
 ### Run the crawler (via the CLI)
 
-```
+```bash
 $ news-please
 ```
 
@@ -114,30 +114,30 @@ Most likely, you will not want to crawl from the websites provided in our exampl
 
 news-please also supports export to ElasticSearch. Using Elasticsearch will also enable the versioning feature. First, enable it in the [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) at the config directory, which is by default `~/news-please/config` but can also be changed with the `-c` parameter to a custom location. In case the directory does not exist, a default directory will be created at the specified location.
 
-    [Scrapy]
-
-    ITEM_PIPELINES = {
-                       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-                       'newsplease.pipeline.pipelines.ElasticsearchStorage':350
-                     }
+```cfg
+[Scrapy]
+ITEM_PIPELINES = {
+  'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+  'newsplease.pipeline.pipelines.ElasticsearchStorage':350
+}
+```
 
 That's it! Except, if your Elasticsearch database is not located at `http://localhost:9200`, uses a different username/password or CA-certificate authentication. In these cases, you will also need to change the following.
 
-    [Elasticsearch]
+```cfg
+[Elasticsearch]
+host = localhost
+port = 9200
+...
 
-    host = localhost
-    port = 9200    
-
-    ...
-
-    # Credentials used  for authentication (supports CA-certificates):
-
-    use_ca_certificates = False           # True if authentification needs to be performed
-    ca_cert_path = '/path/to/cacert.pem'  
-    client_cert_path = '/path/to/client_cert.pem'  
-    client_key_path = '/path/to/client_key.pem'  
-    username = 'root'  
-    secret = 'password'
+# Credentials used  for authentication (supports CA-certificates):
+use_ca_certificates = False           # True if authentification needs to be performed
+ca_cert_path = '/path/to/cacert.pem'
+client_cert_path = '/path/to/client_cert.pem'
+client_key_path = '/path/to/client_key.pem'
+username = 'root'
+secret = 'password'
+```
 
 ### OpenSearch
 
@@ -170,49 +170,52 @@ if your Opensearch database is not located at `http://localhost:9200`, uses a di
 ### PostgreSQL
 news-please allows for storing of articles to a PostgreSQL database, including the versioning feature. To export to PostgreSQL, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the PostgresqlStorage module to the pipeline and adjust the database credentials:
 
-    [Scrapy]
-    ITEM_PIPELINES = {
-                   'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-                   'newsplease.pipeline.pipelines.PostgresqlStorage':350
-                 }
+```cfg
+[Scrapy]
+ITEM_PIPELINES = {
+  'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+  'newsplease.pipeline.pipelines.PostgresqlStorage':350
+}
 
-    [Postgresql]
-    # Postgresql-Connection required for saving meta-informations
-    host = localhost
-    port = 5432
-    database = 'news-please'
-    # schema = 'news-please'
-    user = 'user'
-    password = 'password'
-
+[Postgresql]
+# Postgresql-Connection required for saving meta-informations
+host = localhost
+port = 5432
+database = 'news-please'
+# schema = 'news-please'
+user = 'user'
+password = 'password'
+```
 If you plan to use news-please and its export to PostgreSQL in a production environment, we recommend to uninstall the `psycopg2-binary` package and install `psycopg2`. We use the former since it does not require a C compiler in order to be installed. See [here](https://pypi.org/project/psycopg2-binary/), for more information on differences between `psycopg2` and `psycopg2-binary` and how to setup a production environment.
 
 ### Redis
 news-please allows to store articles on a Redis database, including the versioning feature. To export to Redis, open the corresponding config file (`config_lib.cfg` for library mode and `config.cfg` for CLI mode) and add the RedisStorage module to the pipeline and adjust the connection credentials:
 
-    [Scrapy]
-    ITEM_PIPELINES = {
-       'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
-       'newsplease.pipeline.pipelines.RedisStorage':350
-     }
+```cfg
+[Scrapy]
+ITEM_PIPELINES = {
+  'newsplease.pipeline.pipelines.ArticleMasterExtractor':100,
+  'newsplease.pipeline.pipelines.RedisStorage':350
+}
 
-    [Redis]
-    host = localhost
-    port = 6379
-    db = 0
+[Redis]
+host = localhost
+port = 6379
+db = 0
 
-    # You can add any redis connection parameter here
-    ssl_check_hostname = True
-    username = "news-please"
-    max_connections = 24
+# You can add any redis connection parameter here
+ssl_check_hostname = True
+username = "news-please"
+max_connections = 24
+```
 
 This pipeline should also be compatible with AWS Elasticache and GCP MemoryStore
 
 ### What's next?
 We have collected a bunch of useful information for both [users](https://github.com/fhamborg/news-please/wiki/user-guide)  and [developers](https://github.com/fhamborg/news-please/wiki/developer-guide). As a user, you will most likely only deal with two files: [`sitelist.hjson`](https://github.com/fhamborg/news-please/wiki/user-guide#sitelisthjson) (to define sites to be crawled) and [`config.cfg`](https://github.com/fhamborg/news-please/wiki/configuration) (probably only rarely, in case you want to tweak the configuration).
 
-## Support (also, how to open an issue)
-You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [issue](https://github.com/fhamborg/news-please/issues) on GitHub. Please understand that we are not able to provide individual support via email. We think that help is more valuable if it is shared publicly so that more people can benefit from it. However, if you still require individual support, e.g., due to confidentiality of your project, we may be able to provide you with private consultation. Contact [us](mailto:felix@textada.org) for information about pricing and further details.
+## Support
+You can find more information on usage and development in our [wiki](https://github.com/fhamborg/news-please/wiki)! Before contacting us, please check out the wiki. If you still have questions on how to use news-please, please create a new [question](https://github.com/fhamborg/news-please/discussions) in Discussionson here on GitHub. Please understand that we are not able to provide individual support via email. We think that help is more valuable if it is shared publicly so that more people can benefit from it. However, if you still require individual support, e.g., due to confidentiality of your project, we may be able to provide you with private consultation. Contact [us](mailto:felix@textada.org) for information about pricing and further details.
 
 ### Issues
 For bug reports, we ask you to use the Bug report template. Make sure you're using the latest version of news-please, since we cannot give support for older versions. As described earlier, we cannot give support for issues or questions sent by email.

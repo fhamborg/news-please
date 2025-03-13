@@ -7,6 +7,9 @@ __pycache__/
 .idea/
 .DS_Store
 news-please.iml
+news_please.egg-info/
+build/
+.python-version
 
 venv/
 .python-version
