@@ -85,7 +85,7 @@ class UrlExtractor(object):
 
         if check_certificate:
             opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
-            return opener.open(request).url
+            return opener.open(request)
 
         context = ssl.create_default_context()
         context.check_hostname = False
