@@ -131,12 +131,22 @@ class UrlExtractor(object):
         :return: the robot.txt's HTTP response or None if it's not retrieved
         """
         parsed_url = urlparse(url)
-        redirect_url = UrlExtractor.follow_redirects(
-            url="{scheme}://{url_netloc}".format(
-                scheme=parsed_url.scheme, url_netloc=parsed_url.netloc
-            ),
-            check_certificate=check_certificate,
-        )
+        try:
+            redirect_url = UrlExtractor.follow_redirects(
+                url="{scheme}://{url_netloc}".format(
+                    scheme=parsed_url.scheme, url_netloc=parsed_url.netloc
+                ),
+                check_certificate=check_certificate,
+            )
+        except URLError:
+            # Try without www.
+            redirect_url = UrlExtractor.follow_redirects(
+                url="{scheme}://".format(scheme=parsed_url.scheme)
+                + UrlExtractor.get_allowed_domain(
+                    url, allow_subdomains=allow_subdomains
+                ),
+                check_certificate=check_certificate,
+            )
 
         # Get robots.txt
         parsed_redirection = urlparse(redirect_url)
