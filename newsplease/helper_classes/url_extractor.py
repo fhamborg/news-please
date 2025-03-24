@@ -130,20 +130,35 @@ class UrlExtractor(object):
                                       subdomain's
         :return: the robot.txt's HTTP response or None if it's not retrieved
         """
-        redirect_url = UrlExtractor.follow_redirects(
-            url="http://" + UrlExtractor.get_allowed_domain(url, allow_subdomains=allow_subdomains),
-            check_certificate=check_certificate
-        )
+        parsed_url = urlparse(url)
+        try:
+            redirect_url = UrlExtractor.follow_redirects(
+                url="{scheme}://{url_netloc}".format(
+                    scheme=parsed_url.scheme, url_netloc=parsed_url.netloc
+                ),
+                check_certificate=check_certificate,
+            )
+        except URLError:
+            # Try without www.
+            redirect_url = UrlExtractor.follow_redirects(
+                url="{scheme}://".format(scheme=parsed_url.scheme)
+                + UrlExtractor.get_allowed_domain(
+                    url, allow_subdomains=allow_subdomains
+                ),
+                check_certificate=check_certificate,
+            )
 
         # Get robots.txt
-        parsed = urlparse(redirect_url)
+        parsed_redirection = urlparse(redirect_url)
         if allow_subdomains:
-            url_netloc = parsed.netloc
+            url_netloc = parsed_redirection.netloc
         else:
-            url_netloc = UrlExtractor.get_allowed_domain(parsed.netloc, False)
+            url_netloc = UrlExtractor.get_allowed_domain(
+                parsed_redirection.netloc, False
+            )
 
         robots_url = "{url.scheme}://{url_netloc}/robots.txt".format(
-            url=parsed, url_netloc=url_netloc
+            url=parsed_redirection, url_netloc=url_netloc
         )
         try:
             response = UrlExtractor.request_url(url=robots_url, check_certificate=check_certificate)
