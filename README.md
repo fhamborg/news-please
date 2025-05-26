@@ -7,7 +7,7 @@
 
 news-please is an open source, easy-to-use news crawler that extracts structured information from almost any news website. It can recursively follow internal hyperlinks and read RSS feeds to fetch both most recent and also old, archived articles. You only need to provide the root URL of the news website to crawl it completely. news-please combines the power of multiple state-of-the-art libraries and tools, such as [scrapy](https://scrapy.org/), [Newspaper](https://github.com/AndyTheFactory/newspaper4k), and [readability](https://github.com/buriy/python-readability).
 
-news-please also features a library mode, which allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from the (very) large news archive at commoncrawl.org.
+news-please also allows Python developers to use the crawling and extraction functionality within their own program. Moreover, news-please allows to conveniently [crawl and extract articles](/newsplease/examples/commoncrawl.py) from the (very) large news archive at commoncrawl.org.
 
 If you want to contribute to news-please, please first read [here](#contributions).
 
