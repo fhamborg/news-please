@@ -853,44 +853,84 @@ class RedisStorageClient(StrictRedis):
             "port": config_parser.getint("Redis", "port"),
             "db": config_parser.getint("Redis", "db"),
             "password": config_parser.get("Redis", "password", fallback=None),
-            "socket_timeout": config_parser.getfloat("Redis", "socket_timeout", fallback=None),
-            "socket_connect_timeout": config_parser.getfloat("Redis", "socket_connect_timeout", fallback=None),
-            "socket_keepalive": config_parser.getboolean("Redis", "socket_keepalive", fallback=None),
-            "socket_keepalive_options": config_parser.get("Redis", "socket_keepalive_options", fallback=None),
-            "unix_socket_path": config_parser.get("Redis", "unix_socket_path", fallback=None),
+            "socket_timeout": config_parser.getfloat(
+                "Redis", "socket_timeout", fallback=None
+            ),
+            "socket_connect_timeout": config_parser.getfloat(
+                "Redis", "socket_connect_timeout", fallback=None
+            ),
+            "socket_keepalive": config_parser.getboolean(
+                "Redis", "socket_keepalive", fallback=None
+            ),
+            "socket_keepalive_options": config_parser.get(
+                "Redis", "socket_keepalive_options", fallback=None
+            ),
+            "unix_socket_path": config_parser.get(
+                "Redis", "unix_socket_path", fallback=None
+            ),
             "encoding": config_parser.get("Redis", "encoding", fallback="utf-8"),
-            "encoding_errors": config_parser.get("Redis", "encoding_errors", fallback="strict"),
-            "charset": config_parser.get("Redis", "charset", fallback=None),
-            "errors": config_parser.get("Redis", "errors", fallback=None),
-            "retry_on_timeout": config_parser.getboolean("Redis", "retry_on_timeout", fallback=False),
-            "retry_on_error": config_parser.get("Redis", "retry_on_error", fallback=None),
+            "encoding_errors": config_parser.get(
+                "Redis", "encoding_errors", fallback="strict"
+            ),
+            "retry_on_timeout": config_parser.getboolean(
+                "Redis", "retry_on_timeout", fallback=False
+            ),
+            "retry_on_error": config_parser.get(
+                "Redis", "retry_on_error", fallback=None
+            ),
             "ssl": config_parser.getboolean("Redis", "ssl", fallback=False),
             "ssl_keyfile": config_parser.get("Redis", "ssl_keyfile", fallback=None),
             "ssl_certfile": config_parser.get("Redis", "ssl_certfile", fallback=None),
-            "ssl_cert_reqs": config_parser.get("Redis", "ssl_cert_reqs", fallback="required"),
+            "ssl_cert_reqs": config_parser.get(
+                "Redis", "ssl_cert_reqs", fallback="required"
+            ),
             "ssl_ca_certs": config_parser.get("Redis", "ssl_ca_certs", fallback=None),
             "ssl_ca_path": config_parser.get("Redis", "ssl_ca_path", fallback=None),
             "ssl_ca_data": config_parser.get("Redis", "ssl_ca_data", fallback=None),
-            "ssl_check_hostname": config_parser.getboolean("Redis", "ssl_check_hostname", fallback=False),
-            "ssl_password": config_parser.get("Redis", "ssl_password", fallback=None),
-            "ssl_validate_ocsp": config_parser.getboolean("Redis", "ssl_validate_ocsp", fallback=False),
-            "ssl_validate_ocsp_stapled": config_parser.getboolean(
-                "Redis", "ssl_validate_ocsp_stapled", fallback=False,
+            "ssl_check_hostname": config_parser.getboolean(
+                "Redis", "ssl_check_hostname", fallback=False
             ),
-            "ssl_ocsp_context": config_parser.get("Redis", "ssl_ocsp_context", fallback=None),
-            "ssl_ocsp_expected_cert": config_parser.get("Redis", "ssl_ocsp_expected_cert", fallback=None),
-            "ssl_min_version": config_parser.get("Redis", "ssl_min_version", fallback=None),
+            "ssl_password": config_parser.get("Redis", "ssl_password", fallback=None),
+            "ssl_validate_ocsp": config_parser.getboolean(
+                "Redis", "ssl_validate_ocsp", fallback=False
+            ),
+            "ssl_validate_ocsp_stapled": config_parser.getboolean(
+                "Redis",
+                "ssl_validate_ocsp_stapled",
+                fallback=False,
+            ),
+            "ssl_ocsp_context": config_parser.get(
+                "Redis", "ssl_ocsp_context", fallback=None
+            ),
+            "ssl_ocsp_expected_cert": config_parser.get(
+                "Redis", "ssl_ocsp_expected_cert", fallback=None
+            ),
+            "ssl_min_version": config_parser.get(
+                "Redis", "ssl_min_version", fallback=None
+            ),
             "ssl_ciphers": config_parser.get("Redis", "ssl_ciphers", fallback=None),
-            "max_connections": config_parser.getint("Redis", "max_connections", fallback=None),
-            "single_connection_client": config_parser.getboolean("Redis", "single_connection_client", fallback=False),
-            "health_check_interval": config_parser.getint("Redis", "health_check_interval", fallback=0),
+            "max_connections": config_parser.getint(
+                "Redis", "max_connections", fallback=None
+            ),
+            "single_connection_client": config_parser.getboolean(
+                "Redis", "single_connection_client", fallback=False
+            ),
+            "health_check_interval": config_parser.getint(
+                "Redis", "health_check_interval", fallback=0
+            ),
             "client_name": config_parser.get("Redis", "client_name", fallback=None),
             "username": config_parser.get("Redis", "username", fallback=None),
             "retry": config_parser.get("Redis", "retry", fallback=None),
-            "redis_connect_func": config_parser.get("Redis", "redis_connect_func", fallback=None),
-            "credential_provider": config_parser.get("Redis", "credential_provider", fallback=None),
+            "redis_connect_func": config_parser.get(
+                "Redis", "redis_connect_func", fallback=None
+            ),
+            "credential_provider": config_parser.get(
+                "Redis", "credential_provider", fallback=None
+            ),
             "protocol": config_parser.getint("Redis", "protocol", fallback=None),
-            "dangerously_flush_db": config_parser.getboolean("Redis", "dangerously_flush_db", fallback=False),
+            "dangerously_flush_db": config_parser.getboolean(
+                "Redis", "dangerously_flush_db", fallback=False
+            ),
         }
         return cls(**connection_kwargs)
 
