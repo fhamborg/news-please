@@ -6,6 +6,15 @@ import re
 from .sub_classes.heuristics_manager import HeuristicsManager
 from .url_extractor import UrlExtractor
 
+from scrapy.http import HtmlResponse
+
+from newspaper.extractors.articlebody_extractor import ArticleBodyExtractor
+import newspaper.parsers as parsers
+from newspaper.configuration import Configuration
+from lxml import etree
+from newspaper.outputformatters import OutputFormatter
+
+
 # to improve performance, regex statements are compiled only once per module
 re_url_root = re.compile(r'https?://[a-z]+.')
 
@@ -131,3 +140,28 @@ class Heuristics(HeuristicsManager):
 
         root_url = re.sub(re_url_root, '', site_dict["url"])
         return UrlExtractor.get_allowed_domain(response.url) == root_url
+
+    def main_content_linked_headlines(self, response, site_dict):
+        config = Configuration()
+        html = response.body
+        doc = parsers.fromstring(html)
+        article_body_extractor = ArticleBodyExtractor(config)
+        article_body_extractor.parse(doc)
+        output_formatter = OutputFormatter(config)
+        _, article_html = output_formatter.get_formatted(
+            article_body_extractor.top_node_complemented, ""
+        )
+
+        if isinstance(article_html, str):
+            article_html = article_html.encode("utf-8")
+
+        # create scrapy HtmlResponse with correct encoding
+        main_text_response = HtmlResponse(
+            url=response.url,
+            body=article_html,
+            encoding="utf-8"
+        )
+
+        result = self.linked_headlines(main_text_response, site_dict, True)
+
+        return result
