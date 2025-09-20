@@ -162,6 +162,6 @@ class Heuristics(HeuristicsManager):
             encoding="utf-8"
         )
 
-        result = self.linked_headlines(main_text_response, site_dict, True)
+        result = self.linked_headlines(main_text_response, site_dict)
 
         return result
