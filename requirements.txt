@@ -6,7 +6,8 @@ psycopg2-binary>=2.8.4
 hjson>=1.5.8
 elasticsearch>=2.4
 beautifulsoup4>=4.3.2
-readability-lxml>=0.6.2
+# The 0.8.4.1 version is broken. cf. https://github.com/buriy/python-readability/issues/194
+readability-lxml==0.8.1
 langdetect>=1.0.7
 python-dateutil>=2.4.0
 plac>=0.9.6
