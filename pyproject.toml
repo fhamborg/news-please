@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["ez_setup", "examples", "tests"]
+
+[project]
+name = "news-please"
+version = "1.6.13"
+requires-python = ">=3.8"
+dependencies = [
+  "ago>=0.0.9",
+  "beautifulsoup4>=4.3.2",
+  "boto3",
+  "dotmap>=1.2.17",
+  "elasticsearch>=2.4",
+  "faust-cchardet>=2.1.18",
+  "hjson>=1.5.8",
+  "hurry.filesize>=0.9",
+  "langdetect>=1.0.7",
+  "lxml>=3.3.5",
+  "lxml-html-clean>=0.1.1",
+  "newspaper4k>=0.9.3.1",
+  "plac>=0.9.6",
+  "psycopg2-binary>=2.8.4",
+  "PyMySQL>=0.7.9",
+  "pywin32>=220; sys_platform == 'win32'",
+  "python-dateutil>=2.4.0",
+  "readability-lxml==0.8.1",               # The 0.8.4.1 version is broken. cf. https://github.com/buriy/python-readability/issues/194
+  "redis",
+  "scrapy>=1.1.0",
+  "six>=1.10.0",
+  "typing-extensions>=4.7.0",
+  "warcio>=1.3.3",
+]
+authors = [{ name = "Felix Hamborg", email = "felix.hamborg@uni-konstanz.de" }]
+description = "news-please is an open source easy-to-use news extractor that just works."
+keywords = [
+  "news-crawler",
+  "news-scraper",
+  "news-extractor",
+  "crawler",
+  "extractor",
+  "scraper",
+  "information-retrieval",
+]
+license = "Apache-2.0"
+license-files = ["LICENSE.TXT"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Internet",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.urls]
+Repository = "https://github.com/fhamborg/news-please"
+
+[project.scripts]
+news-please = "newsplease.__main__:main"
+news-please-cc = "newsplease.examples.commoncrawl:main"
