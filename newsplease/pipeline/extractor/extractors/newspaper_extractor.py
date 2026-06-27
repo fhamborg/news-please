@@ -28,11 +28,13 @@ class NewspaperExtractor(AbstractExtractor):
         article_candidate = ArticleCandidate()
         article_candidate.extractor = self._name()
 
-        article = Article('', **self._article_kwargs())
+        article = Article("", **self._article_kwargs())
         # old version of newspaper2k
         # article.set_html(item['spider_response'].body)
         # new version
-        article.download(input_html=item['spider_response'].body, title=item['html_title'].decode())
+        article.download(
+            input_html=item["spider_response"].body, title=item["html_title"].decode()
+        )
         article.parse()
         article_candidate.title = article.title
         article_candidate.description = article.meta_description
@@ -41,10 +43,14 @@ class NewspaperExtractor(AbstractExtractor):
         article_candidate.author = article.authors
         if article.publish_date:
             try:
-                article_candidate.publish_date = article.publish_date.strftime('%Y-%m-%d %H:%M:%S')
-            except ValueError as exception:
-                self.log.debug('%s: Newspaper failed to extract the date in the supported format,'
-                              'Publishing date set to None' % item['url'])
+                article_candidate.publish_date = article.publish_date.strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
+            except ValueError:
+                self.log.debug(
+                    "%s: Newspaper failed to extract the date in the supported format,"
+                    "Publishing date set to None" % item["url"]
+                )
         article_candidate.language = article.meta_lang
 
         return article_candidate

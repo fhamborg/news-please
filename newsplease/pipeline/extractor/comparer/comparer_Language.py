@@ -17,7 +17,6 @@ class ComparerLanguage:
         language_newspaper = None
 
         for article_candidate in list_article_candidate:
-
             if article_candidate.language:
                 languages_extracted.append(article_candidate.language)
 
@@ -35,13 +34,18 @@ class ComparerLanguage:
 
         for language in languages_extracted_set:
             if language:
-                languages_extracted_number.append((languages_extracted.count(language), language))
+                languages_extracted_number.append(
+                    (languages_extracted.count(language), language)
+                )
 
         if not (languages_extracted_number):
             return None
 
         # If there is no favorite language, return the language extracted by newspaper
-        if max(languages_extracted_number)[0] == min(languages_extracted_number)[0] and language_newspaper is not None:
+        if (
+            max(languages_extracted_number)[0] == min(languages_extracted_number)[0]
+            and language_newspaper is not None
+        ):
             return language_newspaper
 
         if languages_extracted_number:

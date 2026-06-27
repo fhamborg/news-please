@@ -128,7 +128,7 @@ class ParseCrawler(object):
         """
         if not re_html.match(response.headers.get("Content-Type").decode("utf-8")):
             self.log.warn(
-                "Dropped: %s's content is not of type " "text/html but %s",
+                "Dropped: %s's content is not of type text/html but %s",
                 response.url,
                 response.headers.get("Content-Type"),
             )

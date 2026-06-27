@@ -1,7 +1,7 @@
 import itertools
 
 
-class ComparerTitle():
+class ComparerTitle:
     """This class compares the title if the list of ArticleCandidates and sends the result back to the Comparer."""
 
     def find_matches(self, list_title):
@@ -12,7 +12,10 @@ class ComparerTitle():
         """
         list_title_matches = []
         # Generate every possible tuple of titles and safe the matched string in a list.
-        for a, b, in itertools.combinations(list_title, 2):
+        for (
+            a,
+            b,
+        ) in itertools.combinations(list_title, 2):
             if a == b:
                 list_title_matches.append(a)
 

@@ -2,10 +2,9 @@ import concurrent.futures as cf
 import datetime
 import os
 import sys
-import urllib
+import urllib.parse
 
 from bs4.dammit import EncodingDetector
-from six.moves import urllib
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
@@ -40,7 +39,7 @@ class NewsPlease:
                 .split(";")[1]
                 .split("=")[1]
             )
-        except:
+        except Exception:
             pass
         if not encoding:
             encoding = EncodingDetector.find_declared_encoding(raw_stream, is_html=True)
@@ -122,7 +121,9 @@ class NewsPlease:
         :return: A NewsArticle object containing all the information of the article. Else, None.
         :rtype: NewsArticle, None
         """
-        articles = NewsPlease.from_urls([url], request_args=request_args, fetch_images=fetch_images)
+        articles = NewsPlease.from_urls(
+            [url], request_args=request_args, fetch_images=fetch_images
+        )
         if url in articles.keys():
             return articles[url]
         else:
@@ -155,7 +156,11 @@ class NewsPlease:
             with cf.ProcessPoolExecutor() as exec:
                 for url in results:
                     future = exec.submit(
-                        NewsPlease.from_html, results[url], url, download_date, fetch_images
+                        NewsPlease.from_html,
+                        results[url],
+                        url,
+                        download_date,
+                        fetch_images,
                     )
                     futures[future] = url
 
@@ -163,7 +168,7 @@ class NewsPlease:
                 url = futures[future]
                 try:
                     results[url] = future.result(timeout=request_args.get("timeout"))
-                except Exception as err:
+                except Exception:
                     results[url] = {}
 
         return results

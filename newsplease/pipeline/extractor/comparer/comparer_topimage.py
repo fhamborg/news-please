@@ -6,10 +6,10 @@ except ImportError:
     from urllib.parse import urljoin
 
 # to improve performance, regex statements are compiled only once per module
-re_http = re.compile('http://*')
+re_http = re.compile("http://*")
 
 
-class ComparerTopimage():
+class ComparerTopimage:
     """This class compares the topimages of the list of ArticleCandidates and sends the result back to the Comparer."""
 
     def extract(self, item, list_article_candidate):
@@ -24,8 +24,12 @@ class ComparerTopimage():
         for article_candidate in list_article_candidate:
             if article_candidate.topimage is not None:
                 # Changes a relative path of an image to the absolute path of the given url.
-                article_candidate.topimage = self.image_absoulte_path(item['url'], article_candidate.topimage)
-                list_topimage.append((article_candidate.topimage, article_candidate.extractor))
+                article_candidate.topimage = self.image_absoulte_path(
+                    item["url"], article_candidate.topimage
+                )
+                list_topimage.append(
+                    (article_candidate.topimage, article_candidate.extractor)
+                )
 
         # If there is no value in the list, return None.
         if len(list_topimage) == 0:
@@ -34,7 +38,6 @@ class ComparerTopimage():
         # If there are more options than one, return the result from newspaper.
         list_newspaper = [x for x in list_topimage if x[1] == "newspaper"]
         if len(list_newspaper) == 0:
-
             # If there is no topimage extracted by newspaper, return the first result of list_topimage.
             return list_topimage[0][0]
         else:

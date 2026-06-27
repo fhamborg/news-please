@@ -4,8 +4,7 @@ from ..article_candidate import ArticleCandidate
 
 
 class AbstractExtractor:
-    """Abstract class for article extractors.
-    """
+    """Abstract class for article extractors."""
 
     __metaclass__ = ABCMeta
 

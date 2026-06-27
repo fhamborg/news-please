@@ -13,27 +13,28 @@ class Helper(object):
     """
     This class contains helper classes from ./helper_classes.
     """
+
     heuristics = None
     url_extractor = None
     savepath_parser = None
     parse_crawler = None
 
     def __init__(
-            self,
-            cfg_heuristics,
-            cfg_savepath,
-            relative_to_path,
-            format_relative_path,
-            sites_object,
-            crawler_class,
-            crawler_item_class,
-            working_path
+        self,
+        cfg_heuristics,
+        cfg_savepath,
+        relative_to_path,
+        format_relative_path,
+        sites_object,
+        crawler_class,
+        crawler_item_class,
+        working_path,
     ):
         if not isinstance(sites_object[0]["url"], list):
-            self.heuristics = Heuristics(
-                cfg_heuristics, sites_object, crawler_class)
+            self.heuristics = Heuristics(cfg_heuristics, sites_object, crawler_class)
         self.url_extractor = UrlExtractor()
         self.savepath_parser = SavepathParser(
-            cfg_savepath, relative_to_path, format_relative_path, self, working_path)
+            cfg_savepath, relative_to_path, format_relative_path, self, working_path
+        )
         self.crawler_item_class = crawler_item_class
         self.parse_crawler = ParseCrawler(self)

@@ -22,7 +22,7 @@ class ReadabilityExtractor(AbstractExtractor):
         :return: ArticleCandidate containing the recovered article data.
         """
 
-        doc = Document(deepcopy(item['spider_response'].body))
+        doc = Document(deepcopy(item["spider_response"].body))
         description = doc.summary()
 
         article_candidate = ArticleCandidate()

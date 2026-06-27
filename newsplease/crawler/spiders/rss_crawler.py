@@ -1,22 +1,18 @@
+import logging
+import re
+
 from requests import get
+import scrapy
 from scrapy.http import TextResponse, XmlResponse
 
 from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 from newsplease.helper_classes.url_extractor import UrlExtractor
 
-try:
-    import urllib2
-except ImportError:
-    import urllib.request as urllib2
-import logging
-import re
-
-import scrapy
 
 # to improve performance, regex statements are compiled only once per module
 re_rss = re.compile(
-    r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|' +
-    r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
+    r'(<link[^>]*href[^>]*type ?= ?"application\/rss\+xml"|'
+    + r'<link[^>]*type ?= ?"application\/rss\+xml"[^>]*href)'
 )
 
 
@@ -39,12 +35,13 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
 
         self.original_url = url
 
-        self.ignored_allowed_domain = self.helper.url_extractor \
-            .get_allowed_domain(url)
+        self.ignored_allowed_domain = self.helper.url_extractor.get_allowed_domain(url)
 
-        self.check_certificate = (bool(config.section("Crawler").get('check_certificate'))
-                                  if config.section("Crawler").get('check_certificate') is not None
-                                  else True)
+        self.check_certificate = (
+            bool(config.section("Crawler").get("check_certificate"))
+            if config.section("Crawler").get("check_certificate") is not None
+            else True
+        )
 
         self.start_urls = [self.helper.url_extractor.get_start_url(url)]
 
@@ -66,15 +63,13 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
 
         :param obj response: The scrapy response
         """
-        for item in response.xpath('//item'):
-            for url in item.xpath('link/text()').extract():
+        for item in response.xpath("//item"):
+            for url in item.xpath("link/text()").extract():
                 yield scrapy.Request(
                     url=url,
                     callback=lambda resp: self.article_parse(
-                        resp,
-                        item.xpath('title/text()').extract()[0]
+                        resp, item.xpath("title/text()").extract()[0]
                     ),
-
                 )
 
     def article_parse(self, response, rss_title=None):
@@ -89,8 +84,8 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
             return
 
         yield self.helper.parse_crawler.pass_to_pipeline_if_article(
-            response, self.ignored_allowed_domain, self.original_url,
-            rss_title)
+            response, self.ignored_allowed_domain, self.original_url, rss_title
+        )
 
     @staticmethod
     def only_extracts_articles():
@@ -113,10 +108,14 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
         """
 
         # Follow redirects
-        redirect_url = UrlExtractor.follow_redirects(url=url, check_certificate=check_certificate)
+        redirect_url = UrlExtractor.follow_redirects(
+            url=url, check_certificate=check_certificate
+        )
 
         # Check if a standard rss feed exists
-        response = UrlExtractor.request_url(url=redirect_url, check_certificate=check_certificate).read()
+        response = UrlExtractor.request_url(
+            url=redirect_url, check_certificate=check_certificate
+        ).read()
         return re.search(re_rss, response.decode("utf-8")) is not None
 
     @staticmethod
@@ -128,7 +127,9 @@ class RssCrawler(NewspleaseSpider, scrapy.Spider):
         :param bool check_certificate:
         :return bool:
         """
-        redirect_url = UrlExtractor.follow_redirects(url=url, check_certificate=check_certificate)
+        redirect_url = UrlExtractor.follow_redirects(
+            url=url, check_certificate=check_certificate
+        )
 
         response = get(url=redirect_url, verify=check_certificate)
         scrapy_response = TextResponse(url=redirect_url, body=response.text.encode())

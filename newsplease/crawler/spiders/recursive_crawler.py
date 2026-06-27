@@ -26,13 +26,13 @@ class RecursiveCrawler(NewspleaseSpider, scrapy.Spider):
         self.helper = helper
 
         self.ignore_regex = ignore_regex
-        self.ignore_file_extensions = self.config.section(
-            'Crawler')['ignore_file_extensions']
+        self.ignore_file_extensions = self.config.section("Crawler")[
+            "ignore_file_extensions"
+        ]
 
         self.original_url = url
 
-        self.allowed_domains = [self.helper.url_extractor
-                                    .get_allowed_domain(url)]
+        self.allowed_domains = [self.helper.url_extractor.get_allowed_domain(url)]
         self.start_urls = [self.helper.url_extractor.get_start_url(url)]
 
         super(RecursiveCrawler, self).__init__(*args, **kwargs)
@@ -47,13 +47,14 @@ class RecursiveCrawler(NewspleaseSpider, scrapy.Spider):
         if not self.helper.parse_crawler.content_type(response):
             return
 
-        for request in self.helper.parse_crawler \
-                .recursive_requests(response, self, self.ignore_regex,
-                                    self.ignore_file_extensions):
+        for request in self.helper.parse_crawler.recursive_requests(
+            response, self, self.ignore_regex, self.ignore_file_extensions
+        ):
             yield request
 
         yield self.helper.parse_crawler.pass_to_pipeline_if_article(
-            response, self.allowed_domains[0], self.original_url)
+            response, self.allowed_domains[0], self.original_url
+        )
 
     @staticmethod
     def supports_site(url: str, check_certificate: bool = True) -> bool:

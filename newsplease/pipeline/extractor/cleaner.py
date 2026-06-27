@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
-import sys
 
 from lxml import html
 
 # to improve performance, regex statements are compiled only once per module
-re_newline_spc = re.compile(r'(?<=\n)( )+')
-re_starting_whitespc = re.compile(r'^[ \t\n\r\f]*')
-re_multi_spc_tab = re.compile(r'[ \t]+(?=([ \t]))')
-re_double_newline = re.compile(r'[ \n]+(?=(\n))')
-re_ending_spc_newline = re.compile(r'[ \n]*$')
+re_newline_spc = re.compile(r"(?<=\n)( )+")
+re_starting_whitespc = re.compile(r"^[ \t\n\r\f]*")
+re_multi_spc_tab = re.compile(r"[ \t]+(?=([ \t]))")
+re_double_newline = re.compile(r"[ \n]+(?=(\n))")
+re_ending_spc_newline = re.compile(r"[ \n]*$")
 
 
 class Cleaner:
@@ -42,15 +41,15 @@ class Cleaner:
         :return: A string, the cleaned string
         """
         # Deletes whitespaces after a newline
-        arg = re.sub(re_newline_spc, '', arg)
+        arg = re.sub(re_newline_spc, "", arg)
         # Deletes every whitespace, tabulator, newline at the beginning of the string
-        arg = re.sub(re_starting_whitespc, '', arg)
+        arg = re.sub(re_starting_whitespc, "", arg)
         # Deletes whitespace or tabulator if followed by whitespace or tabulator
-        arg = re.sub(re_multi_spc_tab, '', arg)
+        arg = re.sub(re_multi_spc_tab, "", arg)
         #  Deletes newline if it is followed by an other one
-        arg = re.sub(re_double_newline, '', arg)
+        arg = re.sub(re_double_newline, "", arg)
         # Deletes newlines and whitespaces at the end of the string
-        arg = re.sub(re_ending_spc_newline, '', arg)
+        arg = re.sub(re_ending_spc_newline, "", arg)
         return arg
 
     def do_cleaning(self, arg):
@@ -67,10 +66,7 @@ class Cleaner:
                     newlist.append(self.do_cleaning(entry))
                 return newlist
             else:
-                if sys.version_info[0] < 3:
-                    arg = unicode(arg)
-                else:
-                    arg = str(arg)
+                arg = str(arg)
                 arg = self.delete_tags(arg)
                 arg = self.delete_whitespaces(arg)
                 return arg
@@ -88,11 +84,15 @@ class Cleaner:
 
         for article_candidate in list_article_candidates:
             article_candidate.title = self.do_cleaning(article_candidate.title)
-            article_candidate.description = self.do_cleaning(article_candidate.description)
+            article_candidate.description = self.do_cleaning(
+                article_candidate.description
+            )
             article_candidate.text = self.do_cleaning(article_candidate.text)
             article_candidate.topimage = self.do_cleaning(article_candidate.topimage)
             article_candidate.author = self.do_cleaning(article_candidate.author)
-            article_candidate.publish_date = self.do_cleaning(article_candidate.publish_date)
+            article_candidate.publish_date = self.do_cleaning(
+                article_candidate.publish_date
+            )
 
             results.append(article_candidate)
 

@@ -35,9 +35,11 @@ class RecursiveSitemapCrawler(NewspleaseSpider, scrapy.spiders.SitemapSpider):
         self.original_url = url
 
         self.allowed_domains = [self.helper.url_extractor.get_allowed_domain(url)]
-        self.check_certificate = (bool(config.section("Crawler").get('check_certificate'))
-                                  if config.section("Crawler").get('check_certificate') is not None
-                                  else True)
+        self.check_certificate = (
+            bool(config.section("Crawler").get("check_certificate"))
+            if config.section("Crawler").get("check_certificate") is not None
+            else True
+        )
         self.sitemap_urls = self.helper.url_extractor.get_sitemap_urls(
             domain_url=url,
             allow_subdomains=config.section("Crawler")["sitemap_allow_subdomains"],

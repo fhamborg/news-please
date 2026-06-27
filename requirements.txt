@@ -15,7 +15,6 @@ dotmap>=1.2.17
 PyDispatcher>=2.0.5
 warcio>=1.3.3
 ago>=0.0.9
-six>=1.10.0
 hurry.filesize>=0.9
 bs4
 faust-cchardet>=2.1.18

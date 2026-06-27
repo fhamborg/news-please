@@ -6,36 +6,36 @@ This script starts a crawler.
 
 import hashlib
 import logging
+import os
 import shutil
 import sys
+from typing import Type
 from ast import literal_eval
 
-import os
-from typing import Type
 
 from scrapy import Spider
 from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 from scrapy.spiderloader import SpiderLoader
 from scrapy.utils.log import configure_logging
+from twisted.internet.error import ReactorAlreadyRunning
 
 
-cur_path = os.path.dirname(os.path.realpath(__file__))
-par_path = os.path.dirname(cur_path)
-sys.path.append(cur_path)
-sys.path.append(par_path)
-from newsplease.config import CrawlerConfig
-from newsplease.config import JsonConfig
+from newsplease.config import JsonConfig, CrawlerConfig
 from newsplease.helper import Helper
 from newsplease.helper_classes.class_loader import ClassLoader
 from newsplease.crawler.items import NewscrawlerItem
 from newsplease.crawler.spiders.newsplease_spider import NewspleaseSpider
 
+cur_path = os.path.dirname(os.path.realpath(__file__))
+par_path = os.path.dirname(cur_path)
+sys.path.append(cur_path)
+sys.path.append(par_path)
+
 try:
     from _thread import start_new_thread
 except ImportError:
     from thread import start_new_thread
-from twisted.internet.error import ReactorAlreadyRunning
 
 
 class SingleCrawler(object):
@@ -44,6 +44,7 @@ class SingleCrawler(object):
 
     It starts a single crawler, that is passed along to this script.
     """
+
     cfg = None
     json = None
     log = None
@@ -66,15 +67,25 @@ class SingleCrawler(object):
         :param url:
         :return:
         """
-        site = {
-            "crawler": "Download",
-            "url": url
-        }
-        cfg_file_path = os.path.dirname(__file__) + os.path.sep + 'config' + os.path.sep + 'config_lib.cfg'
+        site = {"crawler": "Download", "url": url}
+        cfg_file_path = (
+            os.path.dirname(__file__)
+            + os.path.sep
+            + "config"
+            + os.path.sep
+            + "config_lib.cfg"
+        )
         return cls(cfg_file_path, site, 0, False, False, True)
 
-    def __init__(self, cfg_file_path, json_file_path,
-                 site_index, shall_resume, daemonize, library_mode=False):
+    def __init__(
+        self,
+        cfg_file_path,
+        json_file_path,
+        site_index,
+        shall_resume,
+        daemonize,
+        library_mode=False,
+    ):
         # set up logging before it's defined via the config file,
         # this will be overwritten and all other levels will be put out
         # as well, if it will be changed.
@@ -84,10 +95,14 @@ class SingleCrawler(object):
         self.cfg_file_path = cfg_file_path
         self.json_file_path = json_file_path
         self.site_number = int(site_index)
-        self.shall_resume = shall_resume \
-            if isinstance(shall_resume, bool) else literal_eval(shall_resume)
-        self.daemonize = daemonize \
-            if isinstance(daemonize, bool) else literal_eval(daemonize)
+        self.shall_resume = (
+            shall_resume
+            if isinstance(shall_resume, bool)
+            else literal_eval(shall_resume)
+        )
+        self.daemonize = (
+            daemonize if isinstance(daemonize, bool) else literal_eval(daemonize)
+        )
 
         # set up the config file
         self.cfg = CrawlerConfig.get_instance()
@@ -110,8 +125,7 @@ class SingleCrawler(object):
         if "ignore_regex" in site:
             ignore_regex = "(%s)|" % site["ignore_regex"]
         else:
-            ignore_regex = "(%s)|" % \
-                           self.cfg.section('Crawler')['ignore_regex']
+            ignore_regex = "(%s)|" % self.cfg.section("Crawler")["ignore_regex"]
 
         # Get the default crawler. The crawler can be overwritten by fallbacks.
         if "additional_rss_daemon" in site and self.daemonize:
@@ -123,7 +137,7 @@ class SingleCrawler(object):
         # Get the real crawler-class (already "fallen back")
         crawler_class = self.get_crawler(self.crawler_name, site["url"])
 
-        if not self.cfg.section('Files')['relative_to_start_processes_file']:
+        if not self.cfg.section("Files")["relative_to_start_processes_file"]:
             relative_to_path = os.path.dirname(self.cfg_file_path)
         else:
             # absolute dir this script is in
@@ -137,14 +151,16 @@ class SingleCrawler(object):
             if not issubclass(news_item_class, NewscrawlerItem):
                 raise ImportError("ITEM_CLASS must be a subclass of NewscrawlerItem")
 
-        self.helper = Helper(self.cfg.section('Heuristics'),
-                             self.cfg.section("Files")["local_data_directory"],
-                             relative_to_path,
-                             self.cfg.section('Files')['format_relative_path'],
-                             sites,
-                             crawler_class,
-                             news_item_class,
-                             self.cfg.get_working_path())
+        self.helper = Helper(
+            self.cfg.section("Heuristics"),
+            self.cfg.section("Files")["local_data_directory"],
+            relative_to_path,
+            self.cfg.section("Files")["format_relative_path"],
+            sites,
+            crawler_class,
+            news_item_class,
+            self.cfg.get_working_path(),
+        )
 
         self.__scrapy_options = self.cfg.get_scrapy_options()
 
@@ -154,16 +170,20 @@ class SingleCrawler(object):
         # if not stated otherwise in the arguments passed to this script
         self.remove_jobdir_if_not_resume()
 
-        self.load_crawler(crawler_class,
-                          site["url"],
-                          ignore_regex)
+        self.load_crawler(crawler_class, site["url"], ignore_regex)
 
         # start the job. if in library_mode, do not stop the reactor and so on after this job has finished
         # so that further jobs can be executed. it also needs to run in a thread since the reactor.run method seems
         # to not return. also, scrapy will attempt to start a new reactor, which fails with an exception, but
         # the code continues to run. we catch this excepion in the function 'start_process'.
         if library_mode:
-            start_new_thread(start_process, (self.process, False,))
+            start_new_thread(
+                start_process,
+                (
+                    self.process,
+                    False,
+                ),
+            )
         else:
             self.process.start()
 
@@ -181,8 +201,8 @@ class SingleCrawler(object):
         if not jobdirname.endswith("/"):
             jobdirname += "/"
 
-        site_string = ''.join(site["url"]) + self.crawler_name
-        hashed = hashlib.md5(site_string.encode('utf-8'))
+        site_string = "".join(site["url"]) + self.crawler_name
+        hashed = hashlib.md5(site_string.encode("utf-8"))
 
         self.__scrapy_options["JOBDIR"] = working_path + jobdirname + hashed.hexdigest()
 
@@ -196,10 +216,14 @@ class SingleCrawler(object):
         :param str url: the url this crawler is supposed to be loaded with
         :rtype: crawler-class or None
         """
-        check_crawler_has_urls_to_scan = self.cfg_crawler.get('check_crawler_has_urls_to_scan')
-        check_certificate = (bool(self.cfg_crawler.get('check_certificate'))
-                             if self.cfg_crawler.get('check_certificate') is not None
-                             else True)
+        check_crawler_has_urls_to_scan = self.cfg_crawler.get(
+            "check_crawler_has_urls_to_scan"
+        )
+        check_certificate = (
+            bool(self.cfg_crawler.get("check_certificate"))
+            if self.cfg_crawler.get("check_certificate") is not None
+            else True
+        )
 
         checked_crawlers = []
         while crawler is not None and crawler not in checked_crawlers:
@@ -207,18 +231,22 @@ class SingleCrawler(object):
             current = self.get_crawler_class(crawler)
 
             if not issubclass(current, NewspleaseSpider):
-                self.log.warning("The crawler %s has no supports_site-method defined", crawler)
+                self.log.warning(
+                    "The crawler %s has no supports_site-method defined", crawler
+                )
                 return current
 
             try:
-                crawler_supports_site = current.supports_site(url=url, check_certificate=check_certificate)
+                crawler_supports_site = current.supports_site(
+                    url=url, check_certificate=check_certificate
+                )
             except Exception as e:
-                self.log.info(f'Crawler not supported due to: {str(e)}', exc_info=True)
+                self.log.info(f"Crawler not supported due to: {str(e)}", exc_info=True)
                 crawler_supports_site = False
 
             if crawler_supports_site:
-                if (check_crawler_has_urls_to_scan
-                        and not current.has_urls_to_scan(url=url, check_certificate=check_certificate)
+                if check_crawler_has_urls_to_scan and not current.has_urls_to_scan(
+                    url=url, check_certificate=check_certificate
                 ):
                     self.log.warning(f"Crawler {crawler} has no url to scan for {url}")
                 else:
@@ -227,14 +255,19 @@ class SingleCrawler(object):
 
             fallbacks = self.cfg_crawler["fallbacks"]
             if crawler in fallbacks and fallbacks[crawler] is not None:
-                self.log.warning("Crawler %s not supported by %s. Trying to fall back.", crawler, url)
+                self.log.warning(
+                    "Crawler %s not supported by %s. Trying to fall back.", crawler, url
+                )
                 crawler = fallbacks[crawler]
             else:
                 self.log.error("No crawlers (incl. fallbacks) found for url %s.", url)
                 raise RuntimeError("No crawler found. Quit.")
 
-        self.log.error("Could not fall back since you created a fall back "
-                       "loop for %s in the config file.", crawler)
+        self.log.error(
+            "Could not fall back since you created a fall back "
+            "loop for %s in the config file.",
+            crawler,
+        )
         sys.exit(1)
 
     def get_crawler_class(self, crawler: str) -> Type[Spider]:
@@ -245,7 +278,9 @@ class SingleCrawler(object):
         :param str crawler: Name of the crawler to load
         :rtype: crawler-class
         """
-        spider_modules = self.cfg.section("Scrapy").get("spider_modules", [self.__default_spider_modules])
+        spider_modules = self.cfg.section("Scrapy").get(
+            "spider_modules", [self.__default_spider_modules]
+        )
 
         settings = Settings()
         settings.set("SPIDER_MODULES", spider_modules)
@@ -264,11 +299,8 @@ class SingleCrawler(object):
         """
         self.process = CrawlerProcess(self.cfg.get_scrapy_options())
         self.process.crawl(
-            crawler,
-            self.helper,
-            url=url,
-            config=self.cfg,
-            ignore_regex=ignore_regex)
+            crawler, self.helper, url=url, config=self.cfg, ignore_regex=ignore_regex
+        )
 
     def remove_jobdir_if_not_resume(self):
         """
@@ -278,12 +310,13 @@ class SingleCrawler(object):
         """
         jobdir = self.__scrapy_options["JOBDIR"]
 
-        if (not self.shall_resume or self.daemonize) \
-                and os.path.exists(jobdir):
+        if (not self.shall_resume or self.daemonize) and os.path.exists(jobdir):
             shutil.rmtree(jobdir)
 
-            self.log.info("Removed " + jobdir + " since '--resume' was not passed to"
-                                                " initial.py or this crawler was daemonized.")
+            self.log.info(
+                "Removed " + jobdir + " since '--resume' was not passed to"
+                " initial.py or this crawler was daemonized."
+            )
 
 
 def start_process(process, stop_after_job):
@@ -294,8 +327,10 @@ def start_process(process, stop_after_job):
 
 
 if __name__ == "__main__":
-    SingleCrawler(cfg_file_path=sys.argv[1],
-                  json_file_path=sys.argv[2],
-                  site_index=sys.argv[3],
-                  shall_resume=sys.argv[4],
-                  daemonize=sys.argv[5])
+    SingleCrawler(
+        cfg_file_path=sys.argv[1],
+        json_file_path=sys.argv[2],
+        site_index=sys.argv[3],
+        shall_resume=sys.argv[4],
+        daemonize=sys.argv[5],
+    )

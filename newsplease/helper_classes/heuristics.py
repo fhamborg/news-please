@@ -1,6 +1,7 @@
 """
 Helper class for testing heuristics
 """
+
 import re
 
 from .sub_classes.heuristics_manager import HeuristicsManager
@@ -11,12 +12,11 @@ from scrapy.http import HtmlResponse
 from newspaper.extractors.articlebody_extractor import ArticleBodyExtractor
 import newspaper.parsers as parsers
 from newspaper.configuration import Configuration
-from lxml import etree
 from newspaper.outputformatters import OutputFormatter
 
 
 # to improve performance, regex statements are compiled only once per module
-re_url_root = re.compile(r'https?://[a-z]+.')
+re_url_root = re.compile(r"https?://[a-z]+.")
 
 
 class Heuristics(HeuristicsManager):
@@ -53,8 +53,9 @@ class Heuristics(HeuristicsManager):
         :return bool: Determines wether the reponse's meta data contains the
                       keyword 'article'
         """
-        contains_meta = response.xpath('//meta') \
-            .re('(= ?["\'][^"\']*article[^"\']*["\'])')
+        contains_meta = response.xpath("//meta").re(
+            "(= ?[\"'][^\"']*article[^\"']*[\"'])"
+        )
 
         if not contains_meta:
             return False
@@ -71,9 +72,10 @@ class Heuristics(HeuristicsManager):
 
         :return bool: True if the tag is contained.
         """
-        og_type_article = response.xpath('//meta') \
-            .re('(property=["\']og:type["\'].*content=["\']article["\'])|'
-                '(content=["\']article["\'].*property=["\']og:type["\'])')
+        og_type_article = response.xpath("//meta").re(
+            "(property=[\"']og:type[\"'].*content=[\"']article[\"'])|"
+            "(content=[\"']article[\"'].*property=[\"']og:type[\"'])"
+        )
         if not og_type_article:
             return False
 
@@ -99,20 +101,24 @@ class Heuristics(HeuristicsManager):
         # is contained in a string.
         site_regex = r"href=[\"'][^\/]*\/\/(?:[^\"']*\.|)%s[\"'\/]" % domain
         for i in range(1, 7):
-            for headline in response.xpath('//h%s' % i).extract():
+            for headline in response.xpath("//h%s" % i).extract():
                 h_all += 1
                 if "href" in headline and (
-                            not check_self or re.search(site_regex, headline)
-                        is not None):
+                    not check_self or re.search(site_regex, headline) is not None
+                ):
                     h_linked += 1
 
-        self.log.debug("Linked headlines test: headlines = %s, linked = %s",
-                       h_all, h_linked)
+        self.log.debug(
+            "Linked headlines test: headlines = %s, linked = %s", h_all, h_linked
+        )
 
         min_headlines = self.cfg_heuristics["min_headlines_for_linked_test"]
         if min_headlines > h_all:
-            self.log.debug("Linked headlines test: Not enough headlines "
-                           "(%s < %s): Passing!", h_all, min_headlines)
+            self.log.debug(
+                "Linked headlines test: Not enough headlines (%s < %s): Passing!",
+                h_all,
+                min_headlines,
+            )
             return True
 
         return float(h_linked) / float(h_all)
@@ -138,7 +144,7 @@ class Heuristics(HeuristicsManager):
         :return bool: Determines if the response's url is from a subdomain
         """
 
-        root_url = re.sub(re_url_root, '', site_dict["url"])
+        root_url = re.sub(re_url_root, "", site_dict["url"])
         return UrlExtractor.get_allowed_domain(response.url) == root_url
 
     def main_content_linked_headlines(self, response, site_dict):
@@ -157,9 +163,7 @@ class Heuristics(HeuristicsManager):
 
         # create scrapy HtmlResponse with correct encoding
         main_text_response = HtmlResponse(
-            url=response.url,
-            body=article_html,
-            encoding="utf-8"
+            url=response.url, body=article_html, encoding="utf-8"
         )
 
         result = self.linked_headlines(main_text_response, site_dict)
