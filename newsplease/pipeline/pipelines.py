@@ -71,7 +71,7 @@ class ArticleMasterExtractor(object):
 
         self.extractor = article_extractor.Extractor(self.extractor_list)
 
-    def process_item(self, item, spider):
+    def process_item(self, item):
         return self.extractor.extract(item)
 
 
@@ -1045,7 +1045,7 @@ class RedisStorage(ExtractedInformationStorage):
     def is_archive_enabled(self) -> bool:
         return self.enable_archive
 
-    def process_item(self, item: Any, spider: scrapy.Spider):
+    def process_item(self, item: Any):
         # get the original url, so that the library class (or whoever wants to read this) can access the article
         if "redirect_urls" in item._values["spider_response"].meta:
             url = item._values["spider_response"].meta["redirect_urls"][0]
@@ -1095,6 +1095,6 @@ class RedisStorage(ExtractedInformationStorage):
 
         return item
 
-    def close_spider(self, spider: scrapy.Spider):
+    def close_spider(self):
         # Close redis connection
         self.conn.close()
